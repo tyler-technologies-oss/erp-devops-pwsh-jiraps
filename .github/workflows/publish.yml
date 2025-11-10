@@ -1,0 +1,21 @@
+name: Publish Module
+
+on:
+  push:
+    branches:
+      - main
+      - 1.0.0
+
+jobs:
+  publish-module:
+    uses: tyler-technologies/erp-devops-pwsh-publish-workflow/.github/workflows/publish-module.yaml@v2
+    permissions:
+      contents: write
+    with:
+      module-name: Tyler.DevOps.JiraPS
+    secrets:
+      publish-username: ${{ secrets.ERP_ARTIFACTORY_USERNAME }}
+      publish-password: ${{ secrets.ERP_ARTIFACTORY_PASSWORD }}
+      azure-tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+      azure-client-id: ${{ secrets.AZURE_CLIENT_ID }}
+      azure-client-secret: ${{ secrets.AZURE_CLIENT_SECRET }}

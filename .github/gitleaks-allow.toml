@@ -1,0 +1,9 @@
+[AllowList]
+  Files = []
+Paths = []
+Regexes = [
+  "Password\\(\"\\$\\(\\$SqlCredential\\.GetNetworkCredential\\(\\)\\.Password\\)\"",
+  "key\\): '\\$\\(\\$InvocationInfo\\.BoundParameters\\[\\$key\\]\\)'\"",
+  "key\\): '\\$\\(\\$InvocationInfo\\.BoundParameters\\[\\$key\\]\\)'\"",
+  "secret_id\" = \"\\$\\(\\$VaultConnectionInfo\\.Config\\.SecretId\\)\"",
+]

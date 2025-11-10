@@ -1,6 +1,1 @@
-.github/workflows               @atlassianps/ci-managers
-JiraPS.build.ps1                @atlassianps/ci-managers
-PPSScriptAnalyzerSettings.psd1  @atlassianps/ci-managers
-Tools/                          @atlassianps/ci-managers
-
-*                               @atlassianps/maintainers
+* @tyler-technologies/erp-operations

@@ -43,6 +43,10 @@ function Remove-JiraIssueAttachment {
         [System.Management.Automation.Credential()]
         $Credential = [System.Management.Automation.PSCredential]::Empty,
 
+        [Parameter()]
+        [String]
+        $AuthToken = $null,
+
         [Switch]
         $Force
     )
@@ -75,6 +79,7 @@ function Remove-JiraIssueAttachment {
                         URI        = $resourceURi -f $_id
                         Method     = "DELETE"
                         Credential = $Credential
+                        AuthToken  = $AuthToken
                     }
                     Write-Debug "[$($MyInvocation.MyCommand.Name)] Invoking JiraMethod with `$parameter"
                     if ($PSCmdlet.ShouldProcess($thisUrl, "Removing an attachment")) {
@@ -116,6 +121,7 @@ function Remove-JiraIssueAttachment {
                         URI        = $resourceURi -f $attachment.Id
                         Method     = "DELETE"
                         Credential = $Credential
+                        AuthToken  = $AuthToken
                     }
                     Write-Debug "[$($MyInvocation.MyCommand.Name)] Invoking JiraMethod with `$parameter"
                     if ($PSCmdlet.ShouldProcess($Issue.Key, "Removing attachment '$($attachment.FileName)'")) {

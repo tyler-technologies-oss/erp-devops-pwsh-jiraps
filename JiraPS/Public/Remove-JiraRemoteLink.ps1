@@ -37,6 +37,10 @@ function Remove-JiraRemoteLink {
         [System.Management.Automation.Credential()]
         $Credential = [System.Management.Automation.PSCredential]::Empty,
 
+        [Parameter()]
+        [String]
+        $AuthToken = $null,
+
         [Switch]
         $Force
     )
@@ -74,6 +78,7 @@ function Remove-JiraRemoteLink {
                     URI        = $resourceURi -f $issueObj.Key, $_link
                     Method     = "DELETE"
                     Credential = $Credential
+                    AuthToken  = $AuthToken
                 }
                 Write-Debug "[$($MyInvocation.MyCommand.Name)] Invoking JiraMethod with `$parameter"
                 if ($PSCmdlet.ShouldProcess($issueObj.Key, "Remove RemoteLink '$_link'")) {

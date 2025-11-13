@@ -35,7 +35,11 @@ function Remove-JiraIssueWatcher {
         [Parameter()]
         [System.Management.Automation.PSCredential]
         [System.Management.Automation.Credential()]
-        $Credential = [System.Management.Automation.PSCredential]::Empty
+        $Credential = [System.Management.Automation.PSCredential]::Empty,
+
+        [Parameter()]
+        [String]
+        $AuthToken = $null
     )
 
     begin {
@@ -57,6 +61,7 @@ function Remove-JiraIssueWatcher {
                 URI        = "{0}/watchers?username={1}" -f $issueObj.RestURL, $username
                 Method     = "DELETE"
                 Credential = $Credential
+                AuthToken  = $AuthToken
             }
             Write-Debug "[$($MyInvocation.MyCommand.Name)] Invoking JiraMethod with `$parameter"
             if ($PSCmdlet.ShouldProcess($IssueObj.Key, "Removing watcher '$($username)'")) {

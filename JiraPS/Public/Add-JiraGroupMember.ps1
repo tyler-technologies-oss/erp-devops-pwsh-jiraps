@@ -22,6 +22,10 @@ function Add-JiraGroupMember {
         [System.Management.Automation.Credential()]
         $Credential = [System.Management.Automation.PSCredential]::Empty,
 
+        [Parameter()]
+        [String]
+        $AuthToken = $null,
+
         [Switch]
         $PassThru
     )
@@ -64,6 +68,7 @@ function Add-JiraGroupMember {
                         Method     = "POST"
                         Body       = ConvertTo-Json -InputObject @{ 'name' = $user.Name }
                         Credential = $Credential
+                        AuthToken  = $AuthToken
                     }
                     Write-Debug "[$($MyInvocation.MyCommand.Name)] Invoking JiraMethod with `$parameter"
                     if ($PSCmdlet.ShouldProcess($GroupName, "Adding user '$($user.Name)'.")) {

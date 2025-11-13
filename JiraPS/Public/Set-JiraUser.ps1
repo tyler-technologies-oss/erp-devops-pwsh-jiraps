@@ -68,6 +68,10 @@ function Set-JiraUser {
         [System.Management.Automation.Credential()]
         $Credential = [System.Management.Automation.PSCredential]::Empty,
 
+        [Parameter()]
+        [String]
+        $AuthToken = $null,
+
         [Switch]
         $PassThru
     )
@@ -126,6 +130,7 @@ function Set-JiraUser {
                 Method     = "PUT"
                 Body       = ConvertTo-Json -InputObject $requestBody -Depth 4
                 Credential = $Credential
+                AuthToken  = $AuthToken
             }
             Write-Debug "[$($MyInvocation.MyCommand.Name)] Invoking JiraMethod with `$parameter"
             if ($PSCmdlet.ShouldProcess($UserObj.DisplayName, "Updating user")) {

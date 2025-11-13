@@ -70,7 +70,11 @@ function Find-JiraFilter {
 
         [System.Management.Automation.PSCredential]
         [System.Management.Automation.Credential()]
-        $Credential = [System.Management.Automation.PSCredential]::Empty
+        $Credential = [System.Management.Automation.PSCredential]::Empty,
+
+        [Parameter()]
+        [String]
+        $AuthToken = $null
     )
 
     begin {
@@ -93,6 +97,7 @@ function Find-JiraFilter {
             }
             Paging       = $true
             Credential   = $Credential
+            AuthToken  = $AuthToken
         }
         if ($PSCmdlet.MyInvocation.BoundParameters.ContainsKey('AccountId')) {
             $parameter['GetParameter']['accountId'] = $AccountId

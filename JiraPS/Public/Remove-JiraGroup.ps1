@@ -33,6 +33,10 @@ function Remove-JiraGroup {
         [System.Management.Automation.Credential()]
         $Credential = [System.Management.Automation.PSCredential]::Empty,
 
+        [Parameter()]
+        [String]
+        $AuthToken = $null,
+
         [Switch]
         $Force
     )
@@ -65,6 +69,7 @@ function Remove-JiraGroup {
                 URI        = $resourceURi -f $groupObj.Name
                 Method     = "DELETE"
                 Credential = $Credential
+                AuthToken  = $AuthToken
             }
             Write-Debug "[$($MyInvocation.MyCommand.Name)] Invoking JiraMethod with `$parameter"
             if ($PSCmdlet.ShouldProcess($groupObj.Name, "Remove group")) {

@@ -55,6 +55,10 @@ function Set-JiraIssue {
         [System.Management.Automation.Credential()]
         $Credential = [System.Management.Automation.PSCredential]::Empty,
 
+        [Parameter()]
+        [String]
+        $AuthToken = $null,
+
         [Switch]
         $PassThru,
 
@@ -192,6 +196,7 @@ function Set-JiraIssue {
                     Method       = "PUT"
                     Body         = ConvertTo-Json -InputObject $issueProps -Depth 10
                     Credential   = $Credential
+                    AuthToken  = $AuthToken
                     GetParameter = $SkipNotificationParams
                 }
                 Write-Debug "[$($MyInvocation.MyCommand.Name)] Invoking JiraMethod with `$parameter"
@@ -210,6 +215,7 @@ function Set-JiraIssue {
                     Method       = "PUT"
                     Body         = ConvertTo-Json -InputObject $assigneeProps
                     Credential   = $Credential
+                    AuthToken  = $AuthToken
                     GetParameter = $SkipNotificationParams
                 }
                 Write-Debug "[$($MyInvocation.MyCommand.Name)] Invoking JiraMethod with `$parameter"

@@ -9,7 +9,11 @@ function Get-JiraField {
         [Parameter()]
         [System.Management.Automation.PSCredential]
         [System.Management.Automation.Credential()]
-        $Credential = [System.Management.Automation.PSCredential]::Empty
+        $Credential = [System.Management.Automation.PSCredential]::Empty,
+
+        [Parameter()]
+        [String]
+        $AuthToken = $null
     )
 
     begin {
@@ -30,6 +34,7 @@ function Get-JiraField {
                     URI        = $resourceURi
                     Method     = "GET"
                     Credential = $Credential
+                    AuthToken  = $AuthToken
                 }
                 Write-Debug "[$($MyInvocation.MyCommand.Name)] Invoking JiraMethod with `$parameter"
                 $result = Invoke-JiraMethod @parameter

@@ -30,7 +30,11 @@ function Get-JiraIssueAttachmentFile {
         [Parameter()]
         [System.Management.Automation.PSCredential]
         [System.Management.Automation.Credential()]
-        $Credential = [System.Management.Automation.PSCredential]::Empty
+        $Credential = [System.Management.Automation.PSCredential]::Empty,
+
+        [Parameter()]
+        [String]
+        $AuthToken = $null
     )
 
     begin {
@@ -55,6 +59,7 @@ function Get-JiraIssueAttachmentFile {
                 Headers    = @{"Accept" = $_Attachment.MimeType}
                 OutFile    = $filename
                 Credential = $Credential
+                AuthToken  = $AuthToken
             }
 
             $result = Invoke-JiraMethod @iwParameters

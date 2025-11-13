@@ -48,7 +48,11 @@ function New-JiraIssue {
         [Parameter()]
         [System.Management.Automation.PSCredential]
         [System.Management.Automation.Credential()]
-        $Credential = [System.Management.Automation.PSCredential]::Empty
+        $Credential = [System.Management.Automation.PSCredential]::Empty,
+
+        [Parameter()]
+        [String]
+        $AuthToken = $null
     )
 
     begin {
@@ -168,6 +172,7 @@ function New-JiraIssue {
             Method     = "POST"
             Body       = (ConvertTo-Json -InputObject ([PSCustomObject]$hashtable) -Depth 7)
             Credential = $Credential
+            AuthToken  = $AuthToken
         }
         Write-Debug "[$($MyInvocation.MyCommand.Name)] Invoking JiraMethod with `$parameter"
         if ($PSCmdlet.ShouldProcess($Summary, "Creating new Issue on JIRA")) {

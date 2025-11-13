@@ -48,6 +48,10 @@ function Invoke-JiraMethod {
         [System.Management.Automation.Credential()]
         $Credential = [System.Management.Automation.PSCredential]::Empty,
 
+        [Parameter()]
+        [String]
+        $AuthToken = $null,
+
         # [Parameter( DontShow )]
         [ValidateNotNullOrEmpty()]
         [System.Management.Automation.PSCmdlet]
@@ -132,10 +136,26 @@ function Invoke-JiraMethod {
             }
         }
 
-        if ((-not $Credential) -or ($Credential -eq [System.Management.Automation.PSCredential]::Empty)) {
-            $splatParameters.Remove("Credential")
-            if ($session = Get-JiraSession -ErrorAction SilentlyContinue) {
-                $splatParameters["WebSession"] = $session.WebSession
+        # Auth Precedence:
+        #   AuthToken
+        #   Credental
+        #   Session
+
+        if (-not [string]::IsNullOrEmpty($AuthToken)) {
+            $splatParameters["Headers"]  = Join-Hashtable -Hashtable $splatParameters["Headers"], @{"Authorization"="Bearer $AuthToken"}
+
+            Write-Verbose "AuthToken found, using in Authorization header."
+            if ($splatParameters.ContainsKey("Credential")) {
+                $splatParameters.Remove("Credential")
+            }
+        } else {
+            if ((-not $Credential) -or ($Credential -eq [System.Management.Automation.PSCredential]::Empty)) {
+                if ($splatParameters.ContainsKey("Credential")) {
+                    $splatParameters.Remove("Credential")
+                }
+                if ($session = Get-JiraSession -ErrorAction SilentlyContinue) {
+                    $splatParameters["WebSession"] = $session.WebSession
+                }
             }
         }
 

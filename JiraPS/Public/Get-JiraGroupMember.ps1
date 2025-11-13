@@ -42,7 +42,11 @@ function Get-JiraGroupMember {
         [Parameter()]
         [System.Management.Automation.PSCredential]
         [System.Management.Automation.Credential()]
-        $Credential = [System.Management.Automation.PSCredential]::Empty
+        $Credential = [System.Management.Automation.PSCredential]::Empty,
+
+        [Parameter()]
+        [String]
+        $AuthToken = $null
     )
 
     begin {
@@ -77,6 +81,7 @@ function Get-JiraGroupMember {
                 OutputType   = "JiraUser"
                 Paging       = $true
                 Credential   = $Credential
+                AuthToken  = $AuthToken
             }
             if ($IncludeInactive) {
                 $parameter["includeInactiveUsers"] = $true

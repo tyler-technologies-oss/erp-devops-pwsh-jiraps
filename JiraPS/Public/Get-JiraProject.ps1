@@ -9,7 +9,11 @@ function Get-JiraProject {
         [Parameter()]
         [System.Management.Automation.PSCredential]
         [System.Management.Automation.Credential()]
-        $Credential = [System.Management.Automation.PSCredential]::Empty
+        $Credential = [System.Management.Automation.PSCredential]::Empty,
+
+        [Parameter()]
+        [String]
+        $AuthToken = $null
     )
 
     begin {
@@ -30,6 +34,7 @@ function Get-JiraProject {
                     URI        = $resourceURi -f ""
                     Method     = "GET"
                     Credential = $Credential
+                    AuthToken  = $AuthToken
                 }
                 Write-Debug "[$($MyInvocation.MyCommand.Name)] Invoking JiraMethod with `$parameter"
                 $result = Invoke-JiraMethod @parameter
@@ -45,6 +50,7 @@ function Get-JiraProject {
                         URI        = $resourceURi -f "/$($_project)"
                         Method     = "GET"
                         Credential = $Credential
+                        AuthToken  = $AuthToken
                     }
                     Write-Debug "[$($MyInvocation.MyCommand.Name)] Invoking JiraMethod with `$parameter"
                     $result = Invoke-JiraMethod @parameter

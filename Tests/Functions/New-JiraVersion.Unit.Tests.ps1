@@ -156,6 +156,7 @@ Describe "New-JiraVersion" -Tag 'Unit' {
                     StartDate   = "2017-01-01"
                     Project     = (Get-JiraProject -Project $projectKey)
                     Credential  = $credentials
+                    AuthToken  = $AuthToken
                 }
                 $results = New-JiraVersion @splat -ErrorAction Stop
                 $results | Should Not BeNullOrEmpty

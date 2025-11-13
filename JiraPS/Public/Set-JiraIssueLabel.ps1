@@ -50,6 +50,10 @@ function Set-JiraIssueLabel {
         [System.Management.Automation.Credential()]
         $Credential = [System.Management.Automation.PSCredential]::Empty,
 
+        [Parameter()]
+        [String]
+        $AuthToken = $null,
+
         [Switch]
         $PassThru
     )
@@ -116,6 +120,7 @@ function Set-JiraIssueLabel {
                 Method     = "PUT"
                 Body       = ConvertTo-Json -InputObject $requestBody -Depth 6
                 Credential = $Credential
+                AuthToken  = $AuthToken
             }
             Write-Debug "[$($MyInvocation.MyCommand.Name)] Invoking JiraMethod with `$parameter"
             if ($PSCmdlet.ShouldProcess($IssueObj.Key, "Updating Issue labels")) {

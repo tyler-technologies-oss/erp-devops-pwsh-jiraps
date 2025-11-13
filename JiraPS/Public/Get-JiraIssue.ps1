@@ -88,7 +88,11 @@ function Get-JiraIssue {
         [Parameter()]
         [System.Management.Automation.PSCredential]
         [System.Management.Automation.Credential()]
-        $Credential = [System.Management.Automation.PSCredential]::Empty
+        $Credential = [System.Management.Automation.PSCredential]::Empty,
+
+        [Parameter()]
+        [String]
+        $AuthToken = $null
     )
 
     begin {
@@ -122,6 +126,7 @@ function Get-JiraIssue {
                         Method       = "GET"
                         GetParameter = $getParameter
                         Credential   = $Credential
+                        AuthToken  = $AuthToken
                     }
 
                     Write-Debug "[$($MyInvocation.MyCommand.Name)] Invoking JiraMethod with `$parameter"
@@ -153,6 +158,7 @@ function Get-JiraIssue {
                     OutputType   = "JiraIssue"
                     Paging       = $true
                     Credential   = $Credential
+                    AuthToken  = $AuthToken
                 }
                 if ($Fields) {
                     $parameter["GetParameter"]["fields"] = $Fields
@@ -193,6 +199,7 @@ function Get-JiraIssue {
                     OutputType   = "JiraIssue"
                     Paging       = $true
                     Credential   = $Credential
+                    AuthToken  = $AuthToken
 
                 }
                 if ($Fields) {

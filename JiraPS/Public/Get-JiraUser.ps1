@@ -31,7 +31,11 @@ function Get-JiraUser {
         [Parameter()]
         [System.Management.Automation.PSCredential]
         [System.Management.Automation.Credential()]
-        $Credential = [System.Management.Automation.PSCredential]::Empty
+        $Credential = [System.Management.Automation.PSCredential]::Empty,
+
+        [Parameter()]
+        [String]
+        $AuthToken = $null
     )
 
     begin {
@@ -73,6 +77,7 @@ function Get-JiraUser {
                     URI        = $resourceURi
                     Method     = "GET"
                     Credential = $Credential
+                    AuthToken  = $AuthToken
                 }
                 Write-Debug "[$($MyInvocation.MyCommand.Name)] Invoking JiraMethod with `$parameter"
                 $result = Invoke-JiraMethod @parameter
@@ -95,6 +100,7 @@ function Get-JiraUser {
                         URI        = $resourceURi -f $user
                         Method     = "GET"
                         Credential = $Credential
+                        AuthToken  = $AuthToken
                     }
                     Write-Debug "[$($MyInvocation.MyCommand.Name)] Invoking JiraMethod with `$parameter"
                     if ($users = Invoke-JiraMethod @parameter) {
@@ -103,6 +109,7 @@ function Get-JiraUser {
                                 URI        = "{0}&expand=groups" -f $item.self
                                 Method     = "GET"
                                 Credential = $Credential
+                                AuthToken  = $AuthToken
                             }
                             Write-Debug "[$($MyInvocation.MyCommand.Name)] Invoking JiraMethod with `$parameter"
                             $result = Invoke-JiraMethod @parameter

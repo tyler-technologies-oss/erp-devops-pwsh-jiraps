@@ -42,6 +42,10 @@ function Remove-JiraIssue {
         [System.Management.Automation.PSCredential]
         $Credential = [System.Management.Automation.PSCredential]::Empty,
 
+        [Parameter()]
+        [String]
+        $AuthToken = $null,
+
         [Switch]
         $Force
     )
@@ -87,6 +91,7 @@ function Remove-JiraIssue {
                 URI        = $resourceURi -f $_issue.Key,$IncludeSubTasks
                 Method     = "DELETE"
                 Credential = $Credential
+                AuthToken  = $AuthToken
                 Cmdlet = $PsCmdlet
             }
 

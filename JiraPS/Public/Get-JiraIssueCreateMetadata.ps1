@@ -14,7 +14,11 @@ function Get-JiraIssueCreateMetadata {
         [Parameter()]
         [System.Management.Automation.PSCredential]
         [System.Management.Automation.Credential()]
-        $Credential = [System.Management.Automation.PSCredential]::Empty
+        $Credential = [System.Management.Automation.PSCredential]::Empty,
+
+        [Parameter()]
+        [String]
+        $AuthToken = $null
     )
 
     begin {
@@ -46,6 +50,7 @@ function Get-JiraIssueCreateMetadata {
             URI        = $resourceURi -f $projectObj.Id, $issueTypeObj.Id
             Method     = "GET"
             Credential = $Credential
+            AuthToken  = $AuthToken
         }
         Write-Debug "[$($MyInvocation.MyCommand.Name)] Invoking JiraMethod with `$parameter"
         $result = Invoke-JiraMethod @parameter

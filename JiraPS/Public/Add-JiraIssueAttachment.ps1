@@ -58,6 +58,10 @@ function Add-JiraIssueAttachment {
         [System.Management.Automation.Credential()]
         $Credential = [System.Management.Automation.PSCredential]::Empty,
 
+        [Parameter()]
+        [String]
+        $AuthToken = $null,
+
         [Switch]
         $PassThru
     )
@@ -116,6 +120,7 @@ Content-Type: application/octet-stream
                 Headers    = $headers
                 RawBody    = $true
                 Credential = $Credential
+                AuthToken  = $AuthToken
             }
             Write-Debug "[$($MyInvocation.MyCommand.Name)] Invoking JiraMethod with `$parameter"
             if ($PSCmdlet.ShouldProcess($IssueObj.Key, "Adding attachment '$($fileName)'.")) {

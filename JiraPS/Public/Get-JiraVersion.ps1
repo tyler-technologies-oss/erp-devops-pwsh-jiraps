@@ -41,7 +41,11 @@ function Get-JiraVersion {
         [Parameter()]
         [System.Management.Automation.PSCredential]
         [System.Management.Automation.Credential()]
-        $Credential = [System.Management.Automation.PSCredential]::Empty
+        $Credential = [System.Management.Automation.PSCredential]::Empty,
+
+        [Parameter()]
+        [String]
+        $AuthToken = $null
     )
 
     begin {
@@ -74,6 +78,7 @@ function Get-JiraVersion {
                         URI        = $resourceURi -f "version/$_id"
                         Method     = "GET"
                         Credential = $Credential
+                        AuthToken  = $AuthToken
                     }
                     Write-Debug "[$($MyInvocation.MyCommand.Name)] Invoking JiraMethod with `$parameter"
                     $result = Invoke-JiraMethod @parameter
@@ -98,6 +103,7 @@ function Get-JiraVersion {
                         Paging       = $true
                         OutputType   = "JiraVersion"
                         Credential   = $Credential
+                        AuthToken  = $AuthToken
                     }
                     # Paging
                     ($PSCmdlet.PagingParameters | Get-Member -MemberType Property).Name | ForEach-Object {

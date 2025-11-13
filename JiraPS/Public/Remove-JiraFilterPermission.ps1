@@ -47,7 +47,11 @@ function Remove-JiraFilterPermission {
         [Parameter()]
         [System.Management.Automation.PSCredential]
         [System.Management.Automation.Credential()]
-        $Credential = [System.Management.Automation.PSCredential]::Empty
+        $Credential = [System.Management.Automation.PSCredential]::Empty,
+
+        [Parameter()]
+        [String]
+        $AuthToken = $null
     )
 
     begin {
@@ -72,6 +76,7 @@ function Remove-JiraFilterPermission {
                 URI        = "{0}/permission/{1}" -f $Filter.RestURL, $_permissionId
                 Method     = "DELETE"
                 Credential = $Credential
+                AuthToken  = $AuthToken
             }
             Write-Debug "[$($MyInvocation.MyCommand.Name)] Invoking JiraMethod with `$parameter"
             if ($PSCmdlet.ShouldProcess($InputObject.Type, "Remove Permission")) {

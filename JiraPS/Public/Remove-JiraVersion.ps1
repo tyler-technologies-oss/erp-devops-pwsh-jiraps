@@ -32,6 +32,10 @@ function Remove-JiraVersion {
         [System.Management.Automation.Credential()]
         $Credential = [System.Management.Automation.PSCredential]::Empty,
 
+        [Parameter()]
+        [String]
+        $AuthToken = $null,
+
         [Switch]
         $Force
     )
@@ -64,6 +68,7 @@ function Remove-JiraVersion {
                 URI        = $versionObj.RestUrl
                 Method     = "DELETE"
                 Credential = $Credential
+                AuthToken  = $AuthToken
             }
             Write-Debug "[$($MyInvocation.MyCommand.Name)] Invoking JiraMethod with `$parameter"
             if ($PSCmdlet.ShouldProcess($versionObj.Name, "Removing Version")) {

@@ -45,6 +45,10 @@ function Invoke-JiraIssueTransition {
         [System.Management.Automation.Credential()]
         $Credential = [System.Management.Automation.PSCredential]::Empty,
 
+        [Parameter()]
+        [String]
+        $AuthToken = $null,
+
         [Switch]
         $Passthru
     )
@@ -183,6 +187,7 @@ function Invoke-JiraIssueTransition {
             Method     = "POST"
             Body       = ConvertTo-Json -InputObject $requestBody -Depth 5
             Credential = $Credential
+            AuthToken  = $AuthToken
         }
         Write-Debug "[$($MyInvocation.MyCommand.Name)] Invoking JiraMethod with `$parameter"
         Invoke-JiraMethod @parameter

@@ -4,28 +4,28 @@
     RootModule        = 'JiraPS.psm1'
 
     # Version number of this module.
-    ModuleVersion     = '2.14'
+    ModuleVersion     = '1.0.0'
 
     # Supported PSEditions
     # CompatiblePSEditions = @()
 
     # ID used to uniquely identify this module
-    GUID              = '4bf3eb15-037e-43b7-9e47-20a30436324f'
+    GUID              = 'a5fdba95-a169-4a70-a6c1-564349f60cc1'
 
     # Author of this module
-    Author            = 'AtlassianPS'
+    Author            = 'ERP Operations'
 
     # Company or vendor of this module
-    CompanyName       = 'AtlassianPS.org'
+    CompanyName       = 'Tyler Technologies'
 
     # Copyright statement for this module
-    Copyright         = '(c) 2017 AtlassianPS. All rights reserved.'
+    Copyright         = '(c) 2025 Tyler Technologies. All rights reserved.'
 
     # Description of the functionality provided by this module
     Description       = 'Windows PowerShell module to interact with Atlassian JIRA'
 
     # Minimum version of the Windows PowerShell engine required by this module
-    PowerShellVersion = '3.0'
+    PowerShellVersion = '5.0'
 
     # Name of the Windows PowerShell host required by this module
     # PowerShellHostName = ''
@@ -99,13 +99,13 @@
             )
 
             # A URL to the license for this module.
-            LicenseUri = 'https://github.com/AtlassianPS/JiraPS/blob/master/LICENSE'
+            #LicenseUri = 'https://github.com/AtlassianPS/JiraPS/blob/master/LICENSE'
 
             # A URL to the main website for this project.
-            ProjectUri = 'https://AtlassianPS.org/module/JiraPS'
+            #ProjectUri = 'https://AtlassianPS.org/module/JiraPS'
 
             # A URL to an icon representing this module.
-            IconUri    = 'https://AtlassianPS.org/assets/img/JiraPS.png'
+            #IconUri    = 'https://AtlassianPS.org/assets/img/JiraPS.png'
 
             # ReleaseNotes of this module
             # ReleaseNotes = ''

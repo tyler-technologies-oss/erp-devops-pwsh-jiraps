@@ -1,4 +1,4 @@
-function Get-OAuth2TokenClientCredentials {
+function Get-JiraOAuth2TokenClientCredentials {
     [CmdletBinding()]
     param(
         # Required
@@ -12,7 +12,7 @@ function Get-OAuth2TokenClientCredentials {
         [string] $TokenEndpoint = "https://auth.atlassian.com/oauth/token",
 
         # Optional
-        [string[]] $Scope,           # Space-delimited per RFC; e.g. @("read:jira-work","write:jira-work") or @("https://graph.microsoft.com/.default")
+        [string[]] $Scope = @("read:jira-work"),
         [string]   $Audience,        # e.g. api.atlassian.com (Okta/Atlassian style)
         [string]   $Resource,        # e.g. https://management.azure.com/ (AAD v1)
         [switch]   $SendCredsInBody, # Some IdPs require client_id/secret in form body instead of Authorization: Basic

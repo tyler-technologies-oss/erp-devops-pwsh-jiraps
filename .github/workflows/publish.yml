@@ -7,14 +7,52 @@ on:
 
 jobs:
   publish-module:
-    uses: tyler-technologies/erp-devops-pwsh-publish-workflow/.github/workflows/publish-module.yaml@v2
-    permissions:
-      contents: write
-    with:
-      module-name: Tyler.DevOps.JiraPS
-    secrets:
-      publish-username: ${{ secrets.ERP_ARTIFACTORY_USERNAME }}
-      publish-password: ${{ secrets.ERP_ARTIFACTORY_PASSWORD }}
-      azure-tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-      azure-client-id: ${{ secrets.AZURE_CLIENT_ID }}
-      azure-client-secret: ${{ secrets.AZURE_CLIENT_SECRET }}
+    runs-on: ubuntu-latest
+    steps:
+
+      # Pull down source files
+    - uses: actions/checkout@v5
+      with:
+        fetch-depth: 0 # Include tags
+    - name: Publish Module
+      shell: pwsh
+      run: |
+        $PathToModule = "Tyler.DevOps.JiraPS"
+        $ModuleName = "Tyler.DevOps.JiraPS"
+        $Username = ${{ secrets.ERP_ARTIFACTORY_USERNAME }}
+        $Password = ${{ secrets.ERP_ARTIFACTORY_PASSWORD }}
+        $RepoName = "ERPGallery"
+        $RepoSourceUrl = "https://tylertech.jfrog.io/artifactory/api/nuget/powershell"
+        $RepoPublishUrl = "https://tylertech.jfrog.io/artifactory/api/nuget/erp-powershell-local"
+
+        $VerbosePreference = 'SilentlyContinue'
+        $SecurePassword = ConvertTo-SecureString -String $Password -AsPlainText -Force
+        $Credential = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList $Username, $SecurePassword
+
+        if ($RepoName -notin (Get-PSRepository).Name)
+        {
+          [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+            Write-Output ("Register-PackageSource -Name `"$RepoName`" -Location `"$RepoSourceUrl`" -ProviderName NuGet -Credential `"$Credential`" -Trusted")
+            Register-PackageSource -Name $RepoName -Location $RepoSourceUrl -ProviderName NuGet -Credential $Credential -Trusted
+            Write-Output ("Register-PSRepository -Name `"$RepoName`" -SourceLocation `"$RepoSourceUrl`" -PublishLocation `"$RepoPublishUrl`" -InstallationPolicy Trusted -Credential `"$Credential`"")
+            Register-PSRepository -Name $RepoName -SourceLocation $RepoSourceUrl -PublishLocation $RepoPublishUrl -InstallationPolicy Trusted -Credential $Credential
+        }
+
+        if ($UserName)
+        {
+          $apiKey = ("{0}:{1}" -f $Username,$Password)
+          $apiKeyForOutput = ("{0}:{1}" -f $Username,"**********")
+        } else {
+          $apiKey = $Password
+          $apiKeyForOutput = "**********"
+        }
+
+        $psd1 =(Invoke-Expression (Get-Content -Path "./$PathToModule/$ModuleName.psd1" | Out-String))
+        foreach ($i in $($psd1.RequiredModules))
+        {
+          Install-Module -Name $($i.ModuleName) -MaximumVersion $($i.MaximumVersion) -Credential $Credential -Repository ERPGallery -AllowClobber -Force
+        }
+
+        Write-Output ("Publish-Module -Path `"$PathToModule`" -Repository `"$RepoName`" -NuGetApiKey `"$apiKeyForOutput`"")
+        Publish-Module -Path $PathToModule -Repository $RepoName -NuGetApiKey $apiKey -Credential $Credential -Force
+

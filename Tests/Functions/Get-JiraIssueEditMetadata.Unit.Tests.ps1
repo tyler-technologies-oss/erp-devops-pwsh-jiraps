@@ -33,7 +33,7 @@ Describe "Get-JiraIssueEditMetadata" -Tag 'Unit' {
         Remove-Item -Path Env:\BH*
     }
 
-    InModuleScope JiraPS {
+    InModuleScope Tyler.DevOps.JiraPS {
 
         . "$PSScriptRoot/../Shared.ps1"
 
@@ -203,7 +203,7 @@ Describe "Get-JiraIssueEditMetadata" -Tag 'Unit' {
             $jiraServer
         }
 
-        Mock Get-JiraIssue -ModuleName JiraPS {
+        Mock Get-JiraIssue -ModuleName Tyler.DevOps.JiraPS {
             [PSCustomObject] @{
                 ID      = $issueID
                 Key     = $issueKey
@@ -211,16 +211,16 @@ Describe "Get-JiraIssueEditMetadata" -Tag 'Unit' {
             }
         }
 
-        Mock ConvertTo-JiraEditMetaField -ModuleName JiraPS {
+        Mock ConvertTo-JiraEditMetaField -ModuleName Tyler.DevOps.JiraPS {
             $InputObject
         }
 
-        Mock Invoke-JiraMethod -ModuleName JiraPS -ParameterFilter {$Method -eq 'Get' -and $URI -like "*/rest/api/*/issue/$issueID/editmeta"} {
+        Mock Invoke-JiraMethod -ModuleName Tyler.DevOps.JiraPS -ParameterFilter {$Method -eq 'Get' -and $URI -like "*/rest/api/*/issue/$issueID/editmeta"} {
             ShowMockInfo 'Invoke-JiraMethod' 'Method', 'Uri'
             ConvertFrom-Json $restResult
         }
 
-        Mock Invoke-JiraMethod -ModuleName JiraPS {
+        Mock Invoke-JiraMethod -ModuleName Tyler.DevOps.JiraPS {
             ShowMockInfo 'Invoke-JiraMethod' 'Method', 'Uri'
             throw "Unidentified call to Invoke-JiraMethod"
         }
@@ -236,17 +236,17 @@ Describe "Get-JiraIssueEditMetadata" -Tag 'Unit' {
 
             It "Queries Jira for metadata information about editing an issue" {
                 { Get-JiraIssueEditMetadata -Issue $issueID } | Should Not Throw
-                Assert-MockCalled -CommandName Invoke-JiraMethod -ModuleName JiraPS -Exactly -Times 1 -Scope It
+                Assert-MockCalled -CommandName Invoke-JiraMethod -ModuleName Tyler.DevOps.JiraPS -Exactly -Times 1 -Scope It
             }
 
             It "Uses ConvertTo-JiraEditMetaField to output EditMetaField objects if JIRA returns data" {
                 { Get-JiraIssueEditMetadata -Issue $issueID } | Should Not Throw
-                Assert-MockCalled -CommandName Invoke-JiraMethod -ModuleName JiraPS -Exactly -Times 1 -Scope It
+                Assert-MockCalled -CommandName Invoke-JiraMethod -ModuleName Tyler.DevOps.JiraPS -Exactly -Times 1 -Scope It
 
                 # There are 2 example fields in our mock above, but they should
                 # be passed to Convert-JiraCreateMetaField as a single object.
                 # The method should only be called once.
-                Assert-MockCalled -CommandName ConvertTo-JiraEditMetaField -ModuleName JiraPS -Exactly -Times 1 -Scope It
+                Assert-MockCalled -CommandName ConvertTo-JiraEditMetaField -ModuleName Tyler.DevOps.JiraPS -Exactly -Times 1 -Scope It
             }
         }
     }

@@ -1,5 +1,5 @@
 function Set-JiraConfigServer {
-    # .ExternalHelp ..\JiraPS-help.xml
+    # .ExternalHelp ..\Tyler.DevOps.JiraPS-help.xml
     [CmdletBinding()]
     [System.Diagnostics.CodeAnalysis.SuppressMessage('PSUseShouldProcessForStateChangingFunctions', '')]
     param(

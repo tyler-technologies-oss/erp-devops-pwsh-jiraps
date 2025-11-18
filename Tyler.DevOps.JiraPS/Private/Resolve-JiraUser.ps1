@@ -9,13 +9,13 @@ function Resolve-JiraUser {
         [ValidateNotNullOrEmpty()]
         [ValidateScript(
             {
-                if (("JiraPS.User" -notin $_.PSObject.TypeNames) -and (($_ -isnot [String]))) {
+                if (("Tyler.DevOps.JiraPS.User" -notin $_.PSObject.TypeNames) -and (($_ -isnot [String]))) {
                     $exception = ([System.ArgumentException]"Invalid Type for Parameter") #fix code highlighting]
                     $errorId = 'ParameterType.NotJiraUser'
                     $errorCategory = 'InvalidArgument'
                     $errorTarget = $_
                     $errorItem = New-Object -TypeName System.Management.Automation.ErrorRecord $exception, $errorId, $errorCategory, $errorTarget
-                    $errorItem.ErrorDetails = "Wrong object type provided for User. Expected [JiraPS.User] or [String], but was $($_.GetType().Name)"
+                    $errorItem.ErrorDetails = "Wrong object type provided for User. Expected [Tyler.DevOps.JiraPS.User] or [String], but was $($_.GetType().Name)"
                     $PSCmdlet.ThrowTerminatingError($errorItem)
                 }
                 else {
@@ -42,9 +42,9 @@ function Resolve-JiraUser {
 
     process {
         # As we are not able to use proper type casting in the parameters, this is a workaround
-        # to extract the data from a JiraPS.Issue object
+        # to extract the data from a Tyler.DevOps.JiraPS.Issue object
         # This shall be removed once we have custom classes for the module
-        if ("JiraPS.User" -in $InputObject.PSObject.TypeNames) {
+        if ("Tyler.DevOps.JiraPS.User" -in $InputObject.PSObject.TypeNames) {
             Write-DebugMessage "[$($MyInvocation.MyCommand.Name)] Using `$InputObject as object"
             return $InputObject
         }

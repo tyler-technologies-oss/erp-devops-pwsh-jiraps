@@ -33,7 +33,7 @@ Describe "Get-JiraVersion" -Tag 'Unit' {
         Remove-Item -Path Env:\BH*
     }
 
-    InModuleScope JiraPS {
+    InModuleScope Tyler.DevOps.JiraPS {
 
         . "$PSScriptRoot/../Shared.ps1"
 
@@ -116,49 +116,49 @@ Describe "Get-JiraVersion" -Tag 'Unit' {
         #endregion Definitions
 
         #region Mocks
-        Mock Get-JiraConfigServer -ModuleName JiraPS {
+        Mock Get-JiraConfigServer -ModuleName Tyler.DevOps.JiraPS {
             Write-Output $jiraServer
         }
 
-        Mock Get-JiraProject -ModuleName JiraPS {
+        Mock Get-JiraProject -ModuleName Tyler.DevOps.JiraPS {
             $json = ConvertFrom-Json $JiraProjectData
             $object = $json | Where-Object {$_.Key -in $Project}
-            $object.PSObject.TypeNames.Insert(0, 'JiraPS.Project')
+            $object.PSObject.TypeNames.Insert(0, 'Tyler.DevOps.JiraPS.Project')
             return $object
         }
 
-        Mock ConvertTo-JiraVersion -ModuleName JiraPS {
+        Mock ConvertTo-JiraVersion -ModuleName Tyler.DevOps.JiraPS {
             $result = New-Object -TypeName PSObject -Property @{
                 Id      = $InputObject.Id
                 Name    = $InputObject.name
                 Project = $InputObject.projectId
             }
-            $result.PSObject.TypeNames.Insert(0, 'JiraPS.Version')
+            $result.PSObject.TypeNames.Insert(0, 'Tyler.DevOps.JiraPS.Version')
             $result
         }
 
-        Mock Invoke-JiraMethod -ModuleName JiraPS -ParameterFilter { $Method -eq 'Get' -and $URI -like "$jiraServer/rest/api/2/version/$versionId1" } {
+        Mock Invoke-JiraMethod -ModuleName Tyler.DevOps.JiraPS -ParameterFilter { $Method -eq 'Get' -and $URI -like "$jiraServer/rest/api/2/version/$versionId1" } {
             ShowMockInfo 'Invoke-JiraMethod' 'Method', 'Uri'
             ConvertFrom-Json $testJson1
         }
 
-        Mock Invoke-JiraMethod -ModuleName JiraPS -ParameterFilter { $Method -eq 'Get' -and $URI -like "$jiraServer/rest/api/*/version/$versionId2" } {
+        Mock Invoke-JiraMethod -ModuleName Tyler.DevOps.JiraPS -ParameterFilter { $Method -eq 'Get' -and $URI -like "$jiraServer/rest/api/*/version/$versionId2" } {
             ShowMockInfo 'Invoke-JiraMethod' 'Method', 'Uri'
             ConvertFrom-Json $testJson2
         }
 
-        Mock Invoke-JiraMethod -ModuleName JiraPS -ParameterFilter { $Method -eq 'Get' -and $URI -like "$jiraServer/rest/api/*/version" } {
+        Mock Invoke-JiraMethod -ModuleName Tyler.DevOps.JiraPS -ParameterFilter { $Method -eq 'Get' -and $URI -like "$jiraServer/rest/api/*/version" } {
             ShowMockInfo 'Invoke-JiraMethod' 'Method', 'Uri'
             ConvertFrom-Json $testJsonAll
         }
 
-        Mock Invoke-JiraMethod -ModuleName JiraPS -ParameterFilter { $Method -eq 'Get' -and $URI -like "$jiraServer/rest/api/*/project/*/version" } {
+        Mock Invoke-JiraMethod -ModuleName Tyler.DevOps.JiraPS -ParameterFilter { $Method -eq 'Get' -and $URI -like "$jiraServer/rest/api/*/project/*/version" } {
             ShowMockInfo 'Invoke-JiraMethod' 'Method', 'Uri'
             ConvertFrom-Json $testJsonAll
         }
 
         # Generic catch-all. This will throw an exception if we forgot to mock something.
-        Mock Invoke-JiraMethod -ModuleName JiraPS {
+        Mock Invoke-JiraMethod -ModuleName Tyler.DevOps.JiraPS {
             ShowMockInfo 'Invoke-JiraMethod' 'Method', 'Uri'
             throw "Unidentified call to Invoke-JiraMethod"
         }
@@ -182,7 +182,7 @@ Describe "Get-JiraVersion" -Tag 'Unit' {
 
                 $assertMockCalledSplat = @{
                     CommandName     = 'Invoke-JiraMethod'
-                    ModuleName      = 'JiraPS'
+                    ModuleName      = 'Tyler.DevOps.JiraPS'
                     ParameterFilter = {
                         $Method -eq 'Get' -and
                         $URI -like "*/rest/api/*/version/$versionID1"
@@ -195,7 +195,7 @@ Describe "Get-JiraVersion" -Tag 'Unit' {
 
                 $assertMockCalledSplat = @{
                     CommandName = 'ConvertTo-JiraVersion'
-                    ModuleName  = 'JiraPS'
+                    ModuleName  = 'Tyler.DevOps.JiraPS'
                     Scope       = 'It'
                     Exactly     = $true
                     Times       = 1
@@ -210,7 +210,7 @@ Describe "Get-JiraVersion" -Tag 'Unit' {
 
                 $assertMockCalledSplat = @{
                     CommandName     = 'Invoke-JiraMethod'
-                    ModuleName      = 'JiraPS'
+                    ModuleName      = 'Tyler.DevOps.JiraPS'
                     ParameterFilter = {
                         $Method -eq 'Get' -and
                         $URI -like "*/rest/api/*/version/$versionID1"
@@ -223,7 +223,7 @@ Describe "Get-JiraVersion" -Tag 'Unit' {
 
                 $assertMockCalledSplat = @{
                     CommandName     = 'Invoke-JiraMethod'
-                    ModuleName      = 'JiraPS'
+                    ModuleName      = 'Tyler.DevOps.JiraPS'
                     ParameterFilter = {
                         $Method -eq 'Get' -and
                         $URI -like "*/rest/api/*/version/$versionID2"
@@ -236,7 +236,7 @@ Describe "Get-JiraVersion" -Tag 'Unit' {
 
                 $assertMockCalledSplat = @{
                     CommandName = 'ConvertTo-JiraVersion'
-                    ModuleName  = 'JiraPS'
+                    ModuleName  = 'Tyler.DevOps.JiraPS'
                     Scope       = 'It'
                     Exactly     = $true
                     Times       = 2
@@ -255,7 +255,7 @@ Describe "Get-JiraVersion" -Tag 'Unit' {
 
                 $assertMockCalledSplat = @{
                     CommandName     = 'Invoke-JiraMethod'
-                    ModuleName      = 'JiraPS'
+                    ModuleName      = 'Tyler.DevOps.JiraPS'
                     ParameterFilter = {
                         $Method -eq 'Get' -and
                         $URI -like "*/rest/api/*/version/$versionID2"
@@ -268,7 +268,7 @@ Describe "Get-JiraVersion" -Tag 'Unit' {
 
                 $assertMockCalledSplat = @{
                     CommandName = 'ConvertTo-JiraVersion'
-                    ModuleName  = 'JiraPS'
+                    ModuleName  = 'Tyler.DevOps.JiraPS'
                     Scope       = 'It'
                     Exactly     = $true
                     Times       = 4
@@ -283,7 +283,7 @@ Describe "Get-JiraVersion" -Tag 'Unit' {
 
                 $assertMockCalledSplat = @{
                     CommandName     = 'Invoke-JiraMethod'
-                    ModuleName      = 'JiraPS'
+                    ModuleName      = 'Tyler.DevOps.JiraPS'
                     ParameterFilter = {
                         $Method -eq 'Get' -and
                         $URI -like "*/rest/api/*/project/$projectKey/version" -and
@@ -297,7 +297,7 @@ Describe "Get-JiraVersion" -Tag 'Unit' {
 
                 $assertMockCalledSplat = @{
                     CommandName = 'Get-JiraProject'
-                    ModuleName  = 'JiraPS'
+                    ModuleName  = 'Tyler.DevOps.JiraPS'
                     Scope       = 'It'
                     Exactly     = $true
                     Times       = 1
@@ -306,7 +306,7 @@ Describe "Get-JiraVersion" -Tag 'Unit' {
 
                 $assertMockCalledSplat = @{
                     CommandName = 'ConvertTo-JiraVersion'
-                    ModuleName  = 'JiraPS'
+                    ModuleName  = 'Tyler.DevOps.JiraPS'
                     Scope       = 'It'
                     Exactly     = $true
                     Times       = 0
@@ -321,7 +321,7 @@ Describe "Get-JiraVersion" -Tag 'Unit' {
 
                 $assertMockCalledSplat = @{
                     CommandName     = 'Invoke-JiraMethod'
-                    ModuleName      = 'JiraPS'
+                    ModuleName      = 'Tyler.DevOps.JiraPS'
                     ParameterFilter = {
                         $Method -eq 'Get' -and
                         $URI -like "*/rest/api/*/project/$projectKey/version" -and
@@ -337,7 +337,7 @@ Describe "Get-JiraVersion" -Tag 'Unit' {
                 # and once in the `Get-JiraVersion`
                 $assertMockCalledSplat = @{
                     CommandName = 'Get-JiraProject'
-                    ModuleName  = 'JiraPS'
+                    ModuleName  = 'Tyler.DevOps.JiraPS'
                     Scope       = 'It'
                     Exactly     = $true
                     Times       = 2
@@ -346,7 +346,7 @@ Describe "Get-JiraVersion" -Tag 'Unit' {
 
                 $assertMockCalledSplat = @{
                     CommandName = 'ConvertTo-JiraVersion'
-                    ModuleName  = 'JiraPS'
+                    ModuleName  = 'Tyler.DevOps.JiraPS'
                     Scope       = 'It'
                     Exactly     = $true
                     Times       = 0
@@ -361,7 +361,7 @@ Describe "Get-JiraVersion" -Tag 'Unit' {
 
                 $assertMockCalledSplat = @{
                     CommandName     = 'Invoke-JiraMethod'
-                    ModuleName      = 'JiraPS'
+                    ModuleName      = 'Tyler.DevOps.JiraPS'
                     ParameterFilter = {
                         $Method -eq 'Get' -and
                         $URI -like "*/rest/api/*/project/*/version" -and
@@ -375,7 +375,7 @@ Describe "Get-JiraVersion" -Tag 'Unit' {
 
                 $assertMockCalledSplat = @{
                     CommandName = 'Get-JiraProject'
-                    ModuleName  = 'JiraPS'
+                    ModuleName  = 'Tyler.DevOps.JiraPS'
                     Scope       = 'It'
                     Exactly     = $true
                     Times       = 2
@@ -384,7 +384,7 @@ Describe "Get-JiraVersion" -Tag 'Unit' {
 
                 $assertMockCalledSplat = @{
                     CommandName = 'ConvertTo-JiraVersion'
-                    ModuleName  = 'JiraPS'
+                    ModuleName  = 'Tyler.DevOps.JiraPS'
                     Scope       = 'It'
                     Exactly     = $true
                     Times       = 0
@@ -399,7 +399,7 @@ Describe "Get-JiraVersion" -Tag 'Unit' {
 
                 $assertMockCalledSplat = @{
                     CommandName     = 'Invoke-JiraMethod'
-                    ModuleName      = 'JiraPS'
+                    ModuleName      = 'Tyler.DevOps.JiraPS'
                     ParameterFilter = {
                         $Method -eq 'Get' -and
                         $URI -like "*/rest/api/*/project/*/version" -and
@@ -413,7 +413,7 @@ Describe "Get-JiraVersion" -Tag 'Unit' {
 
                 $assertMockCalledSplat = @{
                     CommandName = 'Get-JiraProject'
-                    ModuleName  = 'JiraPS'
+                    ModuleName  = 'Tyler.DevOps.JiraPS'
                     Scope       = 'It'
                     Exactly     = $true
                     Times       = 1
@@ -422,7 +422,7 @@ Describe "Get-JiraVersion" -Tag 'Unit' {
 
                 $assertMockCalledSplat = @{
                     CommandName = 'ConvertTo-JiraVersion'
-                    ModuleName  = 'JiraPS'
+                    ModuleName  = 'Tyler.DevOps.JiraPS'
                     Scope       = 'It'
                     Exactly     = $true
                     Times       = 0
@@ -437,7 +437,7 @@ Describe "Get-JiraVersion" -Tag 'Unit' {
 
                 $assertMockCalledSplat = @{
                     CommandName     = 'Invoke-JiraMethod'
-                    ModuleName      = 'JiraPS'
+                    ModuleName      = 'Tyler.DevOps.JiraPS'
                     ParameterFilter = {
                         $Method -eq 'Get' -and
                         $URI -like "*/rest/api/*/project/*/version" -and
@@ -451,7 +451,7 @@ Describe "Get-JiraVersion" -Tag 'Unit' {
 
                 $assertMockCalledSplat = @{
                     CommandName = 'Get-JiraProject'
-                    ModuleName  = 'JiraPS'
+                    ModuleName  = 'Tyler.DevOps.JiraPS'
                     Scope       = 'It'
                     Exactly     = $true
                     Times       = 1
@@ -460,7 +460,7 @@ Describe "Get-JiraVersion" -Tag 'Unit' {
 
                 $assertMockCalledSplat = @{
                     CommandName = 'ConvertTo-JiraVersion'
-                    ModuleName  = 'JiraPS'
+                    ModuleName  = 'Tyler.DevOps.JiraPS'
                     Scope       = 'It'
                     Exactly     = $true
                     Times       = 0
@@ -473,7 +473,7 @@ Describe "Get-JiraVersion" -Tag 'Unit' {
 
                 $assertMockCalledSplat = @{
                     CommandName     = 'Invoke-JiraMethod'
-                    ModuleName      = 'JiraPS'
+                    ModuleName      = 'Tyler.DevOps.JiraPS'
                     ParameterFilter = {
                         $Method -eq 'Get' -and
                         $URI -like '*/rest/api/*/project/*/version' -and
@@ -492,7 +492,7 @@ Describe "Get-JiraVersion" -Tag 'Unit' {
 
                 $assertMockCalledSplat = @{
                     CommandName     = 'Invoke-JiraMethod'
-                    ModuleName      = 'JiraPS'
+                    ModuleName      = 'Tyler.DevOps.JiraPS'
                     ParameterFilter = {
                         $Method -eq 'Get' -and
                         $URI -like '*/rest/api/*/project/*/version' -and

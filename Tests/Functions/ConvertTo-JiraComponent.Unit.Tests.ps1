@@ -33,7 +33,7 @@ Describe "ConvertTo-JiraComponent" -Tag 'Unit' {
         Remove-Item -Path Env:\BH*
     }
 
-    InModuleScope JiraPS {
+    InModuleScope Tyler.DevOps.JiraPS {
 
         . "$PSScriptRoot/../Shared.ps1"
 
@@ -54,9 +54,9 @@ Describe "ConvertTo-JiraComponent" -Tag 'Unit' {
             $r | Should Not BeNullOrEmpty
         }
 
-        It "Sets the type name to JiraPS.Project" {
-            # (Get-Member -InputObject $r).TypeName | Should Be 'JiraPS.Component'
-            checkType $r "JiraPS.Component"
+        It "Sets the type name to Tyler.DevOps.JiraPS.Project" {
+            # (Get-Member -InputObject $r).TypeName | Should Be 'Tyler.DevOps.JiraPS.Component'
+            checkType $r "Tyler.DevOps.JiraPS.Component"
         }
 
         defProp $r 'Id' '11000'

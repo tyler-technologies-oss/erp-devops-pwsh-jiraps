@@ -33,7 +33,7 @@ Describe "ConvertTo-JiraProject" -Tag 'Unit' {
         Remove-Item -Path Env:\BH*
     }
 
-    InModuleScope JiraPS {
+    InModuleScope Tyler.DevOps.JiraPS {
 
         . "$PSScriptRoot/../Shared.ps1"
 
@@ -95,14 +95,14 @@ Describe "ConvertTo-JiraProject" -Tag 'Unit' {
             $r | Should Not BeNullOrEmpty
         }
 
-        checkPsType $r 'JiraPS.Project'
+        checkPsType $r 'Tyler.DevOps.JiraPS.Project'
 
         defProp $r 'Id' $projectId
         defProp $r 'Key' $projectKey
         defProp $r 'Name' $projectName
         defProp $r 'RestUrl' "$jiraServer/rest/api/2/project/$projectId"
 
-        checkPsType $r.Lead 'JiraPS.User'
-        # checkPsType $r.IssueTypes 'JiraPS.IssueType'
+        checkPsType $r.Lead 'Tyler.DevOps.JiraPS.User'
+        # checkPsType $r.IssueTypes 'Tyler.DevOps.JiraPS.IssueType'
     }
 }

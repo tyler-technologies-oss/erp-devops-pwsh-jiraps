@@ -33,7 +33,7 @@ Describe "Get-JiraIssueAttachment" -Tag 'Unit' {
         Remove-Item -Path Env:\BH*
     }
 
-    InModuleScope JiraPS {
+    InModuleScope Tyler.DevOps.JiraPS {
 
         . "$PSScriptRoot/../Shared.ps1"
 
@@ -86,27 +86,27 @@ Describe "Get-JiraIssueAttachment" -Tag 'Unit' {
 ]
 "@
 
-        Mock Get-JiraIssue -ModuleName JiraPS {
+        Mock Get-JiraIssue -ModuleName Tyler.DevOps.JiraPS {
             $IssueObj = [PSCustomObject]@{
                 ID         = $issueID
                 Key        = $issueKey
                 RestUrl    = "$jiraServer/rest/api/2/issue/$issueID"
                 attachment = (ConvertFrom-Json -InputObject $attachments)
             }
-            $IssueObj.PSObject.TypeNames.Insert(0, 'JiraPS.Issue')
+            $IssueObj.PSObject.TypeNames.Insert(0, 'Tyler.DevOps.JiraPS.Issue')
             $IssueObj
         }
 
-        Mock Resolve-JiraIssueObject -ModuleName JiraPS {
+        Mock Resolve-JiraIssueObject -ModuleName Tyler.DevOps.JiraPS {
             Get-JiraIssue -Key $Issue
         }
 
-        Mock ConvertTo-JiraAttachment -ModuleName JiraPS {
+        Mock ConvertTo-JiraAttachment -ModuleName Tyler.DevOps.JiraPS {
             $InputObject
         }
 
         # Generic catch-all. This will throw an exception if we forgot to mock something.
-        Mock Invoke-JiraMethod -ModuleName JiraPS {
+        Mock Invoke-JiraMethod -ModuleName Tyler.DevOps.JiraPS {
             ShowMockInfo 'Invoke-JiraMethod' 'Method', 'Uri'
             throw "Unidentified call to Invoke-JiraMethod"
         }
@@ -117,7 +117,7 @@ Describe "Get-JiraIssueAttachment" -Tag 'Unit' {
 
         $issueObject = Get-JiraIssue -Key $issueKey
 
-        It 'only accepts String or JiraPS.Issue as input' {
+        It 'only accepts String or Tyler.DevOps.JiraPS.Issue as input' {
             { Get-JiraIssueAttachment -Issue (Get-Date) } | Should Throw
             { Get-JiraIssueAttachment -Issue (Get-ChildItem) } | Should Throw
             { Get-JiraIssueAttachment -Issue @('foo', 'bar') } | Should Not Throw

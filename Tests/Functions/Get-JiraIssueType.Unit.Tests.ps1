@@ -33,7 +33,7 @@ Describe "Get-JiraIssueType" -Tag 'Unit' {
         Remove-Item -Path Env:\BH*
     }
 
-    InModuleScope JiraPS {
+    InModuleScope Tyler.DevOps.JiraPS {
 
         . "$PSScriptRoot/../Shared.ps1"
 
@@ -111,7 +111,7 @@ Describe "Get-JiraIssueType" -Tag 'Unit' {
 ]
 "@
 
-        Mock Get-JiraConfigServer -ModuleName JiraPS {
+        Mock Get-JiraConfigServer -ModuleName Tyler.DevOps.JiraPS {
             Write-Output $jiraServer
         }
 
@@ -119,13 +119,13 @@ Describe "Get-JiraIssueType" -Tag 'Unit' {
             $inputObject
         }
 
-        Mock Invoke-JiraMethod -ModuleName JiraPS -ParameterFilter {$Method -eq 'Get' -and $Uri -eq "$jiraServer/rest/api/2/issuetype"} {
+        Mock Invoke-JiraMethod -ModuleName Tyler.DevOps.JiraPS -ParameterFilter {$Method -eq 'Get' -and $Uri -eq "$jiraServer/rest/api/2/issuetype"} {
             ShowMockInfo 'Invoke-JiraMethod' 'Method', 'Uri'
             ConvertFrom-Json $restResult
         }
 
         # Generic catch-all. This will throw an exception if we forgot to mock something.
-        Mock Invoke-JiraMethod -ModuleName JiraPS {
+        Mock Invoke-JiraMethod -ModuleName Tyler.DevOps.JiraPS {
             ShowMockInfo 'Invoke-JiraMethod' 'Method', 'Uri'
             throw "Unidentified call to Invoke-JiraMethod"
         }
@@ -134,7 +134,7 @@ Describe "Get-JiraIssueType" -Tag 'Unit' {
             $allResults = Get-JiraIssueType
             $allResults | Should Not BeNullOrEmpty
             @($allResults).Count | Should Be 8
-            Assert-MockCalled -CommandName Invoke-JiraMethod -ModuleName JiraPS -Exactly -Times 1 -Scope It
+            Assert-MockCalled -CommandName Invoke-JiraMethod -ModuleName Tyler.DevOps.JiraPS -Exactly -Times 1 -Scope It
         }
 
         It "Gets a specified issue type if an issue type ID is provided" {

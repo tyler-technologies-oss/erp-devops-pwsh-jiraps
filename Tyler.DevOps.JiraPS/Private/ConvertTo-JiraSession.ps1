@@ -21,7 +21,7 @@ function ConvertTo-JiraSession {
         }
 
         $result = New-Object -TypeName PSObject -Property $props
-        $result.PSObject.TypeNames.Insert(0, 'JiraPS.Session')
+        $result.PSObject.TypeNames.Insert(0, 'Tyler.DevOps.JiraPS.Session')
         $result | Add-Member -MemberType ScriptMethod -Name "ToString" -Force -Value {
             Write-Output "JiraSession[JSessionID=$($this.JSessionID)]"
         }

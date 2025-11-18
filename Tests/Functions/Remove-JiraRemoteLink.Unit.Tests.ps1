@@ -33,7 +33,7 @@ Describe "Remove-JiraRemoteLink" -Tag 'Unit' {
         Remove-Item -Path Env:\BH*
     }
 
-    InModuleScope JiraPS {
+    InModuleScope Tyler.DevOps.JiraPS {
 
         . "$PSScriptRoot/../Shared.ps1"
 
@@ -63,7 +63,7 @@ Describe "Remove-JiraRemoteLink" -Tag 'Unit' {
 }
 "@
 
-        Mock Get-JiraConfigServer -ModuleName JiraPS {
+        Mock Get-JiraConfigServer -ModuleName Tyler.DevOps.JiraPS {
             Write-Output $jiraServer
         }
 
@@ -72,27 +72,27 @@ Describe "Remove-JiraRemoteLink" -Tag 'Unit' {
                 'RestURL' = 'https://jira.example.com/rest/api/2/issue/12345'
                 'Key'     = $testIssueKey
             }
-            $object.PSObject.TypeNames.Insert(0, 'JiraPS.Issue')
+            $object.PSObject.TypeNames.Insert(0, 'Tyler.DevOps.JiraPS.Issue')
             return $object
         }
 
-        Mock Resolve-JiraIssueObject -ModuleName JiraPS {
+        Mock Resolve-JiraIssueObject -ModuleName Tyler.DevOps.JiraPS {
             Get-JiraIssue -Key $Issue
         }
 
         Mock Get-JiraRemoteLink {
             $object = ConvertFrom-Json $testLink
-            $object.PSObject.TypeNames.Insert(0, 'JiraPS.IssueLinkType')
+            $object.PSObject.TypeNames.Insert(0, 'Tyler.DevOps.JiraPS.IssueLinkType')
             return $object
         }
 
-        Mock Invoke-JiraMethod -ModuleName JiraPS -ParameterFilter {$Method -eq 'DELETE'} {
+        Mock Invoke-JiraMethod -ModuleName Tyler.DevOps.JiraPS -ParameterFilter {$Method -eq 'DELETE'} {
             ShowMockInfo 'Invoke-JiraMethod' 'Method', 'Uri'
             # This REST method should produce no output
         }
 
         # Generic catch-all. This will throw an exception if we forgot to mock something.
-        Mock Invoke-JiraMethod -ModuleName JiraPS {
+        Mock Invoke-JiraMethod -ModuleName Tyler.DevOps.JiraPS {
             ShowMockInfo 'Invoke-JiraMethod' 'Method', 'Uri'
             throw "Unidentified call to Invoke-JiraMethod"
         }
@@ -106,7 +106,7 @@ Describe "Remove-JiraRemoteLink" -Tag 'Unit' {
             Assert-MockCalled -CommandName Invoke-JiraMethod -Exactly -Times 1 -Scope It
         }
 
-        It "Accepts a JiraPS.Issue object to the -Issue parameter" {
+        It "Accepts a Tyler.DevOps.JiraPS.Issue object to the -Issue parameter" {
             $Issue = Get-JiraIssue $testIssueKey
             { Remove-JiraRemoteLink -Issue $Issue -LinkId 10000 -Force } | Should Not Throw
             Assert-MockCalled -CommandName Invoke-JiraMethod -Exactly -Times 1 -Scope It

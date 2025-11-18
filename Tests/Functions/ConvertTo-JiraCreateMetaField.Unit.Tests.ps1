@@ -33,7 +33,7 @@ Describe "ConvertTo-JiraCreateMetaField" -Tag 'Unit' {
         Remove-Item -Path Env:\BH*
     }
 
-    InModuleScope JiraPS {
+    InModuleScope Tyler.DevOps.JiraPS {
 
         . "$PSScriptRoot/../Shared.ps1"
 
@@ -119,7 +119,7 @@ Describe "ConvertTo-JiraCreateMetaField" -Tag 'Unit' {
             $r.Count | Should Be 2
         }
 
-        checkPsType $r[0] 'JiraPS.CreateMetaField'
+        checkPsType $r[0] 'Tyler.DevOps.JiraPS.CreateMetaField'
 
         Context "Data validation" {
             # Our sample JSON includes two fields: summary and priority.

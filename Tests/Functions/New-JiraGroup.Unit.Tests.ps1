@@ -33,7 +33,7 @@ Describe "New-JiraGroup" -Tag 'Unit' {
         Remove-Item -Path Env:\BH*
     }
 
-    InModuleScope JiraPS {
+    InModuleScope Tyler.DevOps.JiraPS {
 
         . "$PSScriptRoot/../Shared.ps1"
 
@@ -56,17 +56,17 @@ Describe "New-JiraGroup" -Tag 'Unit' {
 }
 "@
 
-        Mock Get-JiraConfigServer -ModuleName JiraPS {
+        Mock Get-JiraConfigServer -ModuleName Tyler.DevOps.JiraPS {
             Write-Output $jiraServer
         }
 
-        Mock Invoke-JiraMethod -ModuleName JiraPS -ParameterFilter {$Method -eq 'POST' -and $URI -eq "$jiraServer/rest/api/2/group"} {
+        Mock Invoke-JiraMethod -ModuleName Tyler.DevOps.JiraPS -ParameterFilter {$Method -eq 'POST' -and $URI -eq "$jiraServer/rest/api/2/group"} {
             ShowMockInfo 'Invoke-JiraMethod' 'Method', 'Uri'
             ConvertFrom-Json $testJson
         }
 
         # Generic catch-all. This will throw an exception if we forgot to mock something.
-        Mock Invoke-JiraMethod -ModuleName JiraPS {
+        Mock Invoke-JiraMethod -ModuleName Tyler.DevOps.JiraPS {
             ShowMockInfo 'Invoke-JiraMethod' 'Method', 'Uri'
             throw "Unidentified call to Invoke-JiraMethod"
         }
@@ -86,9 +86,9 @@ Describe "New-JiraGroup" -Tag 'Unit' {
             Assert-MockCalled 'ConvertTo-JiraGroup'
         }
 
-        # It "Outputs a JiraPS.Group object" {
+        # It "Outputs a Tyler.DevOps.JiraPS.Group object" {
         #     $newResult = New-JiraGroup -GroupName $testGroupName
-        #     (Get-Member -InputObject $newResult).TypeName | Should Be 'JiraPS.Group'
+        #     (Get-Member -InputObject $newResult).TypeName | Should Be 'Tyler.DevOps.JiraPS.Group'
         #     $newResult.Name | Should Be $testGroupName
         #     $newResult.RestUrl | Should Be "$jiraServer/rest/api/2/group?groupname=$testGroupName"
         # }

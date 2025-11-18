@@ -1,5 +1,5 @@
 function Get-JiraUser {
-    # .ExternalHelp ..\JiraPS-help.xml
+    # .ExternalHelp ..\Tyler.DevOps.JiraPS-help.xml
     [CmdletBinding( DefaultParameterSetName = 'Self' )]
     param(
         [Parameter( Position = 0, Mandatory, ValueFromPipelineByPropertyName, ParameterSetName = 'ByUserName' )]

@@ -1,17 +1,17 @@
 Describe 'Load Module' -Tag 'Integration' {
     # ARRANGE
-    Remove-Module JiraPS -Force -ErrorAction SilentlyContinue
+    Remove-Module Tyler.DevOps.JiraPS -Force -ErrorAction SilentlyContinue
 
     # ACT
-    Import-Module "$PSScriptRoot\..\JiraPS" -Force -ErrorAction Stop
+    Import-Module "$PSScriptRoot\..\Tyler.DevOps.JiraPS" -Force -ErrorAction Stop
 
     #ASSERT
     It "imports the module" {
-        Get-Module JiraPS | Should BeOfType [PSModuleInfo]
+        Get-Module Tyler.DevOps.JiraPS | Should BeOfType [PSModuleInfo]
     }
 }
 
-InModuleScope JiraPS {
+InModuleScope Tyler.DevOps.JiraPS {
     . "$PSScriptRoot/Shared.ps1"
 
     Describe 'Authenticating' -Tag 'Integration' {
@@ -37,7 +37,7 @@ InModuleScope JiraPS {
             # ASSERT
             It 'can authenticate with the API' {
                 $myUser | Should Not BeNullOrEmpty
-                checkType $myUser 'JiraPS.User'
+                checkType $myUser 'Tyler.DevOps.JiraPS.User'
             }
         }
 
@@ -51,10 +51,10 @@ InModuleScope JiraPS {
             It 'stored the session' {
                 $session | Should Not BeNullOrEmpty
             }
-            checkPsType $session 'JiraPS.Session'
+            checkPsType $session 'Tyler.DevOps.JiraPS.Session'
             It 'can authenticate with the API' {
                 $myUser | Should Not BeNullOrEmpty
-                checkType $myUser 'JiraPS.User'
+                checkType $myUser 'Tyler.DevOps.JiraPS.User'
             }
         }
 
@@ -76,7 +76,7 @@ InModuleScope JiraPS {
                 ReleaseDate = (Get-Date "2017-12-01")
                 StartDate   = (Get-Date "2017-01-01")
             }
-            $versionObject.PSObject.TypeNames.Insert(0, 'JiraPS.Version')
+            $versionObject.PSObject.TypeNames.Insert(0, 'Tyler.DevOps.JiraPS.Version')
             $versionParameter = [PSCustomObject]@{
                 Name        = $versionName2
                 Project     = $projectKey
@@ -99,9 +99,9 @@ InModuleScope JiraPS {
 
             # ASSERT
             It 'returns an object with specific properties' {
-                checkType $result1 'JiraPS.Version'
-                checkType $result2 'JiraPS.Version'
-                checkType $result3 'JiraPS.Version'
+                checkType $result1 'Tyler.DevOps.JiraPS.Version'
+                checkType $result2 'Tyler.DevOps.JiraPS.Version'
+                checkType $result3 'Tyler.DevOps.JiraPS.Version'
             }
             defProp $result1 'Name' $versionName1
             defProp $result2 'Name' $versionName2
@@ -113,7 +113,7 @@ InModuleScope JiraPS {
             $versionObject = [PSCustomObject]@{
                 Name = $versionName1
             }
-            $versionObject.PSObject.TypeNames.Insert(0, 'JiraPS.Version')
+            $versionObject.PSObject.TypeNames.Insert(0, 'Tyler.DevOps.JiraPS.Version')
             $versionParameter = [PSCustomObject]@{
                 Name    = $versionName2
                 Project = $projectKey
@@ -128,11 +128,11 @@ InModuleScope JiraPS {
 
             # ASSERT
             It 'returns an object with specific properties' {
-                checkType $result1 'JiraPS.Version'
-                checkType $result2 'JiraPS.Version'
-                checkType $result3 'JiraPS.Version'
-                checkType $result4 'JiraPS.Version'
-                checkType $result5 'JiraPS.Version'
+                checkType $result1 'Tyler.DevOps.JiraPS.Version'
+                checkType $result2 'Tyler.DevOps.JiraPS.Version'
+                checkType $result3 'Tyler.DevOps.JiraPS.Version'
+                checkType $result4 'Tyler.DevOps.JiraPS.Version'
+                checkType $result5 'Tyler.DevOps.JiraPS.Version'
             }
             It 'returns the expected objects' {
                 $result1.Name -contains $versionName1 | Should Be $true
@@ -164,9 +164,9 @@ InModuleScope JiraPS {
 
             # ASSERT
             It 'returns an object with specific properties' {
-                checkType $version1 'JiraPS.Version'
-                checkType $version2 'JiraPS.Version'
-                checkType $version3 'JiraPS.Version'
+                checkType $version1 'Tyler.DevOps.JiraPS.Version'
+                checkType $version2 'Tyler.DevOps.JiraPS.Version'
+                checkType $version3 'Tyler.DevOps.JiraPS.Version'
             }
             It 'changes field value by parameters' {
                 $version1 = Get-JiraVersion -Id $oldVersion1.Id
@@ -214,8 +214,8 @@ InModuleScope JiraPS {
 
             # ASSERT
             It 'returns an object with specific properties' {
-                checkType $groupObj 'JiraPS.Group'
-                checkType $groupObjs 'JiraPS.Group'
+                checkType $groupObj 'Tyler.DevOps.JiraPS.Group'
+                checkType $groupObjs 'Tyler.DevOps.JiraPS.Group'
             }
         }
 
@@ -230,8 +230,8 @@ InModuleScope JiraPS {
 
             # ASSERT
             It 'returns an object with specific properties' {
-                checkType $groupObj 'JiraPS.Group'
-                checkType $groupObjs 'JiraPS.Group'
+                checkType $groupObj 'Tyler.DevOps.JiraPS.Group'
+                checkType $groupObjs 'Tyler.DevOps.JiraPS.Group'
             }
             defProp $groupObj 'Name' $groupName
             defProp $groupObjs[0] 'Name' $collectionOfGroups[0]
@@ -251,7 +251,7 @@ InModuleScope JiraPS {
             # ARRANGE
             $user1 = @{
                 UserName     = "TUser1"
-                EmailAddress = "TUser1@JiraPS.com"
+                EmailAddress = "TUser1@Tyler.DevOps.JiraPS.com"
                 DisplayName  = "Test User #1"
             }
             $userName2 = "TUser2"
@@ -259,14 +259,14 @@ InModuleScope JiraPS {
 
             # ACT
             $userObj1 = New-JiraUser @user1 -Notify $false -ErrorAction Stop
-            $userObj2 = New-JiraUser -UserName $userName2 -EmailAddress "$userName2@JiraPS.com" -DisplayName "Test User from Collection" -Notify $false -ErrorAction Stop
-            $userObj3 = New-JiraUser -UserName $userName3 -EmailAddress "$userName3@JiraPS.com" -DisplayName "Test User from Collection" -Notify $false -ErrorAction Stop
+            $userObj2 = New-JiraUser -UserName $userName2 -EmailAddress "$userName2@Tyler.DevOps.JiraPS.com" -DisplayName "Test User from Collection" -Notify $false -ErrorAction Stop
+            $userObj3 = New-JiraUser -UserName $userName3 -EmailAddress "$userName3@Tyler.DevOps.JiraPS.com" -DisplayName "Test User from Collection" -Notify $false -ErrorAction Stop
 
             # ASSERT
             It 'returns an object with specific properties' {
-                checkType $userObj1 'JiraPS.User'
-                checkType $userObj2 'JiraPS.User'
-                checkType $userObj3 'JiraPS.User'
+                checkType $userObj1 'Tyler.DevOps.JiraPS.User'
+                checkType $userObj2 'Tyler.DevOps.JiraPS.User'
+                checkType $userObj3 'Tyler.DevOps.JiraPS.User'
             }
         }
 
@@ -274,7 +274,7 @@ InModuleScope JiraPS {
             # ARRANGE
             $user1 = @{
                 UserName     = "TUser1"
-                EmailAddress = "TUser1@JiraPS.com"
+                EmailAddress = "TUser1@Tyler.DevOps.JiraPS.com"
                 DisplayName  = "Test User #1"
             }
             $userName2 = "TUser2"
@@ -286,8 +286,8 @@ InModuleScope JiraPS {
 
             # ASSERT
             It 'returns an object with specific properties' {
-                checkType $userObj 'JiraPS.User'
-                checkType $userObjs 'JiraPS.User'
+                checkType $userObj 'Tyler.DevOps.JiraPS.User'
+                checkType $userObjs 'Tyler.DevOps.JiraPS.User'
             }
             defProp $userObj 'Name' $user["UserName"]
             defProp $userObjs[0] 'Name' $collectionOfUsers[0]
@@ -296,8 +296,8 @@ InModuleScope JiraPS {
             defProp $userObjs[0] 'DisplayName' "Test User from Collection"
             defProp $userObjs[1] 'DisplayName' "Test User from Collection"
             defProp $userObj 'EmailAddress' $user["EmailAddress"]
-            defProp $userObjs[0] 'EmailAddress' "$($collectionOfUsers[0])@JiraPS.com"
-            defProp $userObjs[1] 'EmailAddress' "$($collectionOfUsers[1])@JiraPS.com"
+            defProp $userObjs[0] 'EmailAddress' "$($collectionOfUsers[0])@Tyler.DevOps.JiraPS.com"
+            defProp $userObjs[1] 'EmailAddress' "$($collectionOfUsers[1])@Tyler.DevOps.JiraPS.com"
             defProp $userObjs[1] 'Name' $collectionOfUsers[1]
             defProp $userObj 'Active' $true
             defProp $userObjs[0] 'Active' $true
@@ -329,7 +329,7 @@ InModuleScope JiraPS {
 
             # ASSERT
             It 'returns an object with specific properties' {
-                checkType $result1 'JiraPS.Group'
+                checkType $result1 'Tyler.DevOps.JiraPS.Group'
                 $result2 | Should BeNullOrEmpty
             }
 
@@ -344,10 +344,10 @@ InModuleScope JiraPS {
                 $resultUser2 = Get-JiraUser $userName2 -ErrorAction Stop
                 $resultGroup1 = Get-JiraGroup $group1
                 $resultGroup2 = Get-JiraGroup $groupName2
-                checkType $resultUser1 'JiraPS.User'
-                checkType $resultUser2 'JiraPS.User'
-                checkType $resultGroup1 'JiraPS.Group'
-                checkType $resultGroup2 'JiraPS.Group'
+                checkType $resultUser1 'Tyler.DevOps.JiraPS.User'
+                checkType $resultUser2 'Tyler.DevOps.JiraPS.User'
+                checkType $resultGroup1 'Tyler.DevOps.JiraPS.Group'
+                checkType $resultGroup2 'Tyler.DevOps.JiraPS.Group'
                 hasNotProp $resultUser1 'Group'
                 hasNotProp $resultUser2 'Group'
                 defProp $resultGroup1 'Size' 2

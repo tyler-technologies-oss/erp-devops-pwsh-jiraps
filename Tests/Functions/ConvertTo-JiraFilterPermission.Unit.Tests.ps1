@@ -33,7 +33,7 @@ Describe "ConvertTo-JiraFilterPermission" -Tag 'Unit' {
         Remove-Item -Path Env:\BH*
     }
 
-    InModuleScope JiraPS {
+    InModuleScope Tyler.DevOps.JiraPS {
 
         . "$PSScriptRoot/../Shared.ps1"
 
@@ -127,21 +127,21 @@ Describe "ConvertTo-JiraFilterPermission" -Tag 'Unit' {
             $r | Should -Not -BeNullOrEmpty
         }
 
-        checkPsType $r 'JiraPS.FilterPermission'
+        checkPsType $r 'Tyler.DevOps.JiraPS.FilterPermission'
 
         defProp $r 'Id' @(10000, 10010, 10010, 10010)
         defProp $r 'Type' @('global', 'project', 'project', 'group')
-        It "Defines the 'Group' property of type 'JiraPS.Group'" {
-            checkType $r[3].Group 'JiraPS.Group'
+        It "Defines the 'Group' property of type 'Tyler.DevOps.JiraPS.Group'" {
+            checkType $r[3].Group 'Tyler.DevOps.JiraPS.Group'
             $r.Group.Name | Should -Be 'jira-administrators'
         }
-        It "Defines the 'Project' property of type 'JiraPS.Project'" {
-            checkType $r[1].Project 'JiraPS.Project'
+        It "Defines the 'Project' property of type 'Tyler.DevOps.JiraPS.Project'" {
+            checkType $r[1].Project 'Tyler.DevOps.JiraPS.Project'
             $r.Project.Name | Should -Be @('Example', 'Example')
         }
 
-        It "Defines the 'Role' property of type 'JiraPS.ProjectRole'" {
-            checkType $r[2].Role 'JiraPS.ProjectRole'
+        It "Defines the 'Role' property of type 'Tyler.DevOps.JiraPS.ProjectRole'" {
+            checkType $r[2].Role 'Tyler.DevOps.JiraPS.ProjectRole'
             $r.Role.Name | Should -Be 'Developers'
         }
     }

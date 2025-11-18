@@ -1,5 +1,5 @@
 function Get-JiraVersion {
-    # .ExternalHelp ..\JiraPS-help.xml
+    # .ExternalHelp ..\Tyler.DevOps.JiraPS-help.xml
     [CmdletBinding( SupportsPaging, DefaultParameterSetName = 'byId' )]
     param(
         [Parameter( Mandatory, ParameterSetName = 'byId' )]
@@ -7,7 +7,7 @@ function Get-JiraVersion {
         $Id,
 
         [Parameter( Position = 0, Mandatory, ValueFromPipeline, ParameterSetName = 'byInputVersion' )]
-        [PSTypeName('JiraPS.Version')]
+        [PSTypeName('Tyler.DevOps.JiraPS.Version')]
         $InputVersion,
 
         [Parameter( Position = 0, Mandatory , ParameterSetName = 'byProject' )]
@@ -16,7 +16,7 @@ function Get-JiraVersion {
         $Project,
 
         [Parameter( Position = 0, Mandatory, ValueFromPipeline, ParameterSetName = 'byInputProject' )]
-        [PSTypeName('JiraPS.Project')]
+        [PSTypeName('Tyler.DevOps.JiraPS.Project')]
         $InputProject,
 
         [Parameter( ParameterSetName = 'byProject' )]

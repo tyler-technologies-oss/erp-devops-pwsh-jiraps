@@ -34,7 +34,7 @@ function ConvertTo-JiraComment {
             }
 
             $result = New-Object -TypeName PSObject -Property $props
-            $result.PSObject.TypeNames.Insert(0, 'JiraPS.Comment')
+            $result.PSObject.TypeNames.Insert(0, 'Tyler.DevOps.JiraPS.Comment')
             $result | Add-Member -MemberType ScriptMethod -Name "ToString" -Force -Value {
                 Write-Output "$($this.Body)"
             }

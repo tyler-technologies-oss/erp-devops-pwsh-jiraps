@@ -1,5 +1,5 @@
 function Get-JiraFilter {
-    # .ExternalHelp ..\JiraPS-help.xml
+    # .ExternalHelp ..\Tyler.DevOps.JiraPS-help.xml
     [CmdletBinding(DefaultParameterSetName = 'ByFilterID')]
     param(
         [Parameter( Position = 0, Mandatory, ParameterSetName = 'ByFilterID' )]
@@ -16,13 +16,13 @@ function Get-JiraFilter {
         [ValidateNotNullOrEmpty()]
         [ValidateScript(
             {
-                if (("JiraPS.Filter" -notin $_.PSObject.TypeNames) -and (($_ -isnot [String]))) {
+                if (("Tyler.DevOps.JiraPS.Filter" -notin $_.PSObject.TypeNames) -and (($_ -isnot [String]))) {
                     $exception = ([System.ArgumentException]"Invalid Type for Parameter") #fix code highlighting]
                     $errorId = 'ParameterType.NotJiraFilter'
                     $errorCategory = 'InvalidArgument'
                     $errorTarget = $_
                     $errorItem = New-Object -TypeName System.Management.Automation.ErrorRecord $exception, $errorId, $errorCategory, $errorTarget
-                    $errorItem.ErrorDetails = "Wrong object type provided for Filter. Expected [JiraPS.Filter] or [String], but was $($_.GetType().Name)"
+                    $errorItem.ErrorDetails = "Wrong object type provided for Filter. Expected [Tyler.DevOps.JiraPS.Filter] or [String], but was $($_.GetType().Name)"
                     $PSCmdlet.ThrowTerminatingError($errorItem)
                     <#
                       #ToDo:CustomClass
@@ -87,7 +87,7 @@ function Get-JiraFilter {
                     Write-Verbose "[$($MyInvocation.MyCommand.Name)] Processing [$object]"
                     Write-Debug "[$($MyInvocation.MyCommand.Name)] Processing `$object [$object]"
 
-                    if ((Get-Member -InputObject $object).TypeName -eq 'JiraPS.Filter') {
+                    if ((Get-Member -InputObject $object).TypeName -eq 'Tyler.DevOps.JiraPS.Filter') {
                         $thisId = $object.ID
                     }
                     else {

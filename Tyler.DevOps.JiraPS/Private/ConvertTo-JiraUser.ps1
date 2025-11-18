@@ -29,7 +29,7 @@ function ConvertTo-JiraUser {
             }
 
             $result = New-Object -TypeName PSObject -Property $props
-            $result.PSObject.TypeNames.Insert(0, 'JiraPS.User')
+            $result.PSObject.TypeNames.Insert(0, 'Tyler.DevOps.JiraPS.User')
             $result | Add-Member -MemberType ScriptMethod -Name "ToString" -Force -Value {
                 Write-Output "$($this.Name)"
             }

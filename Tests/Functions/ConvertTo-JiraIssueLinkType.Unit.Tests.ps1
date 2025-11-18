@@ -33,7 +33,7 @@ Describe "ConvertTo-JiraIssueLinkType" -Tag 'Unit' {
         Remove-Item -Path Env:\BH*
     }
 
-    InModuleScope JiraPS {
+    InModuleScope Tyler.DevOps.JiraPS {
 
         . "$PSScriptRoot/../Shared.ps1"
 
@@ -81,7 +81,7 @@ Describe "ConvertTo-JiraIssueLinkType" -Tag 'Unit' {
             $r | Should Not BeNullOrEmpty
         }
 
-        checkPsType $r 'JiraPS.IssueLinkType'
+        checkPsType $r 'Tyler.DevOps.JiraPS.IssueLinkType'
 
         defProp $r 'Id' '10000'
         defProp $r 'Name' 'Blocks'

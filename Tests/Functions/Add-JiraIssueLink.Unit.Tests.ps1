@@ -33,7 +33,7 @@ Describe 'Add-JiraIssueLink' -Tag 'Unit' {
         Remove-Item -Path Env:\BH*
     }
 
-    InModuleScope JiraPS {
+    InModuleScope Tyler.DevOps.JiraPS {
 
         . "$PSScriptRoot/../Shared.ps1"
 
@@ -45,7 +45,7 @@ Describe 'Add-JiraIssueLink' -Tag 'Unit' {
             type         = [PSCustomObject]@{name = "Composition"}
         }
 
-        Mock Get-JiraConfigServer -ModuleName JiraPS {
+        Mock Get-JiraConfigServer -ModuleName Tyler.DevOps.JiraPS {
             Write-Output $jiraServer
         }
 
@@ -53,16 +53,16 @@ Describe 'Add-JiraIssueLink' -Tag 'Unit' {
             $object = [PSCustomObject]@{
                 Key = $issueKey
             }
-            $object.PSObject.TypeNames.Insert(0, 'JiraPS.Issue')
+            $object.PSObject.TypeNames.Insert(0, 'Tyler.DevOps.JiraPS.Issue')
             return $object
         }
 
-        Mock Resolve-JiraIssueObject -ModuleName JiraPS {
+        Mock Resolve-JiraIssueObject -ModuleName Tyler.DevOps.JiraPS {
             Get-JiraIssue -Key $Issue
         }
 
         # Generic catch-all. This will throw an exception if we forgot to mock something.
-        Mock Invoke-JiraMethod -ModuleName JiraPS {
+        Mock Invoke-JiraMethod -ModuleName Tyler.DevOps.JiraPS {
             ShowMockInfo 'Invoke-JiraMethod' 'Method', 'Uri'
             throw "Unidentified call to Invoke-JiraMethod"
         }
@@ -90,7 +90,7 @@ Describe 'Add-JiraIssueLink' -Tag 'Unit' {
             It 'Adds a new IssueLink' {
                 { Add-JiraIssueLink -Issue $issueKey -IssueLink $issueLink } | Should Not Throw
 
-                Assert-MockCalled -CommandName Invoke-JiraMethod -ModuleName JiraPS -Exactly -Times 1 -Scope It
+                Assert-MockCalled -CommandName Invoke-JiraMethod -ModuleName Tyler.DevOps.JiraPS -Exactly -Times 1 -Scope It
             }
 
             It 'Validates the IssueType provided' {

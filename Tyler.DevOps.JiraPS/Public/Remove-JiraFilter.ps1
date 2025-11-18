@@ -1,10 +1,10 @@
 function Remove-JiraFilter {
-    # .ExternalHelp ..\JiraPS-help.xml
+    # .ExternalHelp ..\Tyler.DevOps.JiraPS-help.xml
     [CmdletBinding( ConfirmImpact = "Medium", SupportsShouldProcess, DefaultParameterSetName = 'ByInputObject' )]
     param(
         [Parameter( Position = 0, Mandatory, ValueFromPipeline, ParameterSetName = 'ByInputObject' )]
         [ValidateNotNullOrEmpty()]
-        [PSTypeName('JiraPS.Filter')]
+        [PSTypeName('Tyler.DevOps.JiraPS.Filter')]
         $InputObject,
 
         [Parameter( Position = 0, Mandatory, ValueFromPipeline, ParameterSetName = 'ById')]

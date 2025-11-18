@@ -33,7 +33,7 @@ Describe "Get-JiraIssueCreateMetadata" -Tag 'Unit' {
         Remove-Item -Path Env:\BH*
     }
 
-    InModuleScope JiraPS {
+    InModuleScope Tyler.DevOps.JiraPS {
 
         . "$PSScriptRoot/../Shared.ps1"
 
@@ -217,31 +217,31 @@ Describe "Get-JiraIssueCreateMetadata" -Tag 'Unit' {
             $jiraserver
         }
 
-        Mock Get-JiraProject -ModuleName JiraPS {
+        Mock Get-JiraProject -ModuleName Tyler.DevOps.JiraPS {
             $issueObject = [PSCustomObject] @{
                 ID   = 2
                 Name = 'Test Issue Type'
             }
-            $issueObject.PSObject.TypeNames.Insert(0, 'JiraPS.IssueType')
+            $issueObject.PSObject.TypeNames.Insert(0, 'Tyler.DevOps.JiraPS.IssueType')
             $object = [PSCustomObject] @{
                 ID   = 10003
                 Name = 'Test Project'
             }
             Add-Member -InputObject $object -MemberType NoteProperty -Name "IssueTypes" -Value $issueObject
-            $object.PSObject.TypeNames.Insert(0, 'JiraPS.Project')
+            $object.PSObject.TypeNames.Insert(0, 'Tyler.DevOps.JiraPS.Project')
             return $object
         }
 
-        Mock ConvertTo-JiraCreateMetaField -ModuleName JiraPS {
+        Mock ConvertTo-JiraCreateMetaField -ModuleName Tyler.DevOps.JiraPS {
             $InputObject
         }
 
-        Mock Invoke-JiraMethod -ModuleName JiraPS -ParameterFilter {$Method -eq 'Get' -and $URI -like "$jiraserver/rest/api/*/issue/createmeta?*"} {
+        Mock Invoke-JiraMethod -ModuleName Tyler.DevOps.JiraPS -ParameterFilter {$Method -eq 'Get' -and $URI -like "$jiraserver/rest/api/*/issue/createmeta?*"} {
             ShowMockInfo 'Invoke-JiraMethod' 'Method', 'Uri'
             return $restResult
         }
 
-        Mock Invoke-JiraMethod -ModuleName JiraPS {
+        Mock Invoke-JiraMethod -ModuleName Tyler.DevOps.JiraPS {
             ShowMockInfo 'Invoke-JiraMethod' 'Method', 'Uri'
             throw "Unidentified call to Invoke-JiraMethod"
         }
@@ -258,17 +258,17 @@ Describe "Get-JiraIssueCreateMetadata" -Tag 'Unit' {
 
             It "Queries Jira for metadata information about creating an issue" {
                 { Get-JiraIssueCreateMetadata -Project 10003 -IssueType 2 } | Should Not Throw
-                Assert-MockCalled -CommandName Invoke-JiraMethod -ModuleName JiraPS -Exactly -Times 1 -Scope It
+                Assert-MockCalled -CommandName Invoke-JiraMethod -ModuleName Tyler.DevOps.JiraPS -Exactly -Times 1 -Scope It
             }
 
             It "Uses ConvertTo-JiraCreateMetaField to output CreateMetaField objects if JIRA returns data" {
                 { Get-JiraIssueCreateMetadata -Project 10003 -IssueType 2 } | Should Not Throw
-                Assert-MockCalled -CommandName Invoke-JiraMethod -ModuleName JiraPS -Exactly -Times 1 -Scope It
+                Assert-MockCalled -CommandName Invoke-JiraMethod -ModuleName Tyler.DevOps.JiraPS -Exactly -Times 1 -Scope It
 
                 # There are 2 example fields in our mock above, but they should
                 # be passed to Convert-JiraCreateMetaField as a single object.
                 # The method should only be called once.
-                Assert-MockCalled -CommandName ConvertTo-JiraCreateMetaField -ModuleName JiraPS -Exactly -Times 1 -Scope It
+                Assert-MockCalled -CommandName ConvertTo-JiraCreateMetaField -ModuleName Tyler.DevOps.JiraPS -Exactly -Times 1 -Scope It
             }
         }
     }

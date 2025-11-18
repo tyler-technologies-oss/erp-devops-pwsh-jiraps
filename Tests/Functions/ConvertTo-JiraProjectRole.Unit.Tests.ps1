@@ -33,7 +33,7 @@ Describe "ConvertTo-JiraProjectRole" -Tag 'Unit' {
         Remove-Item -Path Env:\BH*
     }
 
-    InModuleScope JiraPS {
+    InModuleScope Tyler.DevOps.JiraPS {
 
         . "$PSScriptRoot/../Shared.ps1"
 
@@ -69,7 +69,7 @@ Describe "ConvertTo-JiraProjectRole" -Tag 'Unit' {
             $r | Should -Not -BeNullOrEmpty
         }
 
-        checkPsType $r 'JiraPS.ProjectRole'
+        checkPsType $r 'Tyler.DevOps.JiraPS.ProjectRole'
 
         defProp $r 'Id' 10360
         defProp $r 'Name' "Developers"

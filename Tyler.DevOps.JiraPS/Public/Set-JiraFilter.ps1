@@ -1,10 +1,10 @@
 function Set-JiraFilter {
-    # .ExternalHelp ..\JiraPS-help.xml
+    # .ExternalHelp ..\Tyler.DevOps.JiraPS-help.xml
     [CmdletBinding( SupportsShouldProcess )]
     param(
         [Parameter( Mandatory, ValueFromPipeline )]
         [ValidateNotNullOrEmpty()]
-        [PSTypeName('JiraPS.Filter')]
+        [PSTypeName('Tyler.DevOps.JiraPS.Filter')]
         $InputObject,
 
         [Parameter()]

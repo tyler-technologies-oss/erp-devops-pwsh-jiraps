@@ -33,7 +33,7 @@ Describe "ConvertTo-JiraLink" -Tag 'Unit' {
         Remove-Item -Path Env:\BH*
     }
 
-    InModuleScope JiraPS {
+    InModuleScope Tyler.DevOps.JiraPS {
 
         . "$PSScriptRoot/../Shared.ps1"
 
@@ -77,7 +77,7 @@ Describe "ConvertTo-JiraLink" -Tag 'Unit' {
             $r | Should Not BeNullOrEmpty
         }
 
-        checkPsType $r 'JiraPS.Link'
+        checkPsType $r 'Tyler.DevOps.JiraPS.Link'
 
         defProp $r 'id' $LinkId
         defProp $r 'RestUrl' "$jiraServer/rest/api/issue/MKY-1/remotelink/10000"

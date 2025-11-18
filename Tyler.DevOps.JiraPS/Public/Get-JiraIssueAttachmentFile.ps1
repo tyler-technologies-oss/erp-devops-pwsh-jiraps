@@ -1,10 +1,10 @@
 function Get-JiraIssueAttachmentFile {
-    # .ExternalHelp ..\JiraPS-help.xml
+    # .ExternalHelp ..\Tyler.DevOps.JiraPS-help.xml
     [CmdletBinding()]
     [OutputType([Bool])]
     param (
         [Parameter( Mandatory, ValueFromPipeline )]
-        [PSTypeName('JiraPS.Attachment')]
+        [PSTypeName('Tyler.DevOps.JiraPS.Attachment')]
         $Attachment,
 
         [ValidateScript(

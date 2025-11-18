@@ -1,18 +1,18 @@
 function Invoke-JiraIssueTransition {
-    # .ExternalHelp ..\JiraPS-help.xml
+    # .ExternalHelp ..\Tyler.DevOps.JiraPS-help.xml
     [CmdletBinding()]
     param(
         [Parameter( Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName )]
         [ValidateNotNullOrEmpty()]
         [ValidateScript(
             {
-                if (("JiraPS.Issue" -notin $_.PSObject.TypeNames) -and (($_ -isnot [String]))) {
+                if (("Tyler.DevOps.JiraPS.Issue" -notin $_.PSObject.TypeNames) -and (($_ -isnot [String]))) {
                     $exception = ([System.ArgumentException]"Invalid Type for Parameter") #fix code highlighting]
                     $errorId = 'ParameterType.NotJiraIssue'
                     $errorCategory = 'InvalidArgument'
                     $errorTarget = $_
                     $errorItem = New-Object -TypeName System.Management.Automation.ErrorRecord $exception, $errorId, $errorCategory, $errorTarget
-                    $errorItem.ErrorDetails = "Wrong object type provided for Issue. Expected [JiraPS.Issue] or [String], but was $($_.GetType().Name)"
+                    $errorItem.ErrorDetails = "Wrong object type provided for Issue. Expected [Tyler.DevOps.JiraPS.Issue] or [String], but was $($_.GetType().Name)"
                     $PSCmdlet.ThrowTerminatingError($errorItem)
                     <#
                       #ToDo:CustomClass
@@ -64,8 +64,8 @@ function Invoke-JiraIssueTransition {
         # Find the proper object for the Issue
         $issueObj = Resolve-JiraIssueObject -InputObject $Issue -Credential $Credential
 
-        if ("JiraPS.Transition" -in $Transition.PSObject.TypeNames) {
-            Write-DebugMessage "[$($MyInvocation.MyCommand.Name)] Transition parameter is a JiraPS.Transition object"
+        if ("Tyler.DevOps.JiraPS.Transition" -in $Transition.PSObject.TypeNames) {
+            Write-DebugMessage "[$($MyInvocation.MyCommand.Name)] Transition parameter is a Tyler.DevOps.JiraPS.Transition object"
             $transitionId = $Transition.Id
         }
         else {
@@ -79,7 +79,7 @@ function Invoke-JiraIssueTransition {
                 $errorCategory = 'InvalidArgument'
                 $errorTarget = $Transition
                 $errorItem = New-Object -TypeName System.Management.Automation.ErrorRecord $exception, $errorId, $errorCategory, $errorTargetError
-                $errorItem.ErrorDetails = "Wrong object type provided for Transition. Expected [JiraPS.Transition] or [Int], but was $($Transition.GetType().Name)"
+                $errorItem.ErrorDetails = "Wrong object type provided for Transition. Expected [Tyler.DevOps.JiraPS.Transition] or [Int], but was $($Transition.GetType().Name)"
                 $PSCmdlet.ThrowTerminatingError($errorItem)
             }
         }

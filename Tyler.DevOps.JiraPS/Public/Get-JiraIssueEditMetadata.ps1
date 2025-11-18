@@ -1,5 +1,5 @@
 function Get-JiraIssueEditMetadata {
-    # .ExternalHelp ..\JiraPS-help.xml
+    # .ExternalHelp ..\Tyler.DevOps.JiraPS-help.xml
     [System.Diagnostics.CodeAnalysis.SuppressMessage('PSUseSingularNouns', '')]
     [CmdletBinding()]
     param(
@@ -8,7 +8,7 @@ function Get-JiraIssueEditMetadata {
         $Issue,
         <#
           #ToDo:CustomClass
-          Once we have custom classes, this should be a JiraPS.Issue
+          Once we have custom classes, this should be a Tyler.DevOps.JiraPS.Issue
         #>
 
         [Parameter()]
@@ -37,7 +37,7 @@ function Get-JiraIssueEditMetadata {
             URI        = $resourceURi -f $Issue
             <#
               #ToDo:CustomClass
-              When the Input is typecasted to a JiraPS.Issue, the `self` of the issue can be used
+              When the Input is typecasted to a Tyler.DevOps.JiraPS.Issue, the `self` of the issue can be used
             #>
             Method     = "GET"
             Credential = $Credential

@@ -33,7 +33,7 @@ Describe "Get-JiraServerInformation" -Tag 'Unit' {
         Remove-Item -Path Env:\BH*
     }
 
-    InModuleScope JiraPS {
+    InModuleScope Tyler.DevOps.JiraPS {
 
         . "$PSScriptRoot/../Shared.ps1"
 
@@ -52,17 +52,17 @@ Describe "Get-JiraServerInformation" -Tag 'Unit' {
     "serverTitle":"JIRA"
 }
 "@
-        Mock Get-JiraConfigServer -ModuleName JiraPS {
+        Mock Get-JiraConfigServer -ModuleName Tyler.DevOps.JiraPS {
             Write-Output $jiraServer
         }
 
-        Mock Invoke-JiraMethod -ModuleName JiraPS -ParameterFilter {$Method -eq 'Get' -and $URI -eq "$jiraServer/rest/api/2/serverInfo"} {
+        Mock Invoke-JiraMethod -ModuleName Tyler.DevOps.JiraPS -ParameterFilter {$Method -eq 'Get' -and $URI -eq "$jiraServer/rest/api/2/serverInfo"} {
             ShowMockInfo 'Invoke-JiraMethod' 'Method', 'Uri'
             ConvertFrom-Json $restResult
         }
 
         # Generic catch-all. This will throw an exception if we forgot to mock something.
-        Mock Invoke-JiraMethod -ModuleName JiraPS {
+        Mock Invoke-JiraMethod -ModuleName Tyler.DevOps.JiraPS {
             ShowMockInfo 'Invoke-JiraMethod' 'Method', 'Uri'
             throw "Unidentified call to Invoke-JiraMethod"
         }
@@ -80,7 +80,7 @@ Describe "Get-JiraServerInformation" -Tag 'Unit' {
         It "Answers to the alias 'Get-JiraServerInfo'" {
             $thisAlias = (Get-Alias -Name "Get-JiraServerInfo")
             $thisAlias.ResolvedCommandName | Should Be "Get-JiraServerInformation"
-            $thisAlias.ModuleName | Should Be "JiraPS"
+            $thisAlias.ModuleName | Should Be "Tyler.DevOps.JiraPS"
         }
     }
 }

@@ -1,5 +1,5 @@
 function Remove-JiraIssueLink {
-    # .ExternalHelp ..\JiraPS-help.xml
+    # .ExternalHelp ..\Tyler.DevOps.JiraPS-help.xml
     [CmdletBinding( SupportsShouldProcess, ConfirmImpact = 'Medium' )]
     param(
         [Parameter( Mandatory, ValueFromPipeline )]
@@ -9,15 +9,15 @@ function Remove-JiraIssueLink {
                 $_input = $_
                 $objectProperties = $_input | Get-Member -MemberType *Property
                 switch ($true) {
-                    { ("JiraPS.Issue" -in $_input.PSObject.TypeNames) -and ("issueLinks" -in $objectProperties.Name) } { return $true }
-                    { ("JiraPS.IssueLink" -in $_input.PSObject.TypeNames) -and ("Id" -in $objectProperties.Name) } { return $true }
+                    { ("Tyler.DevOps.JiraPS.Issue" -in $_input.PSObject.TypeNames) -and ("issueLinks" -in $objectProperties.Name) } { return $true }
+                    { ("Tyler.DevOps.JiraPS.IssueLink" -in $_input.PSObject.TypeNames) -and ("Id" -in $objectProperties.Name) } { return $true }
                     default {
                         $exception = ([System.ArgumentException]"Invalid Type for Parameter") #fix code highlighting]
                         $errorId = 'ParameterType.NotJiraIssue'
                         $errorCategory = 'InvalidArgument'
                         $errorTarget = $_input
                         $errorItem = New-Object -TypeName System.Management.Automation.ErrorRecord $exception, $errorId, $errorCategory, $errorTarget
-                        $errorItem.ErrorDetails = "Wrong object type provided for Issue. Expected [JiraPS.Issue], [JiraPS.IssueLink] or [String], but was $($_input.GetType().Name)"
+                        $errorItem.ErrorDetails = "Wrong object type provided for Issue. Expected [Tyler.DevOps.JiraPS.Issue], [Tyler.DevOps.JiraPS.IssueLink] or [String], but was $($_input.GetType().Name)"
                         $PSCmdlet.ThrowTerminatingError($errorItem)
                         <#
                           #ToDo:CustomClass
@@ -53,7 +53,7 @@ function Remove-JiraIssueLink {
         Write-DebugMessage "[$($MyInvocation.MyCommand.Name)] PSBoundParameters: $($PSBoundParameters | Out-String)"
 
         # As we are not able to use proper type casting in the parameters, this is a workaround
-        # to extract the data from a JiraPS.Issue object
+        # to extract the data from a Tyler.DevOps.JiraPS.Issue object
         <#
           #ToDo:CustomClass
           Once we have custom classes, this will no longer be necessary

@@ -1,18 +1,18 @@
 function Remove-JiraVersion {
-    # .ExternalHelp ..\JiraPS-help.xml
+    # .ExternalHelp ..\Tyler.DevOps.JiraPS-help.xml
     [CmdletBinding( ConfirmImpact = 'High', SupportsShouldProcess )]
     param(
         [Parameter( Mandatory, ValueFromPipeline )]
         [ValidateNotNullOrEmpty()]
         [ValidateScript(
             {
-                if (("JiraPS.Version" -notin $_.PSObject.TypeNames) -and (($_ -isnot [Int]))) {
+                if (("Tyler.DevOps.JiraPS.Version" -notin $_.PSObject.TypeNames) -and (($_ -isnot [Int]))) {
                     $exception = ([System.ArgumentException]"Invalid Type for Parameter") #fix code highlighting]
                     $errorId = 'ParameterType.NotJiraVersion'
                     $errorCategory = 'InvalidArgument'
                     $errorTarget = $_
                     $errorItem = New-Object -TypeName System.Management.Automation.ErrorRecord $exception, $errorId, $errorCategory, $errorTarget
-                    $errorItem.ErrorDetails = "Wrong object type provided for Version. Expected [JiraPS.Version] or [Int], but was $($_.GetType().Name)"
+                    $errorItem.ErrorDetails = "Wrong object type provided for Version. Expected [Tyler.DevOps.JiraPS.Version] or [Int], but was $($_.GetType().Name)"
                     $PSCmdlet.ThrowTerminatingError($errorItem)
                     <#
                       #ToDo:CustomClass

@@ -33,7 +33,7 @@ Describe "ConvertTo-JiraPriority" -Tag 'Unit' {
         Remove-Item -Path Env:\BH*
     }
 
-    InModuleScope JiraPS {
+    InModuleScope Tyler.DevOps.JiraPS {
 
         . "$PSScriptRoot/../Shared.ps1"
 
@@ -60,7 +60,7 @@ Describe "ConvertTo-JiraPriority" -Tag 'Unit' {
             $r | Should Not BeNullOrEmpty
         }
 
-        checkPsType $r 'JiraPS.Priority'
+        checkPsType $r 'Tyler.DevOps.JiraPS.Priority'
 
         defProp $r 'Id' $priorityId
         defProp $r 'Name' $priorityName

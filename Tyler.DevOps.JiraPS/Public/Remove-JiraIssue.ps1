@@ -1,5 +1,5 @@
 function Remove-JiraIssue {
-    # .ExternalHelp ..\JiraPS-help.xml
+    # .ExternalHelp ..\Tyler.DevOps.JiraPS-help.xml
     [CmdletBinding(
         ConfirmImpact = 'High',
         SupportsShouldProcess,
@@ -15,7 +15,7 @@ function Remove-JiraIssue {
         [Alias(
             "Issue"
         )]
-        [PSTypeName("JiraPS.Issue")]
+        [PSTypeName("Tyler.DevOps.JiraPS.Issue")]
         [Object[]]
         $InputObject,
 

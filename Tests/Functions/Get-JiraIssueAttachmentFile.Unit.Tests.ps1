@@ -33,7 +33,7 @@ Describe "Get-JiraIssueAttachmentFile" -Tag 'Unit' {
         Remove-Item -Path Env:\BH*
     }
 
-    InModuleScope JiraPS {
+    InModuleScope Tyler.DevOps.JiraPS {
 
         . "$PSScriptRoot/../Shared.ps1"
 
@@ -86,14 +86,14 @@ Describe "Get-JiraIssueAttachmentFile" -Tag 'Unit' {
 ]
 "@
 
-        Mock Get-JiraIssueAttachment -ModuleName JiraPS {
+        Mock Get-JiraIssueAttachment -ModuleName Tyler.DevOps.JiraPS {
             $object = ConvertFrom-Json -InputObject $attachments
-            $object[0].PSObject.TypeNames.Insert(0, 'JiraPS.Attachment')
-            $object[1].PSObject.TypeNames.Insert(0, 'JiraPS.Attachment')
+            $object[0].PSObject.TypeNames.Insert(0, 'Tyler.DevOps.JiraPS.Attachment')
+            $object[1].PSObject.TypeNames.Insert(0, 'Tyler.DevOps.JiraPS.Attachment')
             $object
         }
 
-        Mock Invoke-JiraMethod -ModuleName JiraPS -ParameterFilter {
+        Mock Invoke-JiraMethod -ModuleName Tyler.DevOps.JiraPS -ParameterFilter {
             $Method -eq 'Get' -and
             $URI -like "$jiraServer/secure/attachment/*"
         } {
@@ -101,7 +101,7 @@ Describe "Get-JiraIssueAttachmentFile" -Tag 'Unit' {
         }
 
         # Generic catch-all. This will throw an exception if we forgot to mock something.
-        Mock Invoke-JiraMethod -ModuleName JiraPS {
+        Mock Invoke-JiraMethod -ModuleName Tyler.DevOps.JiraPS {
             ShowMockInfo 'Invoke-JiraMethod' 'Method', 'Uri'
             throw "Unidentified call to Invoke-JiraMethod"
         }
@@ -110,7 +110,7 @@ Describe "Get-JiraIssueAttachmentFile" -Tag 'Unit' {
         # Tests
         #############
 
-        It 'only accepts JiraPS.Attachment as input' {
+        It 'only accepts Tyler.DevOps.JiraPS.Attachment as input' {
             { Get-JiraIssueAttachmentFile -Attachment (Get-Date) } | Should Throw
             { Get-JiraIssueAttachmentFile -Attachment (Get-ChildItem) } | Should Throw
             { Get-JiraIssueAttachmentFile -Attachment @('foo', 'bar') } | Should Throw
@@ -127,7 +127,7 @@ Describe "Get-JiraIssueAttachmentFile" -Tag 'Unit' {
 
             $assertMockCalledSplat = @{
                 CommandName     = 'Invoke-JiraMethod'
-                ModuleName      = "JiraPS"
+                ModuleName      = "Tyler.DevOps.JiraPS"
                 ParameterFilter = {
                     $OutFile -in @("foo.pdf", "bar.pdf")
                 }
@@ -139,7 +139,7 @@ Describe "Get-JiraIssueAttachmentFile" -Tag 'Unit' {
 
             $assertMockCalledSplat = @{
                 CommandName     = 'Invoke-JiraMethod'
-                ModuleName      = "JiraPS"
+                ModuleName      = "Tyler.DevOps.JiraPS"
                 ParameterFilter = {
                     $OutFile -like "..*.pdf"
                 }

@@ -33,7 +33,7 @@ BeforeAll {
         Remove-Item -Path Env:\BH*
     }
 
-    InModuleScope JiraPS {
+    InModuleScope Tyler.DevOps.JiraPS {
 
         . "$PSScriptRoot/../Shared.ps1"
 
@@ -41,7 +41,7 @@ BeforeAll {
         $jiraServer = "https://jira.example.com"
 
         $filterPermission1 = New-Object -TypeName PSCustomObject -Property @{ Id = 1111 }
-        $filterPermission1.PSObject.TypeNames.Insert(0, 'JiraPS.FilterPermission')
+        $filterPermission1.PSObject.TypeNames.Insert(0, 'Tyler.DevOps.JiraPS.FilterPermission')
         $filterPermission2 = New-Object -TypeName PSCustomObject -Property @{ Id = 2222 }
         $filterPermission2.Id = 2222
         $fullFilter = New-Object -TypeName PSCustomObject -Property @{
@@ -52,33 +52,33 @@ BeforeAll {
                 $filterPermission2
             )
         }
-        $fullFilter.PSObject.TypeNames.Insert(0, 'JiraPS.Filter')
+        $fullFilter.PSObject.TypeNames.Insert(0, 'Tyler.DevOps.JiraPS.Filter')
         $basicFilter = New-Object -TypeName PSCustomObject -Property @{
             Id = 23456
             RestUrl = "$jiraServer/rest/api/2/filter/23456"
         }
-        $basicFilter.PSObject.TypeNames.Insert(0, 'JiraPS.Filter')
+        $basicFilter.PSObject.TypeNames.Insert(0, 'Tyler.DevOps.JiraPS.Filter')
 
         #endregion Definitions
 
         #region Mocks
-        Mock Get-JiraConfigServer -ModuleName JiraPS {
+        Mock Get-JiraConfigServer -ModuleName Tyler.DevOps.JiraPS {
             $jiraServer
         }
 
-        Mock Get-JiraFilter -ModuleName JiraPS {
+        Mock Get-JiraFilter -ModuleName Tyler.DevOps.JiraPS {
             $basicFilter
         }
 
-        Mock Get-JiraFilterPermission -ModuleName JiraPS {
+        Mock Get-JiraFilterPermission -ModuleName Tyler.DevOps.JiraPS {
             $fullFilter
         }
 
-        Mock Invoke-JiraMethod -ModuleName JiraPS -ParameterFilter {$Method -eq 'Delete' -and $URI -like "$jiraServer/rest/api/*/filter/*/permission*"} {
+        Mock Invoke-JiraMethod -ModuleName Tyler.DevOps.JiraPS -ParameterFilter {$Method -eq 'Delete' -and $URI -like "$jiraServer/rest/api/*/filter/*/permission*"} {
             ShowMockInfo 'Invoke-JiraMethod' 'Method', 'Uri'
         }
 
-        Mock Invoke-JiraMethod -ModuleName JiraPS {
+        Mock Invoke-JiraMethod -ModuleName Tyler.DevOps.JiraPS {
             ShowMockInfo 'Invoke-JiraMethod' 'Method', 'Uri'
             throw "Unidentified call to Invoke-JiraMethod"
         }
@@ -99,11 +99,11 @@ BeforeAll {
                     Get-JiraFilterPermission -Id 1 | Remove-JiraFilterPermission
                 } | Should Not Throw
 
-                Assert-MockCalled -CommandName Invoke-JiraMethod -ModuleName JiraPS -Exactly -Times 1 -Scope It -ParameterFilter {
+                Assert-MockCalled -CommandName Invoke-JiraMethod -ModuleName Tyler.DevOps.JiraPS -Exactly -Times 1 -Scope It -ParameterFilter {
                     $Method -eq 'Delete' -and
                     $URI -like '*/rest/api/*/filter/12345/permission/1111'
                 }
-                Assert-MockCalled -CommandName Invoke-JiraMethod -ModuleName JiraPS -Exactly -Times 1 -Scope It -ParameterFilter {
+                Assert-MockCalled -CommandName Invoke-JiraMethod -ModuleName Tyler.DevOps.JiraPS -Exactly -Times 1 -Scope It -ParameterFilter {
                     $Method -eq 'Delete' -and
                     $URI -like '*/rest/api/*/filter/12345/permission/2222'
                 }
@@ -114,11 +114,11 @@ BeforeAll {
                     Remove-JiraFilterPermission -FilterId 1 -PermissionId 3333, 4444
                 } | Should Not Throw
 
-                Assert-MockCalled -CommandName Invoke-JiraMethod -ModuleName JiraPS -Exactly -Times 1 -Scope It -ParameterFilter {
+                Assert-MockCalled -CommandName Invoke-JiraMethod -ModuleName Tyler.DevOps.JiraPS -Exactly -Times 1 -Scope It -ParameterFilter {
                     $Method -eq 'Delete' -and
                     $URI -like '*/rest/api/*/filter/23456/permission/3333'
                 }
-                Assert-MockCalled -CommandName Invoke-JiraMethod -ModuleName JiraPS -Exactly -Times 1 -Scope It -ParameterFilter {
+                Assert-MockCalled -CommandName Invoke-JiraMethod -ModuleName Tyler.DevOps.JiraPS -Exactly -Times 1 -Scope It -ParameterFilter {
                     $Method -eq 'Delete' -and
                     $URI -like '*/rest/api/*/filter/23456/permission/4444'
                 }
@@ -134,7 +134,7 @@ BeforeAll {
             It "finds the filter by FilterId" {
                 { Remove-JiraFilterPermission -FilterId 1 -PermissionId 1111 } | Should -Not -Throw
 
-                Assert-MockCalled -CommandName Get-JiraFilter -ModuleName JiraPS -Exactly -Times 1 -Scope It
+                Assert-MockCalled -CommandName Get-JiraFilter -ModuleName Tyler.DevOps.JiraPS -Exactly -Times 1 -Scope It
             }
 
             It "does not accept negative FilterIds" {
@@ -168,12 +168,12 @@ BeforeAll {
             It "resolves positional parameters" {
                 { Remove-JiraFilterPermission 12345 1111 } | Should -Not -Throw
 
-                Assert-MockCalled -CommandName Invoke-JiraMethod -ModuleName JiraPS -Exactly -Times 1 -Scope It
+                Assert-MockCalled -CommandName Invoke-JiraMethod -ModuleName Tyler.DevOps.JiraPS -Exactly -Times 1 -Scope It
 
                 $filter = Get-JiraFilterPermission -Id 1
                 { Remove-JiraFilterPermission $filter } | Should -Not -Throw
 
-                Assert-MockCalled -CommandName Invoke-JiraMethod -ModuleName JiraPS -Exactly -Times 3 -Scope It
+                Assert-MockCalled -CommandName Invoke-JiraMethod -ModuleName Tyler.DevOps.JiraPS -Exactly -Times 3 -Scope It
             }
         }
     }

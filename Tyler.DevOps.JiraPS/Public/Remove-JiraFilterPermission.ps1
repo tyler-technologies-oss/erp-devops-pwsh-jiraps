@@ -1,5 +1,5 @@
 function Remove-JiraFilterPermission {
-    # .ExternalHelp ..\JiraPS-help.xml
+    # .ExternalHelp ..\Tyler.DevOps.JiraPS-help.xml
     [CmdletBinding( SupportsShouldProcess, DefaultParameterSetName = 'ByFilterId' )]
     param(
         [Parameter( Position = 0, Mandatory, ValueFromPipeline, ParameterSetName = 'ByFilterObject' )]
@@ -29,7 +29,7 @@ function Remove-JiraFilterPermission {
                 }
             }
         )]
-        [PSTypeName('JiraPS.Filter')]
+        [PSTypeName('Tyler.DevOps.JiraPS.Filter')]
         $Filter,
 
         [Parameter( Position = 0, Mandatory, ParameterSetName = 'ByFilterId' )]

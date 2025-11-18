@@ -33,7 +33,7 @@ Describe 'Remove-JiraFilter' -Tag 'Unit' {
         Remove-Item -Path Env:\BH*
     }
 
-    InModuleScope JiraPS {
+    InModuleScope Tyler.DevOps.JiraPS {
 
         . "$PSScriptRoot/../Shared.ps1"
 
@@ -87,30 +87,30 @@ Describe 'Remove-JiraFilter' -Tag 'Unit' {
         #endregion Definitions
 
         #region Mocks
-        Mock Get-JiraConfigServer -ModuleName JiraPS {
+        Mock Get-JiraConfigServer -ModuleName Tyler.DevOps.JiraPS {
             $jiraServer
         }
 
-        Mock ConvertTo-JiraFilter -ModuleName JiraPS {
+        Mock ConvertTo-JiraFilter -ModuleName Tyler.DevOps.JiraPS {
             foreach ($i in $InputObject) {
-                $i.PSObject.TypeNames.Insert(0, 'JiraPS.Filter')
+                $i.PSObject.TypeNames.Insert(0, 'Tyler.DevOps.JiraPS.Filter')
                 $i | Add-Member -MemberType AliasProperty -Name 'RestURL' -Value 'self'
                 $i
             }
         }
 
-        Mock Get-JiraFilter -ModuleName JiraPS {
+        Mock Get-JiraFilter -ModuleName Tyler.DevOps.JiraPS {
             foreach ($i in $Id) {
                 ConvertTo-JiraFilter (ConvertFrom-Json $responseFilter)
             }
         }
 
-        Mock Invoke-JiraMethod -ModuleName JiraPS -ParameterFilter {$Method -eq 'Delete' -and $URI -like "$jiraServer/rest/api/*/filter/*"} {
+        Mock Invoke-JiraMethod -ModuleName Tyler.DevOps.JiraPS -ParameterFilter {$Method -eq 'Delete' -and $URI -like "$jiraServer/rest/api/*/filter/*"} {
             ShowMockInfo 'Invoke-JiraMethod' 'Method', 'Uri'
             ConvertFrom-Json $responseFilter
         }
 
-        Mock Invoke-JiraMethod -ModuleName JiraPS {
+        Mock Invoke-JiraMethod -ModuleName Tyler.DevOps.JiraPS {
             ShowMockInfo 'Invoke-JiraMethod' 'Method', 'Uri'
             throw "Unidentified call to Invoke-JiraMethod"
         }
@@ -128,14 +128,14 @@ Describe 'Remove-JiraFilter' -Tag 'Unit' {
             It "deletes a filter based on one or more InputObjects" {
                 { Get-JiraFilter -Id 12844 | Remove-JiraFilter } | Should Not Throw
 
-                Assert-MockCalled -CommandName Invoke-JiraMethod -ModuleName JiraPS -Exactly -Times 1 -Scope It -ParameterFilter {$Method -eq 'Delete' -and $URI -like '*/rest/api/*/filter/12844'}
+                Assert-MockCalled -CommandName Invoke-JiraMethod -ModuleName Tyler.DevOps.JiraPS -Exactly -Times 1 -Scope It -ParameterFilter {$Method -eq 'Delete' -and $URI -like '*/rest/api/*/filter/12844'}
             }
 
             It "deletes a filter based on one ore more filter ids" {
                 { Remove-JiraFilter -Id 12844 } | Should Not Throw
 
-                Assert-MockCalled -CommandName Get-JiraFilter -ModuleName JiraPS -Exactly -Times 1 -Scope It
-                Assert-MockCalled -CommandName Invoke-JiraMethod -ModuleName JiraPS -Exactly -Times 1 -Scope It -ParameterFilter {$Method -eq 'Delete' -and $URI -like '*/rest/api/*/filter/12844'}
+                Assert-MockCalled -CommandName Get-JiraFilter -ModuleName Tyler.DevOps.JiraPS -Exactly -Times 1 -Scope It
+                Assert-MockCalled -CommandName Invoke-JiraMethod -ModuleName Tyler.DevOps.JiraPS -Exactly -Times 1 -Scope It -ParameterFilter {$Method -eq 'Delete' -and $URI -like '*/rest/api/*/filter/12844'}
             }
         }
 
@@ -143,50 +143,50 @@ Describe 'Remove-JiraFilter' -Tag 'Unit' {
             It "Accepts a filter object for the -InputObject parameter" {
                 { Remove-JiraFilter -InputObject (Get-JiraFilter "12345") } | Should Not Throw
 
-                Assert-MockCalled -CommandName Invoke-JiraMethod -ModuleName JiraPS -Exactly -Times 1 -Scope It
+                Assert-MockCalled -CommandName Invoke-JiraMethod -ModuleName Tyler.DevOps.JiraPS -Exactly -Times 1 -Scope It
             }
 
             It "Accepts a filter object without the -InputObject parameter" {
                 { Remove-JiraFilter (Get-JiraFilter "12345") } | Should Not Throw
 
-                Assert-MockCalled -CommandName Invoke-JiraMethod -ModuleName JiraPS -Exactly -Times 1 -Scope It
+                Assert-MockCalled -CommandName Invoke-JiraMethod -ModuleName Tyler.DevOps.JiraPS -Exactly -Times 1 -Scope It
             }
 
             It "Accepts multiple filter objects to the -Filter parameter" {
                 { Remove-JiraFilter -InputObject (Get-JiraFilter 12345, 12345) } | Should Not Throw
 
-                Assert-MockCalled -CommandName Invoke-JiraMethod -ModuleName JiraPS -Exactly -Times 2 -Scope It
+                Assert-MockCalled -CommandName Invoke-JiraMethod -ModuleName Tyler.DevOps.JiraPS -Exactly -Times 2 -Scope It
             }
 
-            It "Accepts a JiraPS.Filter object via pipeline" {
+            It "Accepts a Tyler.DevOps.JiraPS.Filter object via pipeline" {
                 { Get-JiraFilter 12345, 12345 | Remove-JiraFilter } | Should Not Throw
 
-                Assert-MockCalled -CommandName Invoke-JiraMethod -ModuleName JiraPS -Exactly -Times 2 -Scope It
+                Assert-MockCalled -CommandName Invoke-JiraMethod -ModuleName Tyler.DevOps.JiraPS -Exactly -Times 2 -Scope It
             }
 
             It "Accepts an ID of a filter" {
                 { Remove-JiraFilter -Id 12345 } | Should Not Throw
 
-                Assert-MockCalled -CommandName Invoke-JiraMethod -ModuleName JiraPS -Exactly -Times 1 -Scope It
+                Assert-MockCalled -CommandName Invoke-JiraMethod -ModuleName Tyler.DevOps.JiraPS -Exactly -Times 1 -Scope It
             }
 
             It "Accepts multiple IDs of filters" {
                 { Remove-JiraFilter -Id 12345, 12345 } | Should Not Throw
 
-                Assert-MockCalled -CommandName Invoke-JiraMethod -ModuleName JiraPS -Exactly -Times 2 -Scope It
+                Assert-MockCalled -CommandName Invoke-JiraMethod -ModuleName Tyler.DevOps.JiraPS -Exactly -Times 2 -Scope It
             }
 
             It "Accepts multiple IDs of filters over the pipeline" {
                 { 12345, 12345 | Remove-JiraFilter } | Should Not Throw
 
-                Assert-MockCalled -CommandName Invoke-JiraMethod -ModuleName JiraPS -Exactly -Times 2 -Scope It
+                Assert-MockCalled -CommandName Invoke-JiraMethod -ModuleName Tyler.DevOps.JiraPS -Exactly -Times 2 -Scope It
             }
 
             It "fails if a negative number is passed as ID" {
                 { Remove-JiraFilter -Id -1 } | Should Throw
             }
 
-            It "fails if something other than [JiraPS.Filter] is provided" {
+            It "fails if something other than [Tyler.DevOps.JiraPS.Filter] is provided" {
                 { Get-Date | Remove-JiraFilter -ErrorAction Stop } | Should Throw
                 { Remove-JiraFilter "12345" -ErrorAction Stop} | Should Throw
             }

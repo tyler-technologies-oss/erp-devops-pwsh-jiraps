@@ -33,7 +33,7 @@ Describe "ConvertTo-JiraServerInfo" -Tag 'Unit' {
         Remove-Item -Path Env:\BH*
     }
 
-    InModuleScope JiraPS {
+    InModuleScope Tyler.DevOps.JiraPS {
 
         . "$PSScriptRoot/../Shared.ps1"
 
@@ -60,7 +60,7 @@ Describe "ConvertTo-JiraServerInfo" -Tag 'Unit' {
             $r | Should Not BeNullOrEmpty
         }
 
-        checkPsType $r 'JiraPS.ServerInfo'
+        checkPsType $r 'Tyler.DevOps.JiraPS.ServerInfo'
 
 
         defProp $r 'BaseURL' $jiraServer

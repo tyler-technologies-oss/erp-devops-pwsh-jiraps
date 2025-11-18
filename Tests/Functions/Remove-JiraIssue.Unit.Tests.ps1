@@ -33,7 +33,7 @@ Describe "Remove-JiraIssue" -Tag 'Unit' {
         Remove-Item -Path Env:\BH*
     }
 
-    InModuleScope JiraPS {
+    InModuleScope Tyler.DevOps.JiraPS {
 
         . "$PSScriptRoot/../Shared.ps1"
 
@@ -218,24 +218,24 @@ Describe "Remove-JiraIssue" -Tag 'Unit' {
 
         }
 
-        Mock Get-JiraConfigServer -ModuleName JiraPS {
+        Mock Get-JiraConfigServer -ModuleName Tyler.DevOps.JiraPS {
             Write-Output $jiraServer
         }
 
         Mock Get-JiraIssue {
             $obj = $TestIssueJSONs[$Key] | ConvertFrom-Json
 
-            $obj.PSObject.TypeNames.Insert(0, 'JiraPS.Issue')
+            $obj.PSObject.TypeNames.Insert(0, 'Tyler.DevOps.JiraPS.Issue')
 
             $obj | Add-Member -MemberType ScriptMethod -Name ToString -Value {return ""} -Force
             return $obj
         }
 
-        Mock Invoke-JiraMethod -ModuleName JiraPS -ParameterFilter {$URI -like "$jiraServer/rest/api/*/issue/TEST-1?*" -and $Method -eq "Delete"} {
+        Mock Invoke-JiraMethod -ModuleName Tyler.DevOps.JiraPS -ParameterFilter {$URI -like "$jiraServer/rest/api/*/issue/TEST-1?*" -and $Method -eq "Delete"} {
             return $null
         }
 
-        Mock Invoke-JiraMethod -ModuleName JiraPS -ParameterFilter {$URI -like "$jiraServer/rest/api/*/issue/TEST-2?deleteSubTasks=False" -and $Method -eq "Delete"} {
+        Mock Invoke-JiraMethod -ModuleName Tyler.DevOps.JiraPS -ParameterFilter {$URI -like "$jiraServer/rest/api/*/issue/TEST-2?deleteSubTasks=False" -and $Method -eq "Delete"} {
 
           Write-Error -Exception  -ErrorId
             $MockedResponse = @"
@@ -259,12 +259,12 @@ Describe "Remove-JiraIssue" -Tag 'Unit' {
             $PSCmdlet.WriteError($errorItem)
         }
 
-        Mock Invoke-JiraMethod -ModuleName JiraPS -ParameterFilter {$URI -like "$jiraServer/rest/api/*/issue/TEST-2?deleteSubTasks=True" -and $Method -eq "Delete"} {
+        Mock Invoke-JiraMethod -ModuleName Tyler.DevOps.JiraPS -ParameterFilter {$URI -like "$jiraServer/rest/api/*/issue/TEST-2?deleteSubTasks=True" -and $Method -eq "Delete"} {
             return $null
         }
 
         # Generic catch-all. This will throw an exception if we forgot to mock something.
-        Mock Invoke-JiraMethod -ModuleName JiraPS {
+        Mock Invoke-JiraMethod -ModuleName Tyler.DevOps.JiraPS {
             ShowMockInfo 'Invoke-JiraMethod' 'Method', 'Uri'
             throw "Unidentified call to Invoke-JiraMethod"
         }
@@ -297,7 +297,7 @@ Describe "Remove-JiraIssue" -Tag 'Unit' {
               Assert-MockCalled -CommandName Invoke-JiraMethod -Exactly -Times 1 -Scope It
             }
 
-            It "Accepts a JiraPS.Issue object over the pipeline" {
+            It "Accepts a Tyler.DevOps.JiraPS.Issue object over the pipeline" {
                 { Get-JiraIssue -Key TEST-1 | Remove-JiraIssue -Force} | Should Not Throw
                 Assert-MockCalled -CommandName Invoke-JiraMethod -Exactly -Times 1 -Scope It
             }

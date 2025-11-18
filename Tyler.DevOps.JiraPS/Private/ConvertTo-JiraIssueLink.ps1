@@ -24,7 +24,7 @@ function ConvertTo-JiraIssueLink {
             }
 
             $result = New-Object -TypeName PSObject -Property $props
-            $result.PSObject.TypeNames.Insert(0, 'JiraPS.IssueLink')
+            $result.PSObject.TypeNames.Insert(0, 'Tyler.DevOps.JiraPS.IssueLink')
             $result | Add-Member -MemberType ScriptMethod -Name "ToString" -Force -Value {
                 Write-Output "$($this.ID)"
             }

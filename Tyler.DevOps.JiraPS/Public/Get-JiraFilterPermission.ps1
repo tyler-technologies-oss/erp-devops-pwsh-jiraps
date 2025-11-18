@@ -1,11 +1,11 @@
 function Get-JiraFilterPermission {
-    # .ExternalHelp ..\JiraPS-help.xml
+    # .ExternalHelp ..\Tyler.DevOps.JiraPS-help.xml
     [CmdletBinding( DefaultParameterSetName = 'ById' )]
-    # [OutputType( [JiraPS.FilterPermission] )]
+    # [OutputType( [Tyler.DevOps.JiraPS.FilterPermission] )]
     param(
         [Parameter( Position = 0, Mandatory, ValueFromPipeline, ParameterSetName = 'ByInputObject' )]
         [ValidateNotNullOrEmpty()]
-        [PSTypeName('JiraPS.Filter')]
+        [PSTypeName('Tyler.DevOps.JiraPS.Filter')]
         $Filter,
 
         [Parameter( Position = 0, Mandatory, ValueFromPipeline, ParameterSetName = 'ById')]

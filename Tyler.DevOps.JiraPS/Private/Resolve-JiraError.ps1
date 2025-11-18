@@ -34,7 +34,7 @@ function Resolve-JiraError {
                             'Message' = $e
                         }
 
-                        $obj.PSObject.TypeNames.Insert(0, 'JiraPS.Error')
+                        $obj.PSObject.TypeNames.Insert(0, 'Tyler.DevOps.JiraPS.Error')
                         $obj | Add-Member -MemberType ScriptMethod -Name "ToString" -Force -Value {
                             Write-Output "Jira error [$($this.Message)]"
                         }
@@ -61,7 +61,7 @@ function Resolve-JiraError {
                             'Message' = $i.errors.$k
                         }
 
-                        $obj.PSObject.TypeNames.Insert(0, 'JiraPS.Error')
+                        $obj.PSObject.TypeNames.Insert(0, 'Tyler.DevOps.JiraPS.Error')
                         $obj | Add-Member -MemberType ScriptMethod -Name "ToString" -Force -Value {
                             Write-Output "Jira error [$($this.ID)]: $($this.Message)"
                         }

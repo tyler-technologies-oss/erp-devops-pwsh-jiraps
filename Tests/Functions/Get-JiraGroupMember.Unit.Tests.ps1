@@ -33,34 +33,34 @@ Describe "Get-JiraGroupMember" -Tag 'Unit' {
         Remove-Item -Path Env:\BH*
     }
 
-    InModuleScope JiraPS {
+    InModuleScope Tyler.DevOps.JiraPS {
 
         . "$PSScriptRoot/../Shared.ps1"
 
         #region Mocks
-        Mock Get-JiraConfigServer -ModuleName JiraPS {
+        Mock Get-JiraConfigServer -ModuleName Tyler.DevOps.JiraPS {
             'https://jira.example.com'
         }
 
-        Mock Get-JiraUser -ModuleName JiraPS {
+        Mock Get-JiraUser -ModuleName Tyler.DevOps.JiraPS {
             $object = [PSCustomObject] @{
                 'Name' = 'username'
             }
-            $object.PSObject.TypeNames.Insert(0, 'JiraPS.User')
+            $object.PSObject.TypeNames.Insert(0, 'Tyler.DevOps.JiraPS.User')
             return $object
         }
 
-        Mock Get-JiraGroup -ModuleName JiraPS {
+        Mock Get-JiraGroup -ModuleName Tyler.DevOps.JiraPS {
             $obj = [PSCustomObject] @{
                 'Name'    = 'testgroup'
                 'RestUrl' = 'https://jira.example.com/rest/api/2/group?groupname=testgroup'
                 'Size'    = 2
             }
-            $obj.PSObject.TypeNames.Insert(0, 'JiraPS.Group')
+            $obj.PSObject.TypeNames.Insert(0, 'Tyler.DevOps.JiraPS.Group')
             Write-Output $obj
         }
 
-        Mock Invoke-JiraMethod -ModuleName JiraPS -ParameterFilter { $Method -eq 'Get' -and $URI -like '*/rest/api/*/group/member' -and $GetParameter["groupname"] -eq "testgroup" } {
+        Mock Invoke-JiraMethod -ModuleName Tyler.DevOps.JiraPS -ParameterFilter { $Method -eq 'Get' -and $URI -like '*/rest/api/*/group/member' -and $GetParameter["groupname"] -eq "testgroup" } {
             ShowMockInfo 'Invoke-JiraMethod' 'Method', 'Uri'
             ConvertFrom-Json @'
 {
@@ -96,7 +96,7 @@ Describe "Get-JiraGroupMember" -Tag 'Unit' {
 
                 $assertMockCalledSplat = @{
                     CommandName     = 'Invoke-JiraMethod'
-                    ModuleName      = 'JiraPS'
+                    ModuleName      = 'Tyler.DevOps.JiraPS'
                     ParameterFilter = {
                         $Method -eq 'Get' -and
                         $URI -like '*/rest/api/*/group/member'
@@ -113,7 +113,7 @@ Describe "Get-JiraGroupMember" -Tag 'Unit' {
 
                 $assertMockCalledSplat = @{
                     CommandName     = 'Invoke-JiraMethod'
-                    ModuleName      = 'JiraPS'
+                    ModuleName      = 'Tyler.DevOps.JiraPS'
                     ParameterFilter = {
                         $Method -eq 'Get' -and
                         $URI -like '*/rest/api/*/group/member' -and
@@ -131,7 +131,7 @@ Describe "Get-JiraGroupMember" -Tag 'Unit' {
 
                 $assertMockCalledSplat = @{
                     CommandName     = 'Invoke-JiraMethod'
-                    ModuleName      = 'JiraPS'
+                    ModuleName      = 'Tyler.DevOps.JiraPS'
                     ParameterFilter = {
                         $Method -eq 'Get' -and
                         $URI -like '*/rest/api/*/group/member' -and
@@ -151,7 +151,7 @@ Describe "Get-JiraGroupMember" -Tag 'Unit' {
 
                 $assertMockCalledSplat = @{
                     CommandName     = 'Invoke-JiraMethod'
-                    ModuleName      = 'JiraPS'
+                    ModuleName      = 'Tyler.DevOps.JiraPS'
                     ParameterFilter = {
                         $Method -eq 'Get' -and
                         $URI -like '*/rest/api/*/group/member' -and
@@ -171,7 +171,7 @@ Describe "Get-JiraGroupMember" -Tag 'Unit' {
 
                 $assertMockCalledSplat = @{
                     CommandName     = 'Invoke-JiraMethod'
-                    ModuleName      = 'JiraPS'
+                    ModuleName      = 'Tyler.DevOps.JiraPS'
                     ParameterFilter = {
                         $Method -eq 'Get' -and
                         $URI -like '*/rest/api/*/group/member' -and

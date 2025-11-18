@@ -33,7 +33,7 @@ Describe 'New-JiraFilter' -Tag 'Unit' {
         Remove-Item -Path Env:\BH*
     }
 
-    InModuleScope JiraPS {
+    InModuleScope Tyler.DevOps.JiraPS {
 
         . "$PSScriptRoot/../Shared.ps1"
 
@@ -52,27 +52,27 @@ Describe 'New-JiraFilter' -Tag 'Unit' {
         #endregion Definitions
 
         #region Mocks
-        Mock Get-JiraConfigServer -ModuleName JiraPS {
+        Mock Get-JiraConfigServer -ModuleName Tyler.DevOps.JiraPS {
             $jiraServer
         }
 
-        Mock ConvertTo-JiraFilter -ModuleName JiraPS {
+        Mock ConvertTo-JiraFilter -ModuleName Tyler.DevOps.JiraPS {
             $i = (ConvertFrom-Json $responseFilter)
-            $i.PSObject.TypeNames.Insert(0, 'JiraPS.Filter')
+            $i.PSObject.TypeNames.Insert(0, 'Tyler.DevOps.JiraPS.Filter')
             $i | Add-Member -MemberType AliasProperty -Name 'RestURL' -Value 'self'
             $i
         }
 
-        Mock Get-JiraFilter -ModuleName JiraPS {
+        Mock Get-JiraFilter -ModuleName Tyler.DevOps.JiraPS {
             ConvertTo-JiraFilter
         }
 
-        Mock Invoke-JiraMethod -ModuleName JiraPS -ParameterFilter {$Method -eq 'Post' -and $URI -like "$jiraServer/rest/api/*/filter"} {
+        Mock Invoke-JiraMethod -ModuleName Tyler.DevOps.JiraPS -ParameterFilter {$Method -eq 'Post' -and $URI -like "$jiraServer/rest/api/*/filter"} {
             ShowMockInfo 'Invoke-JiraMethod' 'Method', 'Uri', 'Body'
             ConvertFrom-Json $responseFilter
         }
 
-        Mock Invoke-JiraMethod -ModuleName JiraPS {
+        Mock Invoke-JiraMethod -ModuleName Tyler.DevOps.JiraPS {
             ShowMockInfo 'Invoke-JiraMethod' 'Method', 'Uri'
             throw "Unidentified call to Invoke-JiraMethod"
         }
@@ -102,7 +102,7 @@ Describe 'New-JiraFilter' -Tag 'Unit' {
                     New-JiraFilter @newData
                 } | Should Not Throw
 
-                Assert-MockCalled -CommandName Invoke-JiraMethod -ModuleName JiraPS -Exactly -Times 1 -Scope It -ParameterFilter {
+                Assert-MockCalled -CommandName Invoke-JiraMethod -ModuleName Tyler.DevOps.JiraPS -Exactly -Times 1 -Scope It -ParameterFilter {
                     $Method -eq 'Post' -and
                     $URI -like '*/rest/api/*/filter' -and
                     $Body -match "`"name`":\s*`"myName`"" -and
@@ -123,7 +123,7 @@ Describe 'New-JiraFilter' -Tag 'Unit' {
                     New-JiraFilter @parameter
                 } | Should Not Throw
 
-                Assert-MockCalled -CommandName Invoke-JiraMethod -ModuleName JiraPS -Exactly -Times 1 -Scope It
+                Assert-MockCalled -CommandName Invoke-JiraMethod -ModuleName Tyler.DevOps.JiraPS -Exactly -Times 1 -Scope It
             }
             It "-Name and -Description and -JQL" {
                 {
@@ -135,7 +135,7 @@ Describe 'New-JiraFilter' -Tag 'Unit' {
                     New-JiraFilter @parameter
                 } | Should Not Throw
 
-                Assert-MockCalled -CommandName Invoke-JiraMethod -ModuleName JiraPS -Exactly -Times 1 -Scope It
+                Assert-MockCalled -CommandName Invoke-JiraMethod -ModuleName Tyler.DevOps.JiraPS -Exactly -Times 1 -Scope It
             }
             It "-Name and -Description and -JQL and -Favorite" {
                 {
@@ -148,7 +148,7 @@ Describe 'New-JiraFilter' -Tag 'Unit' {
                     New-JiraFilter @parameter
                 } | Should Not Throw
 
-                Assert-MockCalled -CommandName Invoke-JiraMethod -ModuleName JiraPS -Exactly -Times 1 -Scope It
+                Assert-MockCalled -CommandName Invoke-JiraMethod -ModuleName Tyler.DevOps.JiraPS -Exactly -Times 1 -Scope It
             }
             It "maps the properties of an object to the parameters" {
                 { Get-JiraFilter "12345" | New-JiraFilter } | Should Not Throw

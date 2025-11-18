@@ -33,7 +33,7 @@ Describe "ConvertTo-JiraStatus" -Tag 'Unit' {
         Remove-Item -Path Env:\BH*
     }
 
-    InModuleScope JiraPS {
+    InModuleScope Tyler.DevOps.JiraPS {
 
         . "$PSScriptRoot/../Shared.ps1"
 
@@ -67,7 +67,7 @@ Describe "ConvertTo-JiraStatus" -Tag 'Unit' {
             $r | Should Not BeNullOrEmpty
         }
 
-        checkPsType $r 'JiraPS.Status'
+        checkPsType $r 'Tyler.DevOps.JiraPS.Status'
 
         defProp $r 'Id' $statusId
         defProp $r 'Name' $statusName

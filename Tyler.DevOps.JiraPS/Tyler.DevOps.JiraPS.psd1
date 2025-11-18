@@ -4,7 +4,7 @@
     RootModule        = 'Tyler.DevOps.JiraPS.psm1'
 
     # Version number of this module.
-    ModuleVersion     = '1.0.0'
+    ModuleVersion     = '1.0.2'
 
     # Supported PSEditions
     # CompatiblePSEditions = @()
@@ -97,21 +97,6 @@
                 "jira",
                 "atlassian"
             )
-
-            # A URL to the license for this module.
-            #LicenseUri = 'https://github.com/AtlassianPS/JiraPS/blob/master/LICENSE'
-
-            # A URL to the main website for this project.
-            #ProjectUri = 'https://AtlassianPS.org/module/JiraPS'
-
-            # A URL to an icon representing this module.
-            #IconUri    = 'https://AtlassianPS.org/assets/img/JiraPS.png'
-
-            # ReleaseNotes of this module
-            # ReleaseNotes = ''
-
-            # External dependent modules of this module
-            # ExternalModuleDependencies = ''
 
         } # End of PSData hashtable
 

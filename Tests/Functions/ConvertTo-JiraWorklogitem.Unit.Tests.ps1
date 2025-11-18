@@ -33,7 +33,7 @@ Describe "ConvertTo-JiraWorklogitem" -Tag 'Unit' {
         Remove-Item -Path Env:\BH*
     }
 
-    InModuleScope JiraPS {
+    InModuleScope Tyler.DevOps.JiraPS {
 
         . "$PSScriptRoot/../Shared.ps1"
 
@@ -93,9 +93,9 @@ Describe "ConvertTo-JiraWorklogitem" -Tag 'Unit' {
             $r | Should Not BeNullOrEmpty
         }
 
-        It "Sets the type name to JiraPS.WorklogItem" {
+        It "Sets the type name to Tyler.DevOps.JiraPS.WorklogItem" {
             $r = ConvertTo-JiraWorklogitem -InputObject $sampleObject
-            checkType $r "JiraPS.WorklogItem"
+            checkType $r "Tyler.DevOps.JiraPS.WorklogItem"
         }
 
         $r = ConvertTo-JiraWorklogitem -InputObject $sampleObject

@@ -46,7 +46,7 @@ function ConvertTo-JiraWorklogItem {
             }
 
             $result = New-Object -TypeName PSObject -Property $props
-            $result.PSObject.TypeNames.Insert(0, 'JiraPS.Worklogitem')
+            $result.PSObject.TypeNames.Insert(0, 'Tyler.DevOps.JiraPS.Worklogitem')
             $result | Add-Member -MemberType ScriptMethod -Name "ToString" -Force -Value {
                 Write-Output "$($this.Id)"
             }

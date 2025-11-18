@@ -33,7 +33,7 @@ Describe "ConvertTo-JiraIssue" -Tag 'Unit' {
         Remove-Item -Path Env:\BH*
     }
 
-    InModuleScope JiraPS {
+    InModuleScope Tyler.DevOps.JiraPS {
 
         . "$PSScriptRoot/../Shared.ps1"
 
@@ -907,7 +907,7 @@ Describe "ConvertTo-JiraIssue" -Tag 'Unit' {
                 $r | Should Not BeNullOrEmpty
             }
 
-            checkPsType $r 'JiraPS.Issue'
+            checkPsType $r 'Tyler.DevOps.JiraPS.Issue'
 
             defProp $r 'Key' 'JRA-37294'
             defProp $r 'Id' '320391'
@@ -925,10 +925,10 @@ Describe "ConvertTo-JiraIssue" -Tag 'Unit' {
             # we need to mock out a few others to avoid our Assert-MockCalled
             # counts being unexpected.
 
-            #            Mock ConvertTo-JiraComment -ModuleName JiraPS { $InputObject }
-            #            Mock ConvertTo-JiraProject -ModuleName JiraPS { $InputObject }
-            #            Mock ConvertTo-JiraTransition -ModuleName JiraPS { $InputObject }
-            #            Mock ConvertTo-JiraUser -ModuleName JiraPS { $InputObject }
+            #            Mock ConvertTo-JiraComment -ModuleName Tyler.DevOps.JiraPS { $InputObject }
+            #            Mock ConvertTo-JiraProject -ModuleName Tyler.DevOps.JiraPS { $InputObject }
+            #            Mock ConvertTo-JiraTransition -ModuleName Tyler.DevOps.JiraPS { $InputObject }
+            #            Mock ConvertTo-JiraUser -ModuleName Tyler.DevOps.JiraPS { $InputObject }
 
             $r = ConvertTo-JiraIssue -InputObject $sampleObject
 
@@ -946,8 +946,8 @@ Describe "ConvertTo-JiraIssue" -Tag 'Unit' {
                 foreach ($f in $userFields) {
                     $value = $r.$f
                     $value | Should Not BeNullOrEmpty
-                    # (Get-Member -InputObject $value).TypeName | Should Be 'JiraPS.User'
-                    checkType $value 'JiraPS.User'
+                    # (Get-Member -InputObject $value).TypeName | Should Be 'Tyler.DevOps.JiraPS.User'
+                    checkType $value 'Tyler.DevOps.JiraPS.User'
                 }
 
                 # We can't mock this out without rewriting most of the code in it
@@ -955,16 +955,16 @@ Describe "ConvertTo-JiraIssue" -Tag 'Unit' {
             }
 
             It "Uses ConvertTo-JiraProject to return the project as an object" {
-                # (Get-Member -InputObject $r.Project).TypeName | Should Be 'JiraPS.Project'
-                checkType $r.Project 'JiraPS.Project'
+                # (Get-Member -InputObject $r.Project).TypeName | Should Be 'Tyler.DevOps.JiraPS.Project'
+                checkType $r.Project 'Tyler.DevOps.JiraPS.Project'
             }
 
             It "Uses ConvertTo-JiraTransition to return the issue's transitions as an object" {
-                checkType $r.Transition[0] 'JiraPS.Transition'
+                checkType $r.Transition[0] 'Tyler.DevOps.JiraPS.Transition'
             }
 
             It "Uses ConvertTo-JiraAttachment to return the issue's attachments as an object" {
-                checkType $r.Attachment 'JiraPS.Attachment'
+                checkType $r.Attachment 'Tyler.DevOps.JiraPS.Attachment'
             }
         }
     }

@@ -33,7 +33,7 @@ Describe "Set-JiraVersion" -Tag 'Unit' {
         Remove-Item -Path Env:\BH*
     }
 
-    InModuleScope JiraPS {
+    InModuleScope Tyler.DevOps.JiraPS {
 
         . "$PSScriptRoot/../Shared.ps1"
 
@@ -68,38 +68,38 @@ Describe "Set-JiraVersion" -Tag 'Unit' {
 "@
 
         #region Mock
-        Mock Get-JiraConfigServer -ModuleName JiraPS {
+        Mock Get-JiraConfigServer -ModuleName Tyler.DevOps.JiraPS {
             Write-Output $jiraServer
         }
 
-        Mock Get-JiraProject -ModuleName JiraPS {
+        Mock Get-JiraProject -ModuleName Tyler.DevOps.JiraPS {
             $Projects = ConvertFrom-Json $JiraProjectData
-            $Projects.PSObject.TypeNames.Insert(0, 'JiraPS.Project')
+            $Projects.PSObject.TypeNames.Insert(0, 'Tyler.DevOps.JiraPS.Project')
             $Projects | Where-Object {$_.Key -in $Project}
         }
 
-        Mock Get-JiraVersion -ModuleName JiraPS {
+        Mock Get-JiraVersion -ModuleName Tyler.DevOps.JiraPS {
             ConvertTo-JiraVersion -InputObject (ConvertFrom-Json $testJsonOne)
         }
 
-        Mock ConvertTo-JiraVersion -ModuleName JiraPS {
+        Mock ConvertTo-JiraVersion -ModuleName Tyler.DevOps.JiraPS {
             $result = New-Object -TypeName PSObject -Property @{
                 Id      = $InputObject.Id
                 Name    = $InputObject.name
                 Project = $InputObject.projectId
                 RestUrl = $InputObject.self
             }
-            $result.PSObject.TypeNames.Insert(0, 'JiraPS.Version')
+            $result.PSObject.TypeNames.Insert(0, 'Tyler.DevOps.JiraPS.Version')
             $result
         }
 
-        Mock Invoke-JiraMethod -ModuleName JiraPS -ParameterFilter { $Method -eq 'Put' -and $URI -like "$jiraServer/rest/api/*/version/$versionID" } {
+        Mock Invoke-JiraMethod -ModuleName Tyler.DevOps.JiraPS -ParameterFilter { $Method -eq 'Put' -and $URI -like "$jiraServer/rest/api/*/version/$versionID" } {
             ShowMockInfo 'Invoke-JiraMethod' 'Method', 'Uri'
             ConvertFrom-Json $testJsonOne
         }
 
         # Generic catch-all. This will throw an exception if we forgot to mock something.
-        Mock Invoke-JiraMethod -ModuleName JiraPS {
+        Mock Invoke-JiraMethod -ModuleName Tyler.DevOps.JiraPS {
             ShowMockInfo 'Invoke-JiraMethod' 'Method', 'Uri'
             throw "Unidentified call to Invoke-JiraMethod"
         }
@@ -124,20 +124,20 @@ Describe "Set-JiraVersion" -Tag 'Unit' {
                 $version = Get-JiraVersion -Project $projectKey -Name $versionName
                 $results = Set-JiraVersion -Version $version -Name "NewName" -ErrorAction Stop
                 $results | Should Not BeNullOrEmpty
-                checkType $results "JiraPS.Version"
-                Assert-MockCalled 'Get-JiraVersion' -Times 2 -Scope It -ModuleName JiraPS -Exactly
-                Assert-MockCalled 'Get-JiraProject' -Times 0 -Scope It -ModuleName JiraPS -Exactly
-                Assert-MockCalled 'ConvertTo-JiraVersion' -Times 3 -Scope It -ModuleName JiraPS -Exactly
-                Assert-MockCalled 'Invoke-JiraMethod' -Times 1 -Scope It -ModuleName JiraPS -Exactly -ParameterFilter { $Method -eq 'Put' -and $URI -like "$jiraServer/rest/api/*/version/$versionID" }
+                checkType $results "Tyler.DevOps.JiraPS.Version"
+                Assert-MockCalled 'Get-JiraVersion' -Times 2 -Scope It -ModuleName Tyler.DevOps.JiraPS -Exactly
+                Assert-MockCalled 'Get-JiraProject' -Times 0 -Scope It -ModuleName Tyler.DevOps.JiraPS -Exactly
+                Assert-MockCalled 'ConvertTo-JiraVersion' -Times 3 -Scope It -ModuleName Tyler.DevOps.JiraPS -Exactly
+                Assert-MockCalled 'Invoke-JiraMethod' -Times 1 -Scope It -ModuleName Tyler.DevOps.JiraPS -Exactly -ParameterFilter { $Method -eq 'Put' -and $URI -like "$jiraServer/rest/api/*/version/$versionID" }
             }
             It "sets an Issue's Version Name using the pipeline" {
                 $results = Get-JiraVersion -Project $projectKey | Set-JiraVersion -Name "NewName" -ErrorAction Stop
                 $results | Should Not BeNullOrEmpty
-                checkType $results "JiraPS.Version"
-                Assert-MockCalled 'Get-JiraVersion' -Times 2 -Scope It -ModuleName JiraPS -Exactly
-                Assert-MockCalled 'Get-JiraProject' -Times 0 -Scope It -ModuleName JiraPS -Exactly
-                Assert-MockCalled 'ConvertTo-JiraVersion' -Times 3 -Scope It -ModuleName JiraPS -Exactly
-                Assert-MockCalled 'Invoke-JiraMethod' -Times 1 -Scope It -ModuleName JiraPS -Exactly -ParameterFilter { $Method -eq 'Put' -and $URI -like "$jiraServer/rest/api/*/version/$versionID" }
+                checkType $results "Tyler.DevOps.JiraPS.Version"
+                Assert-MockCalled 'Get-JiraVersion' -Times 2 -Scope It -ModuleName Tyler.DevOps.JiraPS -Exactly
+                Assert-MockCalled 'Get-JiraProject' -Times 0 -Scope It -ModuleName Tyler.DevOps.JiraPS -Exactly
+                Assert-MockCalled 'ConvertTo-JiraVersion' -Times 3 -Scope It -ModuleName Tyler.DevOps.JiraPS -Exactly
+                Assert-MockCalled 'Invoke-JiraMethod' -Times 1 -Scope It -ModuleName Tyler.DevOps.JiraPS -Exactly -ParameterFilter { $Method -eq 'Put' -and $URI -like "$jiraServer/rest/api/*/version/$versionID" }
             }
             It "assert VerifiableMock" {
                 Assert-VerifiableMock

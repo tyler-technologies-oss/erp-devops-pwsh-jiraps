@@ -1,18 +1,18 @@
 function New-JiraVersion {
-    # .ExternalHelp ..\JiraPS-help.xml
+    # .ExternalHelp ..\Tyler.DevOps.JiraPS-help.xml
     [CmdletBinding( SupportsShouldProcess, DefaultParameterSetName = 'byObject' )]
     param(
         [Parameter( Position = 0, Mandatory, ValueFromPipeline, ParameterSetName = 'byObject' )]
         [ValidateNotNullOrEmpty()]
         [ValidateScript(
             {
-                if (("JiraPS.Version" -notin $_.PSObject.TypeNames) -and (($_ -isnot [String]))) {
+                if (("Tyler.DevOps.JiraPS.Version" -notin $_.PSObject.TypeNames) -and (($_ -isnot [String]))) {
                     $exception = ([System.ArgumentException]"Invalid Type for Parameter") #fix code highlighting]
                     $errorId = 'ParameterType.NotJiraVersion'
                     $errorCategory = 'InvalidArgument'
                     $errorTarget = $_
                     $errorItem = New-Object -TypeName System.Management.Automation.ErrorRecord $exception, $errorId, $errorCategory, $errorTarget
-                    $errorItem.ErrorDetails = "Wrong object type provided for Version. Expected [JiraPS.Version] or [String], but was $($_.GetType().Name)"
+                    $errorItem.ErrorDetails = "Wrong object type provided for Version. Expected [Tyler.DevOps.JiraPS.Version] or [String], but was $($_.GetType().Name)"
                     $PSCmdlet.ThrowTerminatingError($errorItem)
                     <#
                       #ToDo:CustomClass
@@ -38,7 +38,7 @@ function New-JiraVersion {
                 $_input = $_
 
                 switch ($true) {
-                    { "JiraPS.Project" -in $_input.PSObject.TypeNames } { return $true }
+                    { "Tyler.DevOps.JiraPS.Project" -in $_input.PSObject.TypeNames } { return $true }
                     { $_input -is [String] } { return $true }
                     Default {
                         $exception = ([System.ArgumentException]"Invalid Type for Parameter") #fix code highlighting]
@@ -46,7 +46,7 @@ function New-JiraVersion {
                         $errorCategory = 'InvalidArgument'
                         $errorTarget = $_input
                         $errorItem = New-Object -TypeName System.Management.Automation.ErrorRecord $exception, $errorId, $errorCategory, $errorTarget
-                        $errorItem.ErrorDetails = "Wrong object type provided for Project. Expected [JiraPS.Project] or [String], but was $($_input.GetType().Name)"
+                        $errorItem.ErrorDetails = "Wrong object type provided for Project. Expected [Tyler.DevOps.JiraPS.Project] or [String], but was $($_input.GetType().Name)"
                         $PSCmdlet.ThrowTerminatingError($errorItem)
                         <#
                           #ToDo:CustomClass
@@ -135,7 +135,7 @@ function New-JiraVersion {
                     $requestBody["startDate"] = Get-Date $StartDate -Format 'yyyy-MM-dd'
                 }
 
-                if ("JiraPS.Project" -in $Project.PSObject.TypeNames) {
+                if ("Tyler.DevOps.JiraPS.Project" -in $Project.PSObject.TypeNames) {
                     if ($Project.Id) {
                         $requestBody["projectId"] = $Project.Id
                     }

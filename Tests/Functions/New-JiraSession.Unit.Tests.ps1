@@ -34,12 +34,12 @@ Describe "New-JiraSession" -Tag 'Unit' {
     }
     AfterEach {
         try {
-            (Get-Module JiraPS).PrivateData.Remove("Session")
+            (Get-Module Tyler.DevOps.JiraPS).PrivateData.Remove("Session")
         }
         catch { $null }
     }
 
-    InModuleScope JiraPS {
+    InModuleScope Tyler.DevOps.JiraPS {
 
         . "$PSScriptRoot/../Shared.ps1"
 
@@ -50,18 +50,18 @@ Describe "New-JiraSession" -Tag 'Unit' {
         #endregion Definitions
 
         #region Mocks
-        Mock Get-JiraConfigServer -ModuleName JiraPS {
+        Mock Get-JiraConfigServer -ModuleName Tyler.DevOps.JiraPS {
             Write-Output $jiraServer
         }
 
-        Mock ConvertTo-JiraSession -ModuleName JiraPS { }
+        Mock ConvertTo-JiraSession -ModuleName Tyler.DevOps.JiraPS { }
 
-        Mock Invoke-JiraMethod -ModuleName JiraPS -ParameterFilter { $Method -eq 'Get' -and $Uri -like "*/rest/api/*/myself" } {
+        Mock Invoke-JiraMethod -ModuleName Tyler.DevOps.JiraPS -ParameterFilter { $Method -eq 'Get' -and $Uri -like "*/rest/api/*/myself" } {
             ShowMockInfo 'Invoke-JiraMethod' 'Method', 'Uri'
             New-Object -TypeName Microsoft.PowerShell.Commands.WebRequestSession
         }
 
-        Mock Invoke-JiraMethod -ModuleName JiraPS {
+        Mock Invoke-JiraMethod -ModuleName Tyler.DevOps.JiraPS {
             ShowMockInfo 'Invoke-JiraMethod' 'Method', 'Uri'
             throw "Unidentified call to Invoke-JiraMethod"
         }
@@ -80,7 +80,7 @@ Describe "New-JiraSession" -Tag 'Unit' {
 
                 $assertMockCalledSplat = @{
                     CommandName     = 'Invoke-JiraMethod'
-                    ModuleName      = 'JiraPS'
+                    ModuleName      = 'Tyler.DevOps.JiraPS'
                     ParameterFilter = {
                         $Credential -eq $testCredential
                     }
@@ -96,7 +96,7 @@ Describe "New-JiraSession" -Tag 'Unit' {
 
                 $assertMockCalledSplat = @{
                     CommandName     = 'Invoke-JiraMethod'
-                    ModuleName      = 'JiraPS'
+                    ModuleName      = 'Tyler.DevOps.JiraPS'
                     ParameterFilter = {
                         $Headers.ContainsKey("X-Header")
                     }
@@ -108,11 +108,11 @@ Describe "New-JiraSession" -Tag 'Unit' {
             }
 
             It "stores the session variable in the module's PrivateData" {
-                (Get-Module JiraPS).PrivateData.Session | Should -BeNullOrEmpty
+                (Get-Module Tyler.DevOps.JiraPS).PrivateData.Session | Should -BeNullOrEmpty
 
                 New-JiraSession -Credential $testCredential
 
-                (Get-Module JiraPS).PrivateData.Session | Should -Not -BeNullOrEmpty
+                (Get-Module Tyler.DevOps.JiraPS).PrivateData.Session | Should -Not -BeNullOrEmpty
             }
         }
 

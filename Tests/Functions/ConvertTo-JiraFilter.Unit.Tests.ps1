@@ -33,7 +33,7 @@ Describe "ConvertTo-JiraFilter" -Tag 'Unit' {
         Remove-Item -Path Env:\BH*
     }
 
-    InModuleScope JiraPS {
+    InModuleScope Tyler.DevOps.JiraPS {
 
         . "$PSScriptRoot/../Shared.ps1"
 
@@ -166,9 +166,9 @@ Describe "ConvertTo-JiraFilter" -Tag 'Unit' {
 ]
 "@
 
-        Mock ConvertTo-JiraFilterPermission -ModuleName JiraPS {
+        Mock ConvertTo-JiraFilterPermission -ModuleName Tyler.DevOps.JiraPS {
             $i = New-Object -TypeName PSCustomObject -Property @{ Id = 1111 }
-            $i.PSObject.TypeNames.Insert(0, 'JiraPS.FilterPermission')
+            $i.PSObject.TypeNames.Insert(0, 'Tyler.DevOps.JiraPS.FilterPermission')
             $i
         }
 
@@ -179,7 +179,7 @@ Describe "ConvertTo-JiraFilter" -Tag 'Unit' {
             $r | Should Not BeNullOrEmpty
         }
 
-        checkPsType $r 'JiraPS.Filter'
+        checkPsType $r 'Tyler.DevOps.JiraPS.Filter'
 
         defProp $r 'Id' 12844
         defProp $r 'Name' 'All JIRA Bugs'
@@ -192,12 +192,12 @@ Describe "ConvertTo-JiraFilter" -Tag 'Unit' {
             ($r | Get-Member -Name Favorite).MemberType | Should -Be "AliasProperty"
         }
 
-        It "Uses output type of 'JiraPS.FilterPermission' for property 'FilterPermissions'" {
-            checkType $r.FilterPermissions 'JiraPS.FilterPermission'
+        It "Uses output type of 'Tyler.DevOps.JiraPS.FilterPermission' for property 'FilterPermissions'" {
+            checkType $r.FilterPermissions 'Tyler.DevOps.JiraPS.FilterPermission'
         }
 
         It "uses ConvertTo-JiraFilterPermission" {
-            Assert-MockCalled -CommandName ConvertTo-JiraFilterPermission -Module JiraPS -Exactly -Times 1 -Scope Describe
+            Assert-MockCalled -CommandName ConvertTo-JiraFilterPermission -Module Tyler.DevOps.JiraPS -Exactly -Times 1 -Scope Describe
         }
     }
 }

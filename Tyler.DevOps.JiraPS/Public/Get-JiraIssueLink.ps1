@@ -1,5 +1,5 @@
 function Get-JiraIssueLink {
-    # .ExternalHelp ..\JiraPS-help.xml
+    # .ExternalHelp ..\Tyler.DevOps.JiraPS-help.xml
     [CmdletBinding()]
     param(
         [Parameter( Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName )]
@@ -29,7 +29,7 @@ function Get-JiraIssueLink {
         Write-DebugMessage "[$($MyInvocation.MyCommand.Name)] PSBoundParameters: $($PSBoundParameters | Out-String)"
 
         # Validate input object from Pipeline
-        if (($_) -and ("JiraPS.IssueLink" -notin $_.PSObject.TypeNames)) {
+        if (($_) -and ("Tyler.DevOps.JiraPS.IssueLink" -notin $_.PSObject.TypeNames)) {
             $exception = ([System.ArgumentException]"Invalid Parameter")
             $errorId = 'ParameterProperties.WrongObjectType'
             $errorCategory = [System.Management.Automation.ErrorCategory]::InvalidArgument

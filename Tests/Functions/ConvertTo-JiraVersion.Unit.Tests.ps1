@@ -33,7 +33,7 @@ Describe "ConvertTo-JiraVersion" -Tag 'Unit' {
         Remove-Item -Path Env:\BH*
     }
 
-    InModuleScope JiraPS {
+    InModuleScope Tyler.DevOps.JiraPS {
 
         . "$PSScriptRoot/../Shared.ps1"
 
@@ -59,12 +59,12 @@ Describe "ConvertTo-JiraVersion" -Tag 'Unit' {
 }
 "@
 
-        Mock Get-JiraProject -ModuleName JiraPS {
+        Mock Get-JiraProject -ModuleName Tyler.DevOps.JiraPS {
             $Project = [PSCustomObject]@{
                 Id  = $projectId
                 Key = "ABC"
             }
-            $Project.PSObject.TypeNames.Insert(0, 'JiraPS.Project')
+            $Project.PSObject.TypeNames.Insert(0, 'Tyler.DevOps.JiraPS.Project')
             $Project
         }
 
@@ -76,7 +76,7 @@ Describe "ConvertTo-JiraVersion" -Tag 'Unit' {
             $r | Should Not BeNullOrEmpty
         }
 
-        checkPsType $r 'JiraPS.Version'
+        checkPsType $r 'Tyler.DevOps.JiraPS.Version'
 
         defProp $r 'ID' $versionID
         defProp $r 'Project' $projectId

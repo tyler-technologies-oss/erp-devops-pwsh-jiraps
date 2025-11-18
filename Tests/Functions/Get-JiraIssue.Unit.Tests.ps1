@@ -33,7 +33,7 @@ Describe "Get-JiraIssue" -Tag 'Unit' {
         Remove-Item -Path Env:\BH*
     }
 
-    InModuleScope JiraPS {
+    InModuleScope Tyler.DevOps.JiraPS {
 
         . "$PSScriptRoot/../Shared.ps1"
 
@@ -59,27 +59,27 @@ Describe "Get-JiraIssue" -Tag 'Unit' {
 '@
 
         #region Mocks
-        Mock Get-JiraConfigServer -ModuleName JiraPS {
+        Mock Get-JiraConfigServer -ModuleName Tyler.DevOps.JiraPS {
             $jiraServer
         }
 
-        Mock Get-JiraUser -ModuleName JiraPS {
+        Mock Get-JiraUser -ModuleName Tyler.DevOps.JiraPS {
             $object = [PSCustomObject] @{
                 'Name' = 'username'
             }
-            $object.PSObject.TypeNames.Insert(0, 'JiraPS.User')
+            $object.PSObject.TypeNames.Insert(0, 'Tyler.DevOps.JiraPS.User')
             return $object
         }
 
-        Mock Get-JiraFilter -ModuleName JiraPS {
+        Mock Get-JiraFilter -ModuleName Tyler.DevOps.JiraPS {
             [PSCustomObject]@{
-                PSTypeName = "JiraPS.Filter"
+                PSTypeName = "Tyler.DevOps.JiraPS.Filter"
                 Id         = 12345
                 SearchUrl  = "https://jira.example.com/rest/api/2/filter/12345"
             }
         }
 
-        Mock Invoke-JiraMethod -ModuleName JiraPS -ParameterFilter {
+        Mock Invoke-JiraMethod -ModuleName Tyler.DevOps.JiraPS -ParameterFilter {
             $Method -eq 'Get' -and
             $URI -like "$jiraServer/rest/api/*/issue/TEST-001*"
         } {
@@ -87,7 +87,7 @@ Describe "Get-JiraIssue" -Tag 'Unit' {
             ConvertFrom-Json $response
         }
 
-        Mock Invoke-JiraMethod -ModuleName JiraPS -ParameterFilter {
+        Mock Invoke-JiraMethod -ModuleName Tyler.DevOps.JiraPS -ParameterFilter {
             $Method -eq 'Get' -and
             $URI -like "$jiraServer/rest/api/*/search" -and
             $GetParameter["jql"] -eq $jqlEscaped
@@ -96,7 +96,7 @@ Describe "Get-JiraIssue" -Tag 'Unit' {
             ConvertFrom-Json $response
         }
 
-        Mock Invoke-JiraMethod -ModuleName JiraPS -ParameterFilter {
+        Mock Invoke-JiraMethod -ModuleName Tyler.DevOps.JiraPS -ParameterFilter {
             $Method -eq 'Get' -and
             $URI -like "$jiraServer/rest/api/*/filter/*"
         } {
@@ -104,7 +104,7 @@ Describe "Get-JiraIssue" -Tag 'Unit' {
             ConvertFrom-Json $response
         }
 
-        Mock Invoke-JiraMethod -ModuleName JiraPS {
+        Mock Invoke-JiraMethod -ModuleName Tyler.DevOps.JiraPS {
             ShowMockInfo 'Invoke-JiraMethod' 'Method', 'Uri'
             throw "Unidentified call to Invoke-JiraMethod"
         }
@@ -131,7 +131,7 @@ Describe "Get-JiraIssue" -Tag 'Unit' {
 
                 $assertMockCalledSplat = @{
                     CommandName     = 'Invoke-JiraMethod'
-                    ModuleName      = 'JiraPS'
+                    ModuleName      = 'Tyler.DevOps.JiraPS'
                     ParameterFilter = {
                         $Method -eq 'Get' -and
                         $URI -like '*/rest/api/*/issue/TEST-001*'
@@ -148,7 +148,7 @@ Describe "Get-JiraIssue" -Tag 'Unit' {
 
                 $assertMockCalledSplat = @{
                     CommandName     = 'Invoke-JiraMethod'
-                    ModuleName      = 'JiraPS'
+                    ModuleName      = 'Tyler.DevOps.JiraPS'
                     ParameterFilter = {
                         $Method -eq 'Get' -and
                         $URI -like "*/rest/api/*/search" -and
@@ -166,7 +166,7 @@ Describe "Get-JiraIssue" -Tag 'Unit' {
 
                 $assertMockCalledSplat = @{
                     CommandName     = 'Invoke-JiraMethod'
-                    ModuleName      = 'JiraPS'
+                    ModuleName      = 'Tyler.DevOps.JiraPS'
                     ParameterFilter = {
                         $Method -eq 'Get' -and
                         $URI -like "*/rest/api/*/search" -and
@@ -186,7 +186,7 @@ Describe "Get-JiraIssue" -Tag 'Unit' {
 
                 $assertMockCalledSplat = @{
                     CommandName     = 'Invoke-JiraMethod'
-                    ModuleName      = 'JiraPS'
+                    ModuleName      = 'Tyler.DevOps.JiraPS'
                     ParameterFilter = {
                         $Method -eq 'Get' -and
                         $URI -like "*/rest/api/*/search" -and
@@ -202,7 +202,7 @@ Describe "Get-JiraIssue" -Tag 'Unit' {
 
             It "Returns only the fields required with -Fields" {
                 $issue = [PSCustomObject]@{
-                    PSTypeName = "JiraPS.Issue"
+                    PSTypeName = "Tyler.DevOps.JiraPS.Issue"
                     Key        = "TEST-001"
                 }
 
@@ -216,7 +216,7 @@ Describe "Get-JiraIssue" -Tag 'Unit' {
 
                 $assertMockCalledSplat = @{
                     CommandName     = 'Invoke-JiraMethod'
-                    ModuleName      = 'JiraPS'
+                    ModuleName      = 'Tyler.DevOps.JiraPS'
                     ParameterFilter = {
                         $Method -eq 'Get' -and
                         $GetParameter["fields"] -eq "*all"
@@ -229,7 +229,7 @@ Describe "Get-JiraIssue" -Tag 'Unit' {
 
                 $assertMockCalledSplat = @{
                     CommandName     = 'Invoke-JiraMethod'
-                    ModuleName      = 'JiraPS'
+                    ModuleName      = 'Tyler.DevOps.JiraPS'
                     ParameterFilter = {
                         $Method -eq 'Get' -and
                         $GetParameter["fields"] -eq "key"
@@ -242,7 +242,7 @@ Describe "Get-JiraIssue" -Tag 'Unit' {
 
                 $assertMockCalledSplat = @{
                     CommandName     = 'Invoke-JiraMethod'
-                    ModuleName      = 'JiraPS'
+                    ModuleName      = 'Tyler.DevOps.JiraPS'
                     ParameterFilter = {
                         $Method -eq 'Get' -and
                         $GetParameter["fields"] -eq "-summary"
@@ -255,7 +255,7 @@ Describe "Get-JiraIssue" -Tag 'Unit' {
 
                 $assertMockCalledSplat = @{
                     CommandName     = 'Invoke-JiraMethod'
-                    ModuleName      = 'JiraPS'
+                    ModuleName      = 'Tyler.DevOps.JiraPS'
                     ParameterFilter = {
                         $Method -eq 'Get' -and
                         $GetParameter["fields"] -eq "key,summary,status"
@@ -274,7 +274,7 @@ Describe "Get-JiraIssue" -Tag 'Unit' {
 
                 $assertMockCalledSplat = @{
                     CommandName     = 'Invoke-JiraMethod'
-                    ModuleName      = 'JiraPS'
+                    ModuleName      = 'Tyler.DevOps.JiraPS'
                     ParameterFilter = {
                         $Method -eq 'Get' -and
                         $URI -like "*/rest/api/*/issue/TEST-001*"
@@ -291,14 +291,14 @@ Describe "Get-JiraIssue" -Tag 'Unit' {
                     'Key' = 'TEST-001'
                     'ID'  = '12345'
                 }
-                $issue.PSObject.TypeNames.Insert(0, 'JiraPS.Issue')
+                $issue.PSObject.TypeNames.Insert(0, 'Tyler.DevOps.JiraPS.Issue')
 
                 # Should call Get-JiraIssue using the -Key parameter, so our URL should reflect the key we provided
                 { Get-JiraIssue -InputObject $Issue } | Should -Not -Throw
 
                 $assertMockCalledSplat = @{
                     CommandName     = 'Invoke-JiraMethod'
-                    ModuleName      = 'JiraPS'
+                    ModuleName      = 'Tyler.DevOps.JiraPS'
                     ParameterFilter = {
                         $Method -eq 'Get' -and
                         $URI -like "*/rest/api/*/issue/TEST-001*"

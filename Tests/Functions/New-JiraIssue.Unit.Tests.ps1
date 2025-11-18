@@ -33,7 +33,7 @@ Describe "New-JiraIssue" -Tag 'Unit' {
         Remove-Item -Path Env:\BH*
     }
 
-    InModuleScope JiraPS {
+    InModuleScope Tyler.DevOps.JiraPS {
 
         . "$PSScriptRoot/../Shared.ps1"
 
@@ -61,13 +61,13 @@ Describe "New-JiraIssue" -Tag 'Unit' {
                 ID   = $issueTypeTest
                 Name = 'Test Issue Type'
             }
-            $issueObject.PSObject.TypeNames.Insert(0, 'JiraPS.IssueType')
+            $issueObject.PSObject.TypeNames.Insert(0, 'Tyler.DevOps.JiraPS.IssueType')
             $object = [PSCustomObject] @{
                 'ID'  = $Project
                 'Key' = "TEST"
             }
             Add-Member -InputObject $object -MemberType NoteProperty -Name "IssueTypes" -Value $issueObject
-            $object.PSObject.TypeNames.Insert(0, 'JiraPS.Project')
+            $object.PSObject.TypeNames.Insert(0, 'Tyler.DevOps.JiraPS.Project')
             return $object
         }
 
@@ -75,7 +75,7 @@ Describe "New-JiraIssue" -Tag 'Unit' {
             $object = [PSCustomObject] @{
                 'Name' = $UserName;
             }
-            $object.PSObject.TypeNames.Insert(0, 'JiraPS.User')
+            $object.PSObject.TypeNames.Insert(0, 'Tyler.DevOps.JiraPS.User')
             return $object
         }
 
@@ -85,7 +85,7 @@ Describe "New-JiraIssue" -Tag 'Unit' {
                 $object = [PSCustomObject] @{
                     'Id' = $_
                 }
-                $object.PSObject.TypeNames.Insert(0, 'JiraPS.Field')
+                $object.PSObject.TypeNames.Insert(0, 'Tyler.DevOps.JiraPS.Field')
                 $object
             }
         }
@@ -132,14 +132,14 @@ Describe "New-JiraIssue" -Tag 'Unit' {
                 # The String in the ParameterFilter is made from the keywords
                 # we should expect to see in the JSON that should be sent,
                 # including the summary provided in the test call above.
-                Assert-MockCalled -CommandName Invoke-JiraMethod -ModuleName JiraPS -Times 1 -Scope It -ParameterFilter { $Method -eq 'Post' -and $URI -like "$jiraServer/rest/api/*/issue" }
+                Assert-MockCalled -CommandName Invoke-JiraMethod -ModuleName Tyler.DevOps.JiraPS -Times 1 -Scope It -ParameterFilter { $Method -eq 'Post' -and $URI -like "$jiraServer/rest/api/*/issue" }
             }
             It "Creates an issue in JIRA from pipeline" {
                 { $pipelineParams | New-JiraIssue } | Should Not Throw
                 # The String in the ParameterFilter is made from the keywords
                 # we should expect to see in the JSON that should be sent,
                 # including the summary provided in the test call above.
-                Assert-MockCalled -CommandName Invoke-JiraMethod -ModuleName JiraPS -Times 1 -Scope It -ParameterFilter { $Method -eq 'Post' -and $URI -like "$jiraServer/rest/api/*/issue" }
+                Assert-MockCalled -CommandName Invoke-JiraMethod -ModuleName Tyler.DevOps.JiraPS -Times 1 -Scope It -ParameterFilter { $Method -eq 'Post' -and $URI -like "$jiraServer/rest/api/*/issue" }
             }
         }
 

@@ -33,7 +33,7 @@ Describe "Remove-JiraGroup" -Tag 'Unit' {
         Remove-Item -Path Env:\BH*
     }
 
-    InModuleScope JiraPS {
+    InModuleScope Tyler.DevOps.JiraPS {
 
         . "$PSScriptRoot/../Shared.ps1"
 
@@ -56,23 +56,23 @@ Describe "Remove-JiraGroup" -Tag 'Unit' {
 }
 "@
 
-        Mock Get-JiraConfigServer -ModuleName JiraPS {
+        Mock Get-JiraConfigServer -ModuleName Tyler.DevOps.JiraPS {
             Write-Output $jiraServer
         }
 
-        Mock Get-JiraGroup -ModuleName JiraPS {
+        Mock Get-JiraGroup -ModuleName Tyler.DevOps.JiraPS {
             $object = ConvertFrom-Json $testJson
-            $object.PSObject.TypeNames.Insert(0, 'JiraPS.Group')
+            $object.PSObject.TypeNames.Insert(0, 'Tyler.DevOps.JiraPS.Group')
             return $object
         }
 
-        Mock Invoke-JiraMethod -ModuleName JiraPS -ParameterFilter {$Method -eq 'DELETE' -and $URI -like "$jiraServer/rest/api/*/group?groupname=$testGroupName"} {
+        Mock Invoke-JiraMethod -ModuleName Tyler.DevOps.JiraPS -ParameterFilter {$Method -eq 'DELETE' -and $URI -like "$jiraServer/rest/api/*/group?groupname=$testGroupName"} {
             ShowMockInfo 'Invoke-JiraMethod' 'Method', 'Uri'
             # This REST method should produce no output
         }
 
         # Generic catch-all. This will throw an exception if we forgot to mock something.
-        Mock Invoke-JiraMethod -ModuleName JiraPS {
+        Mock Invoke-JiraMethod -ModuleName Tyler.DevOps.JiraPS {
             ShowMockInfo 'Invoke-JiraMethod' 'Method', 'Uri'
             throw "Unidentified call to Invoke-JiraMethod"
         }
@@ -86,7 +86,7 @@ Describe "Remove-JiraGroup" -Tag 'Unit' {
             Assert-MockCalled -CommandName Invoke-JiraMethod -Exactly -Times 1 -Scope It
         }
 
-        It "Accepts a JiraPS.Group object to the -Group parameter" {
+        It "Accepts a Tyler.DevOps.JiraPS.Group object to the -Group parameter" {
             $group = Get-JiraGroup -GroupName $testGroupName
             { Remove-JiraGroup -Group $group -Force } | Should Not Throw
             Assert-MockCalled -CommandName Invoke-JiraMethod -Exactly -Times 1 -Scope It

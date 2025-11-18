@@ -33,7 +33,7 @@ Describe "Get-JiraIssueLink" -Tag 'Unit' {
         Remove-Item -Path Env:\BH*
     }
 
-    InModuleScope JiraPS {
+    InModuleScope Tyler.DevOps.JiraPS {
 
         . "$PSScriptRoot/../Shared.ps1"
 
@@ -52,28 +52,28 @@ Describe "Get-JiraIssueLink" -Tag 'Unit' {
 }
 "@
 
-        Mock Get-JiraConfigServer -ModuleName JiraPS {
+        Mock Get-JiraConfigServer -ModuleName Tyler.DevOps.JiraPS {
             Write-Output $jiraServer
         }
 
         # Generic catch-all. This will throw an exception if we forgot to mock something.
-        Mock Invoke-JiraMethod -ModuleName JiraPS {
+        Mock Invoke-JiraMethod -ModuleName Tyler.DevOps.JiraPS {
             ShowMockInfo 'Invoke-JiraMethod' 'Method', 'Uri'
             throw "Unidentified call to Invoke-JiraMethod"
         }
 
-        Mock Invoke-JiraMethod -ModuleName JiraPS -ParameterFilter {$Method -eq 'Get' -and $URI -eq "$jiraServer/rest/api/2/issueLink/1234"} {
+        Mock Invoke-JiraMethod -ModuleName Tyler.DevOps.JiraPS -ParameterFilter {$Method -eq 'Get' -and $URI -eq "$jiraServer/rest/api/2/issueLink/1234"} {
             ConvertFrom-Json $resultsJson
         }
 
-        Mock Get-JiraIssue -ModuleName JiraPS -ParameterFilter {$Key -eq "TEST-01"} {
+        Mock Get-JiraIssue -ModuleName Tyler.DevOps.JiraPS -ParameterFilter {$Key -eq "TEST-01"} {
             # We don't care about the content of any field except for the id
             $obj = [PSCustomObject]@{
                 "id"          = $issueLinkId
                 "type"        = "foo"
                 "inwardIssue" = "bar"
             }
-            $obj.PSObject.TypeNames.Insert(0, 'JiraPS.IssueLink')
+            $obj.PSObject.TypeNames.Insert(0, 'Tyler.DevOps.JiraPS.IssueLink')
             return [PSCustomObject]@{
                 issueLinks = @(
                     $obj

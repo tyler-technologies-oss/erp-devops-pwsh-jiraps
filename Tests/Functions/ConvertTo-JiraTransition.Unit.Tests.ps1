@@ -33,7 +33,7 @@ Describe "ConvertTo-JiraTransition" -Tag 'Unit' {
         Remove-Item -Path Env:\BH*
     }
 
-    InModuleScope JiraPS {
+    InModuleScope Tyler.DevOps.JiraPS {
 
         . "$PSScriptRoot/../Shared.ps1"
 
@@ -75,12 +75,12 @@ Describe "ConvertTo-JiraTransition" -Tag 'Unit' {
             $r | Should Not BeNullOrEmpty
         }
 
-        checkPsType $r 'JiraPS.Transition'
+        checkPsType $r 'Tyler.DevOps.JiraPS.Transition'
 
         defProp $r 'Id' $tId
         defProp $r 'Name' $tName
 
-        It "Defines the 'ResultStatus' property as a JiraPS.Status object" {
+        It "Defines the 'ResultStatus' property as a Tyler.DevOps.JiraPS.Status object" {
             $r.ResultStatus.Id | Should Be $tRId
             $r.ResultStatus.Name | Should Be $tRName
         }

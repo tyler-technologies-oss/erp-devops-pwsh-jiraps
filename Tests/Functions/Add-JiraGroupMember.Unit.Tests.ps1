@@ -33,7 +33,7 @@ Describe "Add-JiraGroupMember" -Tag 'Unit' {
         Remove-Item -Path Env:\BH*
     }
 
-    InModuleScope JiraPS {
+    InModuleScope Tyler.DevOps.JiraPS {
 
         . "$PSScriptRoot/../Shared.ps1"
 
@@ -44,30 +44,30 @@ Describe "Add-JiraGroupMember" -Tag 'Unit' {
         $testUsername1 = 'testUsername1'
         $testUsername2 = 'testUsername2'
 
-        Mock Get-JiraConfigServer -ModuleName JiraPS {
+        Mock Get-JiraConfigServer -ModuleName Tyler.DevOps.JiraPS {
             Write-Output $jiraServer
         }
 
-        Mock Get-JiraGroup -ModuleName JiraPS {
+        Mock Get-JiraGroup -ModuleName Tyler.DevOps.JiraPS {
             $object = [PSCustomObject] @{
                 'Name' = $testGroupName
                 'Size' = 2
             }
-            $object.PSObject.TypeNames.Insert(0, 'JiraPS.Group')
+            $object.PSObject.TypeNames.Insert(0, 'Tyler.DevOps.JiraPS.Group')
             return $object
         }
 
-        Mock Get-JiraUser -ModuleName JiraPS {
+        Mock Get-JiraUser -ModuleName Tyler.DevOps.JiraPS {
             foreach ($user in $UserName) {
                 $object = [PSCustomObject] @{
                     'Name' = "$user"
                 }
-                $object.PSObject.TypeNames.Insert(0, 'JiraPS.User')
+                $object.PSObject.TypeNames.Insert(0, 'Tyler.DevOps.JiraPS.User')
                 Write-Output $object
             }
         }
 
-        Mock Get-JiraGroupMember -ModuleName JiraPS {
+        Mock Get-JiraGroupMember -ModuleName Tyler.DevOps.JiraPS {
             @(
                 [PSCustomObject] @{
                     'Name' = $testUsername1
@@ -75,11 +75,11 @@ Describe "Add-JiraGroupMember" -Tag 'Unit' {
             )
         }
 
-        Mock ConvertTo-JiraGroup -ModuleName JiraPS {
+        Mock ConvertTo-JiraGroup -ModuleName Tyler.DevOps.JiraPS {
             $InputObject
         }
 
-        Mock Invoke-JiraMethod -ModuleName JiraPS {
+        Mock Invoke-JiraMethod -ModuleName Tyler.DevOps.JiraPS {
             ShowMockInfo 'Invoke-JiraMethod' 'Method', 'Uri', 'Body'
             return $true
         }
@@ -99,7 +99,7 @@ Describe "Add-JiraGroupMember" -Tag 'Unit' {
                 Assert-MockCalled -CommandName ConvertTo-JiraGroup -Exactly -Times 1 -Scope It
             }
 
-            It "Accepts a JiraPS.Group object to the -Group parameter" {
+            It "Accepts a Tyler.DevOps.JiraPS.Group object to the -Group parameter" {
                 $group = Get-JiraGroup -GroupName $testGroupName
                 { Add-JiraGroupMember -Group $group -User $testUsername2 } | Should Not Throw
                 Assert-MockCalled -CommandName Invoke-JiraMethod -ParameterFilter {$URI -match $testGroupName} -Exactly -Times 1 -Scope It
@@ -126,7 +126,7 @@ Describe "Add-JiraGroupMember" -Tag 'Unit' {
             It "Adds multiple users to a JIRA group if they are passed to the -User parameter" {
 
                 # Override our previous mock so we have no group members
-                Mock Get-JiraGroupMember -ModuleName JiraPS { @() }
+                Mock Get-JiraGroupMember -ModuleName Tyler.DevOps.JiraPS { @() }
 
                 # Should use the REST method twice, since at present, you can only add one group member per API call
                 { Add-JiraGroupMember -Group $testGroupName -User $testUsername1, $testUsername2 } | Should Not Throw

@@ -2,9 +2,9 @@
 <Configuration>
   <ViewDefinitions>
     <View>
-      <Name>JiraPS-Issue-TableView</Name>
+      <Name>Tyler.DevOps.JiraPS-Issue-TableView</Name>
       <ViewSelectedBy>
-        <TypeName>JiraPS.Issue</TypeName>
+        <TypeName>Tyler.DevOps.JiraPS.Issue</TypeName>
       </ViewSelectedBy>
       <TableControl>
         <TableHeaders>
@@ -49,9 +49,9 @@
       </TableControl>
     </View>
     <View>
-      <Name>JiraPS-User-TableView</Name>
+      <Name>Tyler.DevOps.JiraPS-User-TableView</Name>
       <ViewSelectedBy>
-        <TypeName>JiraPS.User</TypeName>
+        <TypeName>Tyler.DevOps.JiraPS.User</TypeName>
       </ViewSelectedBy>
       <TableControl>
         <TableHeaders>
@@ -90,9 +90,9 @@
     </View>
 
     <!--<View>
-      <Name>JiraPS-Issue-ListView</Name>
+      <Name>Tyler.DevOps.JiraPS-Issue-ListView</Name>
       <ViewSelectedBy>
-        <TypeName>JiraPS.Isuse</TypeName>
+        <TypeName>Tyler.DevOps.JiraPS.Isuse</TypeName>
       </ViewSelectedBy>
       <ListControl>
         <ListEntries>

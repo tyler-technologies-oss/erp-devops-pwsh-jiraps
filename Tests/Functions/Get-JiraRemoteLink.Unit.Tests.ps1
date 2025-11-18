@@ -33,7 +33,7 @@ Describe "Get-JiraRemoteLink" -Tag 'Unit' {
         Remove-Item -Path Env:\BH*
     }
 
-    InModuleScope JiraPS {
+    InModuleScope Tyler.DevOps.JiraPS {
 
         . "$PSScriptRoot/../Shared.ps1"
 
@@ -63,7 +63,7 @@ Describe "Get-JiraRemoteLink" -Tag 'Unit' {
 }
 "@
 
-        Mock Get-JiraConfigServer -ModuleName JiraPS {
+        Mock Get-JiraConfigServer -ModuleName Tyler.DevOps.JiraPS {
             Write-Output $jiraServer
         }
 
@@ -72,26 +72,26 @@ Describe "Get-JiraRemoteLink" -Tag 'Unit' {
                 'RestURL' = "$jiraServer/rest/api/2/issue/12345"
                 'Key'     = $issueKey
             }
-            $object.PSObject.TypeNames.Insert(0, 'JiraPS.Issue')
+            $object.PSObject.TypeNames.Insert(0, 'Tyler.DevOps.JiraPS.Issue')
             return $object
         }
 
-        Mock Resolve-JiraIssueObject -ModuleName JiraPS {
+        Mock Resolve-JiraIssueObject -ModuleName Tyler.DevOps.JiraPS {
             Get-JiraIssue -Key $Issue
         }
 
-        Mock ConvertTo-JiraLink -ModuleName JiraPS {
+        Mock ConvertTo-JiraLink -ModuleName Tyler.DevOps.JiraPS {
             $InputObject
         }
 
         # Searching for a group.
-        Mock Invoke-JiraMethod -ModuleName JiraPS -ParameterFilter {$Method -eq 'Get'} {
+        Mock Invoke-JiraMethod -ModuleName Tyler.DevOps.JiraPS -ParameterFilter {$Method -eq 'Get'} {
             ShowMockInfo 'Invoke-JiraMethod' 'Method', 'Uri'
             ConvertFrom-Json -InputObject $restResult
         }
 
         # Generic catch-all. This will throw an exception if we forgot to mock something.
-        Mock Invoke-JiraMethod -ModuleName JiraPS {
+        Mock Invoke-JiraMethod -ModuleName Tyler.DevOps.JiraPS {
             ShowMockInfo 'Invoke-JiraMethod' 'Method', 'Uri'
             throw "Unidentified call to Invoke-JiraMethod"
         }
@@ -106,7 +106,7 @@ Describe "Get-JiraRemoteLink" -Tag 'Unit' {
 
             $assertMockCalledSplat = @{
                 CommandName = 'Invoke-JiraMethod'
-                ModuleName = 'JiraPS'
+                ModuleName = 'Tyler.DevOps.JiraPS'
                 ParameterFilter = {
                     $Method -eq "Get" -and
                     $Uri -like "$jiraServer/rest/api/*/issue/12345/remotelink"
@@ -119,7 +119,7 @@ Describe "Get-JiraRemoteLink" -Tag 'Unit' {
 
             $assertMockCalledSplat = @{
                 CommandName = 'ConvertTo-JiraLink'
-                ModuleName = 'JiraPS'
+                ModuleName = 'Tyler.DevOps.JiraPS'
                 Exactly = $true
                 Times = 1
                 Scope = 'It'
@@ -133,7 +133,7 @@ Describe "Get-JiraRemoteLink" -Tag 'Unit' {
 
             $assertMockCalledSplat = @{
                 CommandName = 'Invoke-JiraMethod'
-                ModuleName = 'JiraPS'
+                ModuleName = 'Tyler.DevOps.JiraPS'
                 ParameterFilter = {
                     $Method -eq "Get" -and
                     $Uri -like "$jiraServer/rest/api/*/issue/12345/remotelink/10000"

@@ -33,7 +33,7 @@ Describe "Remove-JiraIssueAttachment" -Tag 'Unit' {
         Remove-Item -Path Env:\BH*
     }
 
-    InModuleScope JiraPS {
+    InModuleScope Tyler.DevOps.JiraPS {
 
         . "$PSScriptRoot/../Shared.ps1"
 
@@ -46,56 +46,56 @@ Describe "Remove-JiraIssueAttachment" -Tag 'Unit' {
 
 
         #region Mock
-        Mock Get-JiraConfigServer -ModuleName JiraPS {
+        Mock Get-JiraConfigServer -ModuleName Tyler.DevOps.JiraPS {
             Write-Output $jiraServer
         }
 
-        Mock Get-JiraIssueAttachment -ModuleName JiraPS {
+        Mock Get-JiraIssueAttachment -ModuleName Tyler.DevOps.JiraPS {
             $all = @()
             $Attachment = [PSCustomObject]@{
                 id       = $attachmentId1
                 fileName = $attachmentFile1
             }
-            $Attachment.PSObject.TypeNames.Insert(0, 'JiraPS.Attachment')
+            $Attachment.PSObject.TypeNames.Insert(0, 'Tyler.DevOps.JiraPS.Attachment')
             $all += $Attachment
 
             $Attachment = [PSCustomObject]@{
                 id       = $attachmentId2
                 fileName = $attachmentFile2
             }
-            $Attachment.PSObject.TypeNames.Insert(0, 'JiraPS.Attachment')
+            $Attachment.PSObject.TypeNames.Insert(0, 'Tyler.DevOps.JiraPS.Attachment')
             $all += $Attachment
             $all
         }
 
-        Mock Get-JiraIssue -ModuleName JiraPS {
+        Mock Get-JiraIssue -ModuleName Tyler.DevOps.JiraPS {
             $Attachment = [PSCustomObject]@{
                 id       = $attachmentId1
                 fileName = $attachmentFile1
             }
-            $Attachment.PSObject.TypeNames.Insert(0, 'JiraPS.Attachment')
+            $Attachment.PSObject.TypeNames.Insert(0, 'Tyler.DevOps.JiraPS.Attachment')
 
             $IssueObj = [PSCustomObject]@{
                 Key        = $issueKey
                 attachment = $Attachment
             }
-            $IssueObj.PSObject.TypeNames.Insert(0, 'JiraPS.Issue')
+            $IssueObj.PSObject.TypeNames.Insert(0, 'Tyler.DevOps.JiraPS.Issue')
             $IssueObj
         }
 
-        Mock Resolve-JiraIssueObject -ModuleName JiraPS {
+        Mock Resolve-JiraIssueObject -ModuleName Tyler.DevOps.JiraPS {
             Get-JiraIssue -Key $Issue
         }
 
-        Mock Invoke-JiraMethod -ModuleName JiraPS -ParameterFilter { $Method -eq 'Delete' -and $URI -eq "$jiraServer/rest/api/2/attachment/$attachmentId1" } {
+        Mock Invoke-JiraMethod -ModuleName Tyler.DevOps.JiraPS -ParameterFilter { $Method -eq 'Delete' -and $URI -eq "$jiraServer/rest/api/2/attachment/$attachmentId1" } {
             ShowMockInfo 'Invoke-JiraMethod' 'Method', 'Uri'
         }
-        Mock Invoke-JiraMethod -ModuleName JiraPS -ParameterFilter { $Method -eq 'Delete' -and $URI -eq "$jiraServer/rest/api/2/attachment/$attachmentId2" } {
+        Mock Invoke-JiraMethod -ModuleName Tyler.DevOps.JiraPS -ParameterFilter { $Method -eq 'Delete' -and $URI -eq "$jiraServer/rest/api/2/attachment/$attachmentId2" } {
             ShowMockInfo 'Invoke-JiraMethod' 'Method', 'Uri'
         }
 
         # Generic catch-all. This will throw an exception if we forgot to mock something.
-        Mock Invoke-JiraMethod -ModuleName JiraPS {
+        Mock Invoke-JiraMethod -ModuleName Tyler.DevOps.JiraPS {
             ShowMockInfo 'Invoke-JiraMethod' 'Method', 'Uri'
             throw "Unidentified call to Invoke-JiraMethod"
         }
@@ -143,14 +143,14 @@ Describe "Remove-JiraIssueAttachment" -Tag 'Unit' {
                 { Remove-JiraIssueAttachment -Issue $issueKey -FileName $attachmentFile1, $attachmentFile2 -Force } | Should Not Throw
 
                 # ensure the calls under the hood
-                Assert-MockCalled 'Get-JiraIssue' -ModuleName JiraPS -Exactly -Times 4 -Scope It
-                Assert-MockCalled 'Get-JiraIssueAttachment' -ModuleName JiraPS -Exactly -Times 3 -Scope It
-                Assert-MockCalled 'Invoke-JiraMethod' -ModuleName JiraPS -ParameterFilter { $Method -eq 'Get' } -Exactly -Times 0 -Scope It
-                Assert-MockCalled 'Invoke-JiraMethod' -ModuleName JiraPS -ParameterFilter { $Method -eq 'Post' } -Exactly -Times 0 -Scope It
-                Assert-MockCalled 'Invoke-JiraMethod' -ModuleName JiraPS -ParameterFilter { $Method -eq 'Put' } -Exactly -Times 0 -Scope It
-                Assert-MockCalled 'Invoke-JiraMethod' -ModuleName JiraPS -ParameterFilter { $Method -eq 'Delete' } -Exactly -Times 8 -Scope It
-                Assert-MockCalled 'Invoke-JiraMethod' -ModuleName JiraPS -ParameterFilter { $Method -eq 'Delete' -and $URI -like "$jiraServer/rest/api/2/attachment/$attachmentId1" } -Exactly -Times 5 -Scope It
-                Assert-MockCalled 'Invoke-JiraMethod' -ModuleName JiraPS -ParameterFilter { $Method -eq 'Delete' -and $URI -like "$jiraServer/rest/api/2/attachment/$attachmentId2" } -Exactly -Times 3 -Scope It
+                Assert-MockCalled 'Get-JiraIssue' -ModuleName Tyler.DevOps.JiraPS -Exactly -Times 4 -Scope It
+                Assert-MockCalled 'Get-JiraIssueAttachment' -ModuleName Tyler.DevOps.JiraPS -Exactly -Times 3 -Scope It
+                Assert-MockCalled 'Invoke-JiraMethod' -ModuleName Tyler.DevOps.JiraPS -ParameterFilter { $Method -eq 'Get' } -Exactly -Times 0 -Scope It
+                Assert-MockCalled 'Invoke-JiraMethod' -ModuleName Tyler.DevOps.JiraPS -ParameterFilter { $Method -eq 'Post' } -Exactly -Times 0 -Scope It
+                Assert-MockCalled 'Invoke-JiraMethod' -ModuleName Tyler.DevOps.JiraPS -ParameterFilter { $Method -eq 'Put' } -Exactly -Times 0 -Scope It
+                Assert-MockCalled 'Invoke-JiraMethod' -ModuleName Tyler.DevOps.JiraPS -ParameterFilter { $Method -eq 'Delete' } -Exactly -Times 8 -Scope It
+                Assert-MockCalled 'Invoke-JiraMethod' -ModuleName Tyler.DevOps.JiraPS -ParameterFilter { $Method -eq 'Delete' -and $URI -like "$jiraServer/rest/api/2/attachment/$attachmentId1" } -Exactly -Times 5 -Scope It
+                Assert-MockCalled 'Invoke-JiraMethod' -ModuleName Tyler.DevOps.JiraPS -ParameterFilter { $Method -eq 'Delete' -and $URI -like "$jiraServer/rest/api/2/attachment/$attachmentId2" } -Exactly -Times 3 -Scope It
             }
             It 'accepts positional parameters' {
                 { Remove-JiraIssueAttachment $attachmentId1 -Force } | Should Not Throw
@@ -158,11 +158,11 @@ Describe "Remove-JiraIssueAttachment" -Tag 'Unit' {
                 { Remove-JiraIssueAttachment $issueKey -Force } | Should Not Throw
 
                 # ensure the calls under the hood
-                Assert-MockCalled 'Get-JiraIssueAttachment' -ModuleName JiraPS -Exactly -Times 1 -Scope It
-                Assert-MockCalled 'Invoke-JiraMethod' -ModuleName JiraPS -ParameterFilter { $Method -eq 'Get' } -Exactly -Times 0 -Scope It
-                Assert-MockCalled 'Invoke-JiraMethod' -ModuleName JiraPS -ParameterFilter { $Method -eq 'Post' } -Exactly -Times 0 -Scope It
-                Assert-MockCalled 'Invoke-JiraMethod' -ModuleName JiraPS -ParameterFilter { $Method -eq 'Put' } -Exactly -Times 0 -Scope It
-                Assert-MockCalled 'Invoke-JiraMethod' -ModuleName JiraPS -ParameterFilter { $Method -eq 'Delete' } -Exactly -Times 5 -Scope It
+                Assert-MockCalled 'Get-JiraIssueAttachment' -ModuleName Tyler.DevOps.JiraPS -Exactly -Times 1 -Scope It
+                Assert-MockCalled 'Invoke-JiraMethod' -ModuleName Tyler.DevOps.JiraPS -ParameterFilter { $Method -eq 'Get' } -Exactly -Times 0 -Scope It
+                Assert-MockCalled 'Invoke-JiraMethod' -ModuleName Tyler.DevOps.JiraPS -ParameterFilter { $Method -eq 'Post' } -Exactly -Times 0 -Scope It
+                Assert-MockCalled 'Invoke-JiraMethod' -ModuleName Tyler.DevOps.JiraPS -ParameterFilter { $Method -eq 'Put' } -Exactly -Times 0 -Scope It
+                Assert-MockCalled 'Invoke-JiraMethod' -ModuleName Tyler.DevOps.JiraPS -ParameterFilter { $Method -eq 'Delete' } -Exactly -Times 5 -Scope It
             }
 
             It 'has no output' {
@@ -170,21 +170,21 @@ Describe "Remove-JiraIssueAttachment" -Tag 'Unit' {
                 $result | Should BeNullOrEmpty
 
                 # ensure the calls under the hood
-                Assert-MockCalled 'Get-JiraIssueAttachment' -ModuleName JiraPS -Exactly -Times 1 -Scope It
-                Assert-MockCalled 'Invoke-JiraMethod' -ModuleName JiraPS -ParameterFilter { $Method -eq 'Get' } -Exactly -Times 0 -Scope It
-                Assert-MockCalled 'Invoke-JiraMethod' -ModuleName JiraPS -ParameterFilter { $Method -eq 'Post' } -Exactly -Times 0 -Scope It
-                Assert-MockCalled 'Invoke-JiraMethod' -ModuleName JiraPS -ParameterFilter { $Method -eq 'Put' } -Exactly -Times 0 -Scope It
-                Assert-MockCalled 'Invoke-JiraMethod' -ModuleName JiraPS -ParameterFilter { $Method -eq 'Delete' } -Exactly -Times 2 -Scope It
+                Assert-MockCalled 'Get-JiraIssueAttachment' -ModuleName Tyler.DevOps.JiraPS -Exactly -Times 1 -Scope It
+                Assert-MockCalled 'Invoke-JiraMethod' -ModuleName Tyler.DevOps.JiraPS -ParameterFilter { $Method -eq 'Get' } -Exactly -Times 0 -Scope It
+                Assert-MockCalled 'Invoke-JiraMethod' -ModuleName Tyler.DevOps.JiraPS -ParameterFilter { $Method -eq 'Post' } -Exactly -Times 0 -Scope It
+                Assert-MockCalled 'Invoke-JiraMethod' -ModuleName Tyler.DevOps.JiraPS -ParameterFilter { $Method -eq 'Put' } -Exactly -Times 0 -Scope It
+                Assert-MockCalled 'Invoke-JiraMethod' -ModuleName Tyler.DevOps.JiraPS -ParameterFilter { $Method -eq 'Delete' } -Exactly -Times 2 -Scope It
             }
             It 'accepts input over the pipeline' {
                 { Get-JiraIssueAttachment $issueKey | Remove-JiraIssueAttachment -Force } | Should Not Throw
 
                 # ensure the calls under the hood
-                Assert-MockCalled 'Get-JiraIssueAttachment' -ModuleName JiraPS -Exactly -Times 1 -Scope It
-                Assert-MockCalled 'Invoke-JiraMethod' -ModuleName JiraPS -ParameterFilter { $Method -eq 'Get' } -Exactly -Times 0 -Scope It
-                Assert-MockCalled 'Invoke-JiraMethod' -ModuleName JiraPS -ParameterFilter { $Method -eq 'Post' } -Exactly -Times 0 -Scope It
-                Assert-MockCalled 'Invoke-JiraMethod' -ModuleName JiraPS -ParameterFilter { $Method -eq 'Put' } -Exactly -Times 0 -Scope It
-                Assert-MockCalled 'Invoke-JiraMethod' -ModuleName JiraPS -ParameterFilter { $Method -eq 'Delete' } -Exactly -Times 2 -Scope It
+                Assert-MockCalled 'Get-JiraIssueAttachment' -ModuleName Tyler.DevOps.JiraPS -Exactly -Times 1 -Scope It
+                Assert-MockCalled 'Invoke-JiraMethod' -ModuleName Tyler.DevOps.JiraPS -ParameterFilter { $Method -eq 'Get' } -Exactly -Times 0 -Scope It
+                Assert-MockCalled 'Invoke-JiraMethod' -ModuleName Tyler.DevOps.JiraPS -ParameterFilter { $Method -eq 'Post' } -Exactly -Times 0 -Scope It
+                Assert-MockCalled 'Invoke-JiraMethod' -ModuleName Tyler.DevOps.JiraPS -ParameterFilter { $Method -eq 'Put' } -Exactly -Times 0 -Scope It
+                Assert-MockCalled 'Invoke-JiraMethod' -ModuleName Tyler.DevOps.JiraPS -ParameterFilter { $Method -eq 'Delete' } -Exactly -Times 2 -Scope It
             }
             It "assert VerifiableMock" {
                 Assert-VerifiableMock

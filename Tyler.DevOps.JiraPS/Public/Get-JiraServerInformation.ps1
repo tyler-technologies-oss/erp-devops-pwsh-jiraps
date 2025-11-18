@@ -1,5 +1,5 @@
 function Get-JiraServerInformation {
-    # .ExternalHelp ..\JiraPS-help.xml
+    # .ExternalHelp ..\Tyler.DevOps.JiraPS-help.xml
     [CmdletBinding()]
     param(
         [Parameter()]

@@ -33,7 +33,7 @@ BeforeAll {
         Remove-Item -Path Env:\BH*
     }
 
-    InModuleScope JiraPS {
+    InModuleScope Tyler.DevOps.JiraPS {
 
         . "$PSScriptRoot/../Shared.ps1"
 
@@ -46,28 +46,28 @@ BeforeAll {
         #endregion Definitions
 
         #region Mocks
-        Mock Get-JiraConfigServer -ModuleName JiraPS {
+        Mock Get-JiraConfigServer -ModuleName Tyler.DevOps.JiraPS {
             Write-Output $jiraServer
         }
 
-        Mock Get-JiraGroup -ModuleName JiraPS {
+        Mock Get-JiraGroup -ModuleName Tyler.DevOps.JiraPS {
             [PSCustomObject]@{
-                PSTypeName = "JiraPS.Group"
+                PSTypeName = "Tyler.DevOps.JiraPS.Group"
                 Name       = $testGroupName
                 Size       = 2
             }
         }
 
-        Mock Get-JiraUser -ModuleName JiraPS {
+        Mock Get-JiraUser -ModuleName Tyler.DevOps.JiraPS {
             if ($InputObject) {
                 $obj = [PSCustomObject]@{
-                    PSTypeName = "JiraPS.User"
+                    PSTypeName = "Tyler.DevOps.JiraPS.User"
                     Name       = "$InputObject"
                 }
             }
             else {
                 $obj = [PSCustomObject]@{
-                    PSTypeName = "JiraPS.User"
+                    PSTypeName = "Tyler.DevOps.JiraPS.User"
                     Name       = "$UserName"
                 }
             }
@@ -77,14 +77,14 @@ BeforeAll {
             $obj
         }
 
-        Mock Get-JiraGroupMember -ModuleName JiraPS {
+        Mock Get-JiraGroupMember -ModuleName Tyler.DevOps.JiraPS {
             [PSCustomObject]@{
-                PSTypeName = "JiraPS.Group"
+                PSTypeName = "Tyler.DevOps.JiraPS.Group"
                 Name       = $testUsername1
             }
         }
 
-        Mock Invoke-JiraMethod -ModuleName JiraPS {
+        Mock Invoke-JiraMethod -ModuleName Tyler.DevOps.JiraPS {
             ShowMockInfo 'Invoke-JiraMethod' 'Method', 'Uri'
         }
         #endregion Mocks
@@ -106,7 +106,7 @@ BeforeAll {
             It "Tests to see if a provided user is currently a member of the provided JIRA group before attempting to remove them" {
                 { Remove-JiraGroupMember -Group $testGroupName -User $testUsername1 -Force } | Should Not Throw
 
-                Assert-MockCalled -CommandName Get-JiraGroup -ModuleName "JiraPS" -Exactly -Times 1 -Scope It
+                Assert-MockCalled -CommandName Get-JiraGroup -ModuleName "Tyler.DevOps.JiraPS" -Exactly -Times 1 -Scope It
             }
 
             It "Removes a user from a JIRA group if the user is a member" {
@@ -114,7 +114,7 @@ BeforeAll {
 
                 $assertMockCalledSplat = @{
                     CommandName     = 'Invoke-JiraMethod'
-                    ModuleName      = "JiraPS"
+                    ModuleName      = "Tyler.DevOps.JiraPS"
                     ParameterFilter = {
                         $Method -eq 'Delete' -and
                         $URI -like "$jiraServer/rest/api/*/group/user?groupname=$testGroupName&username=$testUsername1"
@@ -128,7 +128,7 @@ BeforeAll {
 
             It "Removes multiple users to a JIRA group if they are passed to the -User parameter" {
                 # Override our previous mock so we have two group members
-                Mock Get-JiraGroupMember -ModuleName JiraPS {
+                Mock Get-JiraGroupMember -ModuleName Tyler.DevOps.JiraPS {
                     @(
                         [PSCustomObject] @{
                             'Name' = $testUsername1
@@ -144,7 +144,7 @@ BeforeAll {
 
                 $assertMockCalledSplat = @{
                     CommandName     = 'Invoke-JiraMethod'
-                    ModuleName      = "JiraPS"
+                    ModuleName      = "Tyler.DevOps.JiraPS"
                     ParameterFilter = {
                         $Method -eq 'Delete' -and
                         $URI -like "$jiraServer/rest/api/*/group/user?groupname=$testGroupName&username=*"
@@ -163,7 +163,7 @@ BeforeAll {
 
                 $assertMockCalledSplat = @{
                     CommandName     = 'Invoke-JiraMethod'
-                    ModuleName      = "JiraPS"
+                    ModuleName      = "Tyler.DevOps.JiraPS"
                     ParameterFilter = {
                         $Method -eq "Delete" -and
                         $URI -like "*/rest/api/*/group/user*" -and
@@ -177,7 +177,7 @@ BeforeAll {
                 Assert-MockCalled @assertMockCalledSplat
             }
 
-            It "Accepts a JiraPS.Group object to the -Group parameter" {
+            It "Accepts a Tyler.DevOps.JiraPS.Group object to the -Group parameter" {
                 {
                     $group = Get-JiraGroup -GroupName $testGroupName
                     Remove-JiraGroupMember -Group $group -User $testUsername1 -Force
@@ -185,7 +185,7 @@ BeforeAll {
 
                 $assertMockCalledSplat = @{
                     CommandName     = 'Invoke-JiraMethod'
-                    ModuleName      = "JiraPS"
+                    ModuleName      = "Tyler.DevOps.JiraPS"
                     ParameterFilter = {
                         $Method -eq "Delete" -and
                         $URI -like "*/rest/api/*/group/user*" -and
@@ -204,7 +204,7 @@ BeforeAll {
 
                 $assertMockCalledSplat = @{
                     CommandName     = 'Invoke-JiraMethod'
-                    ModuleName      = "JiraPS"
+                    ModuleName      = "Tyler.DevOps.JiraPS"
                     ParameterFilter = {
                         $Method -eq "Delete" -and
                         $URI -like "*/rest/api/*/group/user*" -and
@@ -218,7 +218,7 @@ BeforeAll {
                 Assert-MockCalled @assertMockCalledSplat
             }
 
-            It "Accepts a JiraPS.User as input for -User parameter" {
+            It "Accepts a Tyler.DevOps.JiraPS.User as input for -User parameter" {
                 {
                     $user = Get-JiraUser -UserName $testUsername1
                     Remove-JiraGroupMember -Group $testGroupName -User $user -Force
@@ -226,7 +226,7 @@ BeforeAll {
 
                 $assertMockCalledSplat = @{
                     CommandName     = 'Invoke-JiraMethod'
-                    ModuleName      = "JiraPS"
+                    ModuleName      = "Tyler.DevOps.JiraPS"
                     ParameterFilter = {
                         $Method -eq "Delete" -and
                         $URI -like "*/rest/api/*/group/user*" -and

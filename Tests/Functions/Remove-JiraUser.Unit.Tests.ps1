@@ -33,7 +33,7 @@ Describe "Remove-JiraUser" -Tag 'Unit' {
         Remove-Item -Path Env:\BH*
     }
 
-    InModuleScope JiraPS {
+    InModuleScope Tyler.DevOps.JiraPS {
 
         . "$PSScriptRoot/../Shared.ps1"
 
@@ -55,23 +55,23 @@ Describe "Remove-JiraUser" -Tag 'Unit' {
 }
 "@
 
-        Mock Get-JiraConfigServer -ModuleName JiraPS {
+        Mock Get-JiraConfigServer -ModuleName Tyler.DevOps.JiraPS {
             Write-Output $jiraServer
         }
 
-        Mock Get-JiraUser -ModuleName JiraPS {
+        Mock Get-JiraUser -ModuleName Tyler.DevOps.JiraPS {
             $object = ConvertFrom-Json $testJsonGet
-            $object.PSObject.TypeNames.Insert(0, 'JiraPS.User')
+            $object.PSObject.TypeNames.Insert(0, 'Tyler.DevOps.JiraPS.User')
             return $object
         }
 
-        Mock Invoke-JiraMethod -ModuleName JiraPS -ParameterFilter {$Method -eq 'DELETE' -and $URI -like "$jiraServer/rest/api/*/user?username=$testUsername"} {
+        Mock Invoke-JiraMethod -ModuleName Tyler.DevOps.JiraPS -ParameterFilter {$Method -eq 'DELETE' -and $URI -like "$jiraServer/rest/api/*/user?username=$testUsername"} {
             ShowMockInfo 'Invoke-JiraMethod' 'Method', 'Uri'
             # This REST method should produce no output
         }
 
         # Generic catch-all. This will throw an exception if we forgot to mock something.
-        Mock Invoke-JiraMethod -ModuleName JiraPS {
+        Mock Invoke-JiraMethod -ModuleName Tyler.DevOps.JiraPS {
             ShowMockInfo 'Invoke-JiraMethod' 'Method', 'Uri'
             throw "Unidentified call to Invoke-JiraMethod"
         }
@@ -85,7 +85,7 @@ Describe "Remove-JiraUser" -Tag 'Unit' {
             Assert-MockCalled -CommandName Invoke-JiraMethod -Exactly -Times 1 -Scope It
         }
 
-        It "Accepts a JiraPS.User object to the -User parameter" {
+        It "Accepts a Tyler.DevOps.JiraPS.User object to the -User parameter" {
             $user = Get-JiraUser -UserName $testUsername
             { Remove-JiraUser -User $user -Force } | Should Not Throw
             Assert-MockCalled -CommandName Invoke-JiraMethod -Exactly -Times 1 -Scope It

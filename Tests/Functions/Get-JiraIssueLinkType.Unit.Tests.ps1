@@ -33,14 +33,14 @@ Describe 'Get-JiraIssueLinkType' -Tag 'Unit' {
         Remove-Item -Path Env:\BH*
     }
 
-    InModuleScope JiraPS {
+    InModuleScope Tyler.DevOps.JiraPS {
 
         . "$PSScriptRoot/../Shared.ps1"
 
         $jiraServer = 'http://jiraserver.example.com'
 
 
-        Mock Get-JiraConfigServer -ModuleName JiraPS {
+        Mock Get-JiraConfigServer -ModuleName Tyler.DevOps.JiraPS {
             Write-Output $jiraServer
         }
 
@@ -59,13 +59,13 @@ Describe 'Get-JiraIssueLinkType' -Tag 'Unit' {
 
             # We also don't care what comes out of here - this function has its own tests
             [PSCustomObject] @{
-                PSTypeName = 'JiraPS.IssueLinkType'
+                PSTypeName = 'Tyler.DevOps.JiraPS.IssueLinkType'
                 foo        = 'bar'
             }
         }
 
         # Generic catch-all. This will throw an exception if we forgot to mock something.
-        Mock Invoke-JiraMethod -ModuleName JiraPS {
+        Mock Invoke-JiraMethod -ModuleName Tyler.DevOps.JiraPS {
             ShowMockInfo 'Invoke-JiraMethod' 'Method', 'Uri'
             throw "Unidentified call to Invoke-JiraMethod"
         }
@@ -112,7 +112,7 @@ Describe 'Get-JiraIssueLinkType' -Tag 'Unit' {
 
                 # We also don't care what comes out of here - this function has its own tests
                 [PSCustomObject] @{
-                    PSTypeName = 'JiraPS.IssueLinkType'
+                    PSTypeName = 'Tyler.DevOps.JiraPS.IssueLinkType'
                     Name       = 'myLink'
                     ID         = 5
                 }

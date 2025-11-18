@@ -33,7 +33,7 @@ Describe "Add-JiraIssueWorklog" -Tag 'Unit' {
         Remove-Item -Path Env:\BH*
     }
 
-    InModuleScope JiraPS {
+    InModuleScope Tyler.DevOps.JiraPS {
 
         . "$PSScriptRoot/../Shared.ps1"
 
@@ -84,31 +84,31 @@ Describe "Add-JiraIssueWorklog" -Tag 'Unit' {
 }
 "@
 
-        Mock Get-JiraConfigServer -ModuleName JiraPS {
+        Mock Get-JiraConfigServer -ModuleName Tyler.DevOps.JiraPS {
             Write-Output $jiraServer
         }
 
-        Mock Get-JiraIssue -ModuleName JiraPS {
+        Mock Get-JiraIssue -ModuleName Tyler.DevOps.JiraPS {
             $result = [PSCustomObject] @{
                 ID      = $issueID
                 Key     = $issueKey
                 RestUrl = "$jiraServer/rest/api/2/issue/$issueID"
             }
-            $result.PSObject.TypeNames.Insert(0, 'JiraPS.Issue')
+            $result.PSObject.TypeNames.Insert(0, 'Tyler.DevOps.JiraPS.Issue')
             Write-Output $result
         }
 
-        Mock Resolve-JiraIssueObject -ModuleName JiraPS {
+        Mock Resolve-JiraIssueObject -ModuleName Tyler.DevOps.JiraPS {
             Get-JiraIssue -Key $Issue
         }
 
-        Mock Invoke-JiraMethod -ModuleName JiraPS -ParameterFilter {$Method -eq 'POST' -and $URI -eq "$jiraServer/rest/api/2/issue/$issueID/worklog"} {
+        Mock Invoke-JiraMethod -ModuleName Tyler.DevOps.JiraPS -ParameterFilter {$Method -eq 'POST' -and $URI -eq "$jiraServer/rest/api/2/issue/$issueID/worklog"} {
             ShowMockInfo 'Invoke-JiraMethod' 'Method', 'Uri', 'Body'
             ConvertFrom-Json $restResponse
         }
 
         # Generic catch-all. This will throw an exception if we forgot to mock something.
-        Mock Invoke-JiraMethod -ModuleName JiraPS {
+        Mock Invoke-JiraMethod -ModuleName Tyler.DevOps.JiraPS {
             ShowMockInfo 'Invoke-JiraMethod' 'Method', 'Uri'
             throw "Unidentified call to Invoke-JiraMethod"
         }
@@ -122,10 +122,10 @@ Describe "Add-JiraIssueWorklog" -Tag 'Unit' {
             $commentResult | Should Not BeNullOrEmpty
 
             # Get-JiraIssue should be used to identify the issue parameter
-            Assert-MockCalled -CommandName Get-JiraIssue -ModuleName JiraPS -Exactly -Times 1 -Scope It
+            Assert-MockCalled -CommandName Get-JiraIssue -ModuleName Tyler.DevOps.JiraPS -Exactly -Times 1 -Scope It
 
             # Invoke-JiraMethod should be used to add the comment
-            Assert-MockCalled -CommandName Invoke-JiraMethod -ModuleName JiraPS -Exactly -Times 1 -Scope It
+            Assert-MockCalled -CommandName Invoke-JiraMethod -ModuleName Tyler.DevOps.JiraPS -Exactly -Times 1 -Scope It
         }
 
         It "Accepts pipeline input from Get-JiraIssue" {
@@ -133,8 +133,8 @@ Describe "Add-JiraIssueWorklog" -Tag 'Unit' {
             $commentResult | Should Not BeNullOrEmpty
 
             # Get-JiraIssue should be called once here to fetch the initial test issue
-            Assert-MockCalled -CommandName Get-JiraIssue -ModuleName JiraPS -Exactly -Times 2 -Scope It
-            Assert-MockCalled -CommandName Invoke-JiraMethod -ModuleName JiraPS -Exactly -Times 1 -Scope It
+            Assert-MockCalled -CommandName Get-JiraIssue -ModuleName Tyler.DevOps.JiraPS -Exactly -Times 2 -Scope It
+            Assert-MockCalled -CommandName Invoke-JiraMethod -ModuleName Tyler.DevOps.JiraPS -Exactly -Times 1 -Scope It
         }
 
         It "formats DateStarted independetly of the input" {
@@ -142,7 +142,7 @@ Describe "Add-JiraIssueWorklog" -Tag 'Unit' {
             Add-JiraIssueWorklog -Comment 'This is a test worklog entry from Pester.' -Issue $issueKey -TimeSpent "00:10:00" -DateStarted (Get-Date)
             Add-JiraIssueWorklog -Comment 'This is a test worklog entry from Pester.' -Issue $issueKey -TimeSpent "00:10:00" -DateStarted (Get-Date -Date "01.01.2000")
 
-            Assert-MockCalled -CommandName Invoke-JiraMethod -ModuleName JiraPS -ParameterFilter {
+            Assert-MockCalled -CommandName Invoke-JiraMethod -ModuleName Tyler.DevOps.JiraPS -ParameterFilter {
                 $Body -match '\"started\":\s*"\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{3}[\+\-]\d{4}"'
             } -Exactly -Times 3 -Scope It
         }

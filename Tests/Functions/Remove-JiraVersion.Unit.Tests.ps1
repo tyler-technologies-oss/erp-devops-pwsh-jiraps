@@ -33,7 +33,7 @@ Describe "Get-JiraVersion" -Tag 'Unit' {
         Remove-Item -Path Env:\BH*
     }
 
-    InModuleScope JiraPS {
+    InModuleScope Tyler.DevOps.JiraPS {
 
         . "$PSScriptRoot/../Shared.ps1"
 
@@ -100,17 +100,17 @@ Describe "Get-JiraVersion" -Tag 'Unit' {
 "@
 
         #region Mock
-        Mock Get-JiraConfigServer -ModuleName JiraPS {
+        Mock Get-JiraConfigServer -ModuleName Tyler.DevOps.JiraPS {
             Write-Output $jiraServer
         }
 
-        Mock Get-JiraProject -ModuleName JiraPS {
+        Mock Get-JiraProject -ModuleName Tyler.DevOps.JiraPS {
             $Projects = ConvertFrom-Json $JiraProjectData
-            $Projects.PSObject.TypeNames.Insert(0, 'JiraPS.Project')
+            $Projects.PSObject.TypeNames.Insert(0, 'Tyler.DevOps.JiraPS.Project')
             $Projects | Where-Object {$_.Key -in $Project}
         }
 
-        Mock Get-JiraVersion -ModuleName JiraPS {
+        Mock Get-JiraVersion -ModuleName Tyler.DevOps.JiraPS {
             foreach ($_id in $Id) {
                 $Version = [PSCustomObject]@{
                     Id          = $_Id
@@ -121,32 +121,32 @@ Describe "Get-JiraVersion" -Tag 'Unit' {
                     StartDate   = (Get-Date "2017-01-01")
                     RestUrl     = "$jiraServer/rest/api/2/version/$_Id"
                 }
-                $Version.PSObject.TypeNames.Insert(0, 'JiraPS.Version')
+                $Version.PSObject.TypeNames.Insert(0, 'Tyler.DevOps.JiraPS.Version')
                 $Version
             }
         }
 
-        Mock ConvertTo-JiraVersion -ModuleName JiraPS {
+        Mock ConvertTo-JiraVersion -ModuleName Tyler.DevOps.JiraPS {
             $result = New-Object -TypeName PSObject -Property @{
                 Id      = $InputObject.Id
                 Name    = $InputObject.name
                 Project = $InputObject.projectId
                 RestUrl = $InputObject.self
             }
-            $result.PSObject.TypeNames.Insert(0, 'JiraPS.Version')
+            $result.PSObject.TypeNames.Insert(0, 'Tyler.DevOps.JiraPS.Version')
             $result
         }
 
-        Mock Invoke-JiraMethod -ModuleName JiraPS -ParameterFilter { $Method -eq 'Delete' -and $URI -like "$jiraServer/rest/api/*/version/$versionID1" } {
+        Mock Invoke-JiraMethod -ModuleName Tyler.DevOps.JiraPS -ParameterFilter { $Method -eq 'Delete' -and $URI -like "$jiraServer/rest/api/*/version/$versionID1" } {
             ShowMockInfo 'Invoke-JiraMethod' 'Method', 'Uri'
         }
 
-        Mock Invoke-JiraMethod -ModuleName JiraPS -ParameterFilter { $Method -eq 'Delete' -and $URI -like "$jiraServer/rest/api/*/version/$versionID2" } {
+        Mock Invoke-JiraMethod -ModuleName Tyler.DevOps.JiraPS -ParameterFilter { $Method -eq 'Delete' -and $URI -like "$jiraServer/rest/api/*/version/$versionID2" } {
             ShowMockInfo 'Invoke-JiraMethod' 'Method', 'Uri'
         }
 
         # Generic catch-all. This will throw an exception if we forgot to mock something.
-        Mock Invoke-JiraMethod -ModuleName JiraPS {
+        Mock Invoke-JiraMethod -ModuleName Tyler.DevOps.JiraPS {
             ShowMockInfo 'Invoke-JiraMethod' 'Method', 'Uri'
             throw "Unidentified call to Invoke-JiraMethod"
         }
@@ -163,35 +163,35 @@ Describe "Get-JiraVersion" -Tag 'Unit' {
         Context "Behavior checking" {
             It 'removes a Version using its ID' {
                 { Remove-JiraVersion -Version $versionID1 -Force -ErrorAction Stop } | Should Not Throw
-                Assert-MockCalled 'Get-JiraVersion' -Times 1 -Scope It -ModuleName JiraPS -Exactly
-                Assert-MockCalled 'Get-JiraProject' -Times 1 -Scope It -ModuleName JiraPS -Exactly
-                Assert-MockCalled 'Invoke-JiraMethod' -Times 1 -Scope It -ModuleName JiraPS -Exactly -ParameterFilter { $Method -eq 'Delete' -and $URI -like "$jiraServer/rest/api/2/version/$versionID1" }
+                Assert-MockCalled 'Get-JiraVersion' -Times 1 -Scope It -ModuleName Tyler.DevOps.JiraPS -Exactly
+                Assert-MockCalled 'Get-JiraProject' -Times 1 -Scope It -ModuleName Tyler.DevOps.JiraPS -Exactly
+                Assert-MockCalled 'Invoke-JiraMethod' -Times 1 -Scope It -ModuleName Tyler.DevOps.JiraPS -Exactly -ParameterFilter { $Method -eq 'Delete' -and $URI -like "$jiraServer/rest/api/2/version/$versionID1" }
             }
             It 'removes a Version using the Version Object' {
                 {
                     $version = Get-JiraVersion -Id $versionID1
                     Remove-JiraVersion $version -Force -ErrorAction Stop
                 } | Should Not Throw
-                Assert-MockCalled 'Get-JiraVersion' -Times 2 -Scope It -ModuleName JiraPS -Exactly
-                Assert-MockCalled 'Get-JiraProject' -Times 2 -Scope It -ModuleName JiraPS -Exactly
-                Assert-MockCalled 'Invoke-JiraMethod' -Times 1 -Scope It -ModuleName JiraPS -Exactly -ParameterFilter { $Method -eq 'Delete' -and $URI -like "$jiraServer/rest/api/2/version/$versionID1" }
+                Assert-MockCalled 'Get-JiraVersion' -Times 2 -Scope It -ModuleName Tyler.DevOps.JiraPS -Exactly
+                Assert-MockCalled 'Get-JiraProject' -Times 2 -Scope It -ModuleName Tyler.DevOps.JiraPS -Exactly
+                Assert-MockCalled 'Invoke-JiraMethod' -Times 1 -Scope It -ModuleName Tyler.DevOps.JiraPS -Exactly -ParameterFilter { $Method -eq 'Delete' -and $URI -like "$jiraServer/rest/api/2/version/$versionID1" }
             }
             It 'removes a Version using several Version Objects' {
                 {
                     $version = Get-JiraVersion -Id $versionID1, $versionID2
                     Remove-JiraVersion -Version $version -Force -ErrorAction Stop
                 } | Should Not Throw
-                Assert-MockCalled 'Get-JiraVersion' -Times 3 -Scope It -ModuleName JiraPS -Exactly
-                Assert-MockCalled 'Get-JiraProject' -Times 4 -Scope It -ModuleName JiraPS -Exactly
-                Assert-MockCalled 'Invoke-JiraMethod' -Times 1 -Scope It -ModuleName JiraPS -Exactly -ParameterFilter { $Method -eq 'Delete' -and $URI -like "$jiraServer/rest/api/2/version/$versionID1" }
-                Assert-MockCalled 'Invoke-JiraMethod' -Times 1 -Scope It -ModuleName JiraPS -Exactly -ParameterFilter { $Method -eq 'Delete' -and $URI -like "$jiraServer/rest/api/2/version/$versionID2" }
+                Assert-MockCalled 'Get-JiraVersion' -Times 3 -Scope It -ModuleName Tyler.DevOps.JiraPS -Exactly
+                Assert-MockCalled 'Get-JiraProject' -Times 4 -Scope It -ModuleName Tyler.DevOps.JiraPS -Exactly
+                Assert-MockCalled 'Invoke-JiraMethod' -Times 1 -Scope It -ModuleName Tyler.DevOps.JiraPS -Exactly -ParameterFilter { $Method -eq 'Delete' -and $URI -like "$jiraServer/rest/api/2/version/$versionID1" }
+                Assert-MockCalled 'Invoke-JiraMethod' -Times 1 -Scope It -ModuleName Tyler.DevOps.JiraPS -Exactly -ParameterFilter { $Method -eq 'Delete' -and $URI -like "$jiraServer/rest/api/2/version/$versionID2" }
             }
             It 'removes a Version using Version as input over the pipeline' {
                 { Get-JiraVersion -Id $versionID1, $versionID2 | Remove-JiraVersion -Force -ErrorAction Stop } | Should Not Throw
-                Assert-MockCalled 'Get-JiraVersion' -Times 3 -Scope It -ModuleName JiraPS -Exactly
-                Assert-MockCalled 'Get-JiraProject' -Times 4 -Scope It -ModuleName JiraPS -Exactly
-                Assert-MockCalled 'Invoke-JiraMethod' -Times 1 -Scope It -ModuleName JiraPS -Exactly -ParameterFilter { $Method -eq 'Delete' -and $URI -like "$jiraServer/rest/api/2/version/$versionID1" }
-                Assert-MockCalled 'Invoke-JiraMethod' -Times 1 -Scope It -ModuleName JiraPS -Exactly -ParameterFilter { $Method -eq 'Delete' -and $URI -like "$jiraServer/rest/api/2/version/$versionID2" }
+                Assert-MockCalled 'Get-JiraVersion' -Times 3 -Scope It -ModuleName Tyler.DevOps.JiraPS -Exactly
+                Assert-MockCalled 'Get-JiraProject' -Times 4 -Scope It -ModuleName Tyler.DevOps.JiraPS -Exactly
+                Assert-MockCalled 'Invoke-JiraMethod' -Times 1 -Scope It -ModuleName Tyler.DevOps.JiraPS -Exactly -ParameterFilter { $Method -eq 'Delete' -and $URI -like "$jiraServer/rest/api/2/version/$versionID1" }
+                Assert-MockCalled 'Invoke-JiraMethod' -Times 1 -Scope It -ModuleName Tyler.DevOps.JiraPS -Exactly -ParameterFilter { $Method -eq 'Delete' -and $URI -like "$jiraServer/rest/api/2/version/$versionID2" }
             }
             It "assert VerifiableMock" {
                 Assert-VerifiableMock

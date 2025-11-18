@@ -1,10 +1,10 @@
 #region Dependencies
 # Load the ConfluencePS namespace from C#
 # if (!("" -as [Type])) {
-#     Add-Type -Path (Join-Path $PSScriptRoot JiraPS.Types.cs) -ReferencedAssemblies Microsoft.CSharp, Microsoft.PowerShell.Commands.Utility, System.Management.Automation
+#     Add-Type -Path (Join-Path $PSScriptRoot Tyler.DevOps.JiraPS.Types.cs) -ReferencedAssemblies Microsoft.CSharp, Microsoft.PowerShell.Commands.Utility, System.Management.Automation
 # }
 # if ($PSVersionTable.PSVersion.Major -lt 5) {
-#     Add-Type -Path (Join-Path $PSScriptRoot JiraPS.Attributes.cs) -ReferencedAssemblies Microsoft.CSharp, Microsoft.PowerShell.Commands.Utility, System.Management.Automation
+#     Add-Type -Path (Join-Path $PSScriptRoot Tyler.DevOps.JiraPS.Attributes.cs) -ReferencedAssemblies Microsoft.CSharp, Microsoft.PowerShell.Commands.Utility, System.Management.Automation
 # }
 
 # Load Web assembly when needed
@@ -23,7 +23,7 @@ if (!("System.Net.Http" -as [Type])) {
 #endregion Dependencies
 
 #region Configuration
-$script:serverConfig = ("{0}/Tyler.DevOps.JiraPS/server_config" -f [Environment]::GetFolderPath('ApplicationData'))
+$script:serverConfig = ("{0}/TylerPS/Tyler.DevOps.JiraPS/server_config" -f [Environment]::GetFolderPath('ApplicationData'))
 
 if (-not (Test-Path $script:serverConfig)) {
     $null = New-Item -Path $script:serverConfig -ItemType File -Force

@@ -33,7 +33,7 @@ Describe "ConvertTo-JiraIssueLink" -Tag 'Unit' {
         Remove-Item -Path Env:\BH*
     }
 
-    InModuleScope JiraPS {
+    InModuleScope Tyler.DevOps.JiraPS {
 
         . "$PSScriptRoot/../Shared.ps1"
 
@@ -69,7 +69,7 @@ Describe "ConvertTo-JiraIssueLink" -Tag 'Unit' {
             $r | Should Not BeNullOrEmpty
         }
 
-        checkPsType $r 'JiraPS.IssueLink'
+        checkPsType $r 'Tyler.DevOps.JiraPS.IssueLink'
 
         defProp $r 'Id' $issueLinkId
         defProp $r 'Type' "Composition"

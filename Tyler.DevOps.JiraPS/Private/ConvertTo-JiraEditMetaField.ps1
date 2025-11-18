@@ -39,7 +39,7 @@ function ConvertTo-JiraEditMetaField {
                 }
 
                 $result = New-Object -TypeName PSObject -Property $props
-                $result.PSObject.TypeNames.Insert(0, 'JiraPS.EditMetaField')
+                $result.PSObject.TypeNames.Insert(0, 'Tyler.DevOps.JiraPS.EditMetaField')
                 $result | Add-Member -MemberType ScriptMethod -Name "ToString" -Force -Value {
                     Write-Output "$($this.Name)"
                 }

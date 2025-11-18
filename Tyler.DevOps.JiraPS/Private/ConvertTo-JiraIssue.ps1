@@ -93,7 +93,7 @@ function ConvertTo-JiraIssue {
             }
 
             $result = New-Object -TypeName PSObject -Property $props
-            $result.PSObject.TypeNames.Insert(0, 'JiraPS.Issue')
+            $result.PSObject.TypeNames.Insert(0, 'Tyler.DevOps.JiraPS.Issue')
             $result | Add-Member -MemberType ScriptMethod -Name "ToString" -Force -Value {
                 Write-Output "[$($this.Key)] $($this.Summary)"
             }

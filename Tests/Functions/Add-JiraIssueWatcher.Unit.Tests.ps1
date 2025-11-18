@@ -33,7 +33,7 @@ Describe "Add-JiraIssueWatcher" -Tag 'Unit' {
         Remove-Item -Path Env:\BH*
     }
 
-    InModuleScope JiraPS {
+    InModuleScope Tyler.DevOps.JiraPS {
 
         . "$PSScriptRoot/../Shared.ps1"
 
@@ -41,30 +41,30 @@ Describe "Add-JiraIssueWatcher" -Tag 'Unit' {
         $issueID = 41701
         $issueKey = 'IT-3676'
 
-        Mock Get-JiraConfigServer -ModuleName JiraPS {
+        Mock Get-JiraConfigServer -ModuleName Tyler.DevOps.JiraPS {
             Write-Output $jiraServer
         }
 
-        Mock Get-JiraIssue -ModuleName JiraPS {
+        Mock Get-JiraIssue -ModuleName Tyler.DevOps.JiraPS {
             $object = [PSCustomObject] @{
                 ID      = $issueID
                 Key     = $issueKey
                 RestUrl = "$jiraServer/rest/api/2/issue/$issueID"
             }
-            $object.PSObject.TypeNames.Insert(0, 'JiraPS.Issue')
+            $object.PSObject.TypeNames.Insert(0, 'Tyler.DevOps.JiraPS.Issue')
             return $object
         }
 
-        Mock Resolve-JiraIssueObject -ModuleName JiraPS {
+        Mock Resolve-JiraIssueObject -ModuleName Tyler.DevOps.JiraPS {
             Get-JiraIssue -Key $Issue
         }
 
-        Mock Invoke-JiraMethod -ModuleName JiraPS -ParameterFilter {$Method -eq 'POST' -and $URI -eq "$jiraServer/rest/api/2/issue/$issueID/watchers"} {
+        Mock Invoke-JiraMethod -ModuleName Tyler.DevOps.JiraPS -ParameterFilter {$Method -eq 'POST' -and $URI -eq "$jiraServer/rest/api/2/issue/$issueID/watchers"} {
             ShowMockInfo 'Invoke-JiraMethod' -Params 'Uri', 'Method'
         }
 
         # Generic catch-all. This will throw an exception if we forgot to mock something.
-        Mock Invoke-JiraMethod -ModuleName JiraPS {
+        Mock Invoke-JiraMethod -ModuleName Tyler.DevOps.JiraPS {
             ShowMockInfo 'Invoke-JiraMethod' -Params 'Uri', 'Method'
             throw "Unidentified call to Invoke-JiraMethod"
         }
@@ -88,10 +88,10 @@ Describe "Add-JiraIssueWatcher" -Tag 'Unit' {
                 $WatcherResult | Should BeNullOrEmpty
 
                 # Get-JiraIssue should be used to identify the issue parameter
-                Assert-MockCalled -CommandName Get-JiraIssue -ModuleName JiraPS -Exactly -Times 1 -Scope It
+                Assert-MockCalled -CommandName Get-JiraIssue -ModuleName Tyler.DevOps.JiraPS -Exactly -Times 1 -Scope It
 
                 # Invoke-JiraMethod should be used to add the Watcher
-                Assert-MockCalled -CommandName Invoke-JiraMethod -ModuleName JiraPS -Exactly -Times 1 -Scope It
+                Assert-MockCalled -CommandName Invoke-JiraMethod -ModuleName Tyler.DevOps.JiraPS -Exactly -Times 1 -Scope It
             }
 
             It "Accepts pipeline input from Get-JiraIssue" {
@@ -99,8 +99,8 @@ Describe "Add-JiraIssueWatcher" -Tag 'Unit' {
                 $WatcherResult | Should BeNullOrEmpty
 
                 # Get-JiraIssue should be called once here, and once inside Add-JiraIssueWatcher (to identify the InputObject parameter)
-                Assert-MockCalled -CommandName Get-JiraIssue -ModuleName JiraPS -Exactly -Times 2 -Scope It
-                Assert-MockCalled -CommandName Invoke-JiraMethod -ModuleName JiraPS -Exactly -Times 1 -Scope It
+                Assert-MockCalled -CommandName Get-JiraIssue -ModuleName Tyler.DevOps.JiraPS -Exactly -Times 2 -Scope It
+                Assert-MockCalled -CommandName Invoke-JiraMethod -ModuleName Tyler.DevOps.JiraPS -Exactly -Times 1 -Scope It
             }
         }
     }

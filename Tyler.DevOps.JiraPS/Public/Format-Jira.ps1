@@ -1,5 +1,5 @@
 function Format-Jira {
-    # .ExternalHelp ..\JiraPS-help.xml
+    # .ExternalHelp ..\Tyler.DevOps.JiraPS-help.xml
     [CmdletBinding()]
     [OutputType([System.String])]
     param(

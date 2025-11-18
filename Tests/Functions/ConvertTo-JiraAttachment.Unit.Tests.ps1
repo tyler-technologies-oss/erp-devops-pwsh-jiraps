@@ -33,7 +33,7 @@ Describe "ConvertTo-JiraAttachment" -Tag 'Unit' {
         Remove-Item -Path Env:\BH*
     }
 
-    InModuleScope JiraPS {
+    InModuleScope Tyler.DevOps.JiraPS {
 
         . "$PSScriptRoot/../Shared.ps1"
 
@@ -95,7 +95,7 @@ Describe "ConvertTo-JiraAttachment" -Tag 'Unit' {
             $r | Should Not BeNullOrEmpty
         }
 
-        checkPsType $r 'JiraPS.Attachment'
+        checkPsType $r 'Tyler.DevOps.JiraPS.Attachment'
 
         defProp $r[0] 'Id' $attachmentID1
         defProp $r[0] 'FileName' $attachmentName1
@@ -105,7 +105,7 @@ Describe "ConvertTo-JiraAttachment" -Tag 'Unit' {
         }
         It "Defines Author field as User objects" {
             $r[0].author | Should Not BeNullOrEmpty
-            checkType $r[0].author 'JiraPS.User'
+            checkType $r[0].author 'Tyler.DevOps.JiraPS.User'
         }
         It "Defines the 'self' property" {
             $r[0].self | Should Not BeNullOrEmpty

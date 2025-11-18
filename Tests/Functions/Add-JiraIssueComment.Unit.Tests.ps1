@@ -33,7 +33,7 @@ Describe "Add-JiraIssueComment" -Tag 'Unit' {
         Remove-Item -Path Env:\BH*
     }
 
-    InModuleScope JiraPS {
+    InModuleScope Tyler.DevOps.JiraPS {
 
         . "$PSScriptRoot/../Shared.ps1"
 
@@ -61,11 +61,11 @@ Describe "Add-JiraIssueComment" -Tag 'Unit' {
                 Key     = $issueKey
                 RestUrl = "$jiraServer/rest/api/2/issue/$issueID"
             }
-            $object.PSObject.TypeNames.Insert(0, 'JiraPS.Issue')
+            $object.PSObject.TypeNames.Insert(0, 'Tyler.DevOps.JiraPS.Issue')
             return $object
         }
 
-        Mock Resolve-JiraIssueObject -ModuleName JiraPS {
+        Mock Resolve-JiraIssueObject -ModuleName Tyler.DevOps.JiraPS {
             Get-JiraIssue -Key $Issue
         }
 
@@ -88,18 +88,18 @@ Describe "Add-JiraIssueComment" -Tag 'Unit' {
             $commentResult = Add-JiraIssueComment -Comment 'This is a test comment from Pester.' -Issue $issueKey
             $commentResult | Should Not BeNullOrEmpty
 
-            Assert-MockCalled 'Get-JiraIssue' -ModuleName JiraPS -Exactly -Times 1 -Scope It
-            Assert-MockCalled 'Resolve-JiraIssueObject' -ModuleName JiraPS -Exactly -Times 1 -Scope It
-            Assert-MockCalled 'Invoke-JiraMethod' -ModuleName JiraPS -Exactly -Times 1 -Scope It
+            Assert-MockCalled 'Get-JiraIssue' -ModuleName Tyler.DevOps.JiraPS -Exactly -Times 1 -Scope It
+            Assert-MockCalled 'Resolve-JiraIssueObject' -ModuleName Tyler.DevOps.JiraPS -Exactly -Times 1 -Scope It
+            Assert-MockCalled 'Invoke-JiraMethod' -ModuleName Tyler.DevOps.JiraPS -Exactly -Times 1 -Scope It
         }
 
         It "Accepts pipeline input from Get-JiraIssue" {
             $commentResult = Get-JiraIssue -Key $IssueKey | Add-JiraIssueComment -Comment 'This is a test comment from Pester, using the pipeline!'
             $commentResult | Should Not BeNullOrEmpty
 
-            Assert-MockCalled 'Get-JiraIssue' -ModuleName JiraPS -Exactly -Times 2 -Scope It
-            Assert-MockCalled 'Resolve-JiraIssueObject' -ModuleName JiraPS -Exactly -Times 1 -Scope It
-            Assert-MockCalled 'Invoke-JiraMethod' -ModuleName JiraPS -Exactly -Times 1 -Scope It
+            Assert-MockCalled 'Get-JiraIssue' -ModuleName Tyler.DevOps.JiraPS -Exactly -Times 2 -Scope It
+            Assert-MockCalled 'Resolve-JiraIssueObject' -ModuleName Tyler.DevOps.JiraPS -Exactly -Times 1 -Scope It
+            Assert-MockCalled 'Invoke-JiraMethod' -ModuleName Tyler.DevOps.JiraPS -Exactly -Times 1 -Scope It
         }
 
         Context "Output checking" {

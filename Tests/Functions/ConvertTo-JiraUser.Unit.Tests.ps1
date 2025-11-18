@@ -33,7 +33,7 @@ Describe "ConvertTo-JiraUser" -Tag 'Unit' {
         Remove-Item -Path Env:\BH*
     }
 
-    InModuleScope JiraPS {
+    InModuleScope Tyler.DevOps.JiraPS {
 
         . "$PSScriptRoot/../Shared.ps1"
 
@@ -95,7 +95,7 @@ Describe "ConvertTo-JiraUser" -Tag 'Unit' {
             $r | Should Not BeNullOrEmpty
         }
 
-        checkPsType $r 'JiraPS.User'
+        checkPsType $r 'Tyler.DevOps.JiraPS.User'
 
         defProp $r 'Key' $username
         defProp $r 'AccountId' "500058:1500a9f1-0000-42b3-0000-ab8900008d00"

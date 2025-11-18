@@ -28,7 +28,7 @@ Describe "General project validation" -Tag Unit {
         Remove-Module $env:BHProjectName -ErrorAction SilentlyContinue
         # Import-Module $env:BHManifestToTest
 
-        $configFile = ("{0}/AtlassianPS/JiraPS/server_config" -f [Environment]::GetFolderPath('ApplicationData'))
+        $configFile = ("{0}/TylerPS/Tyler.DevOps.JiraPS/server_config" -f [Environment]::GetFolderPath('ApplicationData'))
         $oldConfig = Get-Content $configFile
     }
     AfterAll {
@@ -54,7 +54,7 @@ Describe "General project validation" -Tag Unit {
     }
 
     It "module uses the correct root module" {
-        Metadata\Get-Metadata -Path $env:BHManifestToTest -PropertyName RootModule | Should -Be 'JiraPS.psm1'
+        Metadata\Get-Metadata -Path $env:BHManifestToTest -PropertyName RootModule | Should -Be 'Tyler.DevOps.JiraPS.psm1'
     }
 
     It "module uses the correct guid" {

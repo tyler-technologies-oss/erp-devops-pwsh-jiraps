@@ -36,8 +36,8 @@ Describe "Remove-JiraSession" -Tag 'Unit' {
     . "$PSScriptRoot/../Shared.ps1"
 
     #region Mocks
-    Mock Get-JiraSession -ModuleName JiraPS {
-        (Get-Module JiraPS).PrivateData.Session
+    Mock Get-JiraSession -ModuleName Tyler.DevOps.JiraPS {
+        (Get-Module Tyler.DevOps.JiraPS).PrivateData.Session
     }
     #endregion Mocks
 
@@ -48,13 +48,13 @@ Describe "Remove-JiraSession" -Tag 'Unit' {
     }
 
     Context "Behavior testing" {
-        It "Closes a removes the JiraPS.Session data from module PrivateData" {
-            (Get-Module JiraPS).PrivateData = @{ Session = $true }
-            (Get-Module JiraPS).PrivateData.Session | Should -Not -BeNullOrEmpty
+        It "Closes a removes the Tyler.DevOps.JiraPS.Session data from module PrivateData" {
+            (Get-Module Tyler.DevOps.JiraPS).PrivateData = @{ Session = $true }
+            (Get-Module Tyler.DevOps.JiraPS).PrivateData.Session | Should -Not -BeNullOrEmpty
 
             Remove-JiraSession
 
-            (Get-Module JiraPS).PrivateData.Session | Should -BeNullOrEmpty
+            (Get-Module Tyler.DevOps.JiraPS).PrivateData.Session | Should -BeNullOrEmpty
         }
     }
 }

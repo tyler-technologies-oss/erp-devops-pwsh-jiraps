@@ -33,7 +33,7 @@ Describe 'Add-JiraFilterPermission' -Tag 'Unit' {
         Remove-Item -Path Env:\BH*
     }
 
-    InModuleScope JiraPS {
+    InModuleScope Tyler.DevOps.JiraPS {
 
         . "$PSScriptRoot/../Shared.ps1"
 
@@ -125,39 +125,39 @@ Describe 'Add-JiraFilterPermission' -Tag 'Unit' {
         #endregion Definitions
 
         #region Mocks
-        Mock Get-JiraConfigServer -ModuleName JiraPS {
+        Mock Get-JiraConfigServer -ModuleName Tyler.DevOps.JiraPS {
             $jiraServer
         }
 
-        Mock ConvertTo-JiraFilter -ModuleName JiraPS {
+        Mock ConvertTo-JiraFilter -ModuleName Tyler.DevOps.JiraPS {
             $i = New-Object -TypeName PSCustomObject
-            $i.PSObject.TypeNames.Insert(0, 'JiraPS.Filter')
+            $i.PSObject.TypeNames.Insert(0, 'Tyler.DevOps.JiraPS.Filter')
             $i
         }
 
-        Mock ConvertTo-JiraFilterPermission -ModuleName JiraPS {
+        Mock ConvertTo-JiraFilterPermission -ModuleName Tyler.DevOps.JiraPS {
             $i = (ConvertFrom-Json $permissionJSON)
-            $i.PSObject.TypeNames.Insert(0, 'JiraPS.FilterPermission')
+            $i.PSObject.TypeNames.Insert(0, 'Tyler.DevOps.JiraPS.FilterPermission')
             $i
         }
 
-        Mock Get-JiraFilter -ModuleName JiraPS {
+        Mock Get-JiraFilter -ModuleName Tyler.DevOps.JiraPS {
             foreach ($_id in $Id) {
                 $object = New-Object -TypeName PSCustomObject -Property @{
                 id = $_id
                 RestUrl = "$jiraServer/rest/api/2/filter/$_id"
             }
-            $object.PSObject.TypeNames.Insert(0, 'JiraPS.Filter')
+            $object.PSObject.TypeNames.Insert(0, 'Tyler.DevOps.JiraPS.Filter')
             $object
         }
         }
 
-        Mock Invoke-JiraMethod -ModuleName JiraPS -ParameterFilter {$Method -eq 'Post' -and $URI -like "$jiraServer/rest/api/*/filter/*/permission"} {
+        Mock Invoke-JiraMethod -ModuleName Tyler.DevOps.JiraPS -ParameterFilter {$Method -eq 'Post' -and $URI -like "$jiraServer/rest/api/*/filter/*/permission"} {
             ShowMockInfo 'Invoke-JiraMethod' 'Method', 'Uri', 'Body'
             ConvertFrom-Json $permissionJSON
         }
 
-        Mock Invoke-JiraMethod -ModuleName JiraPS {
+        Mock Invoke-JiraMethod -ModuleName Tyler.DevOps.JiraPS {
             ShowMockInfo 'Invoke-JiraMethod' 'Method', 'Uri'
             throw "Unidentified call to Invoke-JiraMethod"
         }
@@ -179,12 +179,12 @@ Describe 'Add-JiraFilterPermission' -Tag 'Unit' {
                     Add-JiraFilterPermission -Filter (Get-JiraFilter -Id 12844) -Type "Global"
                 } | Should Not Throw
 
-                Assert-MockCalled -CommandName Invoke-JiraMethod -ModuleName JiraPS -Exactly -Times 1 -Scope It -ParameterFilter {
+                Assert-MockCalled -CommandName Invoke-JiraMethod -ModuleName Tyler.DevOps.JiraPS -Exactly -Times 1 -Scope It -ParameterFilter {
                     $Method -eq 'Post' -and
                     $URI -like '*/rest/api/*/filter/12844/permission'
                 }
 
-                Assert-MockCalled -CommandName ConvertTo-JiraFilter -ModuleName JiraPS -Exactly -Times 1 -Scope It
+                Assert-MockCalled -CommandName ConvertTo-JiraFilter -ModuleName Tyler.DevOps.JiraPS -Exactly -Times 1 -Scope It
             }
 
             It "Adds share permission to FilterId" {
@@ -192,17 +192,17 @@ Describe 'Add-JiraFilterPermission' -Tag 'Unit' {
                     Add-JiraFilterPermission -Id 12844 -Type "Global"
                 } | Should Not Throw
 
-                Assert-MockCalled -CommandName Invoke-JiraMethod -ModuleName JiraPS -Exactly -Times 1 -Scope It -ParameterFilter {
+                Assert-MockCalled -CommandName Invoke-JiraMethod -ModuleName Tyler.DevOps.JiraPS -Exactly -Times 1 -Scope It -ParameterFilter {
                     $Method -eq 'Post' -and
                     $URI -like '*/rest/api/*/filter/12844/permission'
                 }
 
-                Assert-MockCalled -CommandName ConvertTo-JiraFilter -ModuleName JiraPS -Exactly -Times 1 -Scope It
+                Assert-MockCalled -CommandName ConvertTo-JiraFilter -ModuleName Tyler.DevOps.JiraPS -Exactly -Times 1 -Scope It
             }
         }
 
         Context "Input testing" {
-            It "requires -Filter to be a JiraPS.Filter" {
+            It "requires -Filter to be a Tyler.DevOps.JiraPS.Filter" {
                 { Add-JiraFilterPermission -Filter 1 -Type "Global" } | Should -Throw
                 { Add-JiraFilterPermission -Filter "lorem" -Type "Global" } | Should -Throw
                 { Add-JiraFilterPermission -Filter (Get-Date) -Type "Global" } | Should -Throw
@@ -210,7 +210,7 @@ Describe 'Add-JiraFilterPermission' -Tag 'Unit' {
                 { Add-JiraFilterPermission -Filter (Get-JiraFilter -Id 1) -Type "Global" } | Should -Not -Throw
             }
 
-            It "allows a JiraPS.Filter to be passed over the pipeline" {
+            It "allows a Tyler.DevOps.JiraPS.Filter to be passed over the pipeline" {
                 { Get-JiraFilter -Id 1 | Add-JiraFilterPermission -Type "Global" } | Should -Not -Throw
             }
 
@@ -220,26 +220,26 @@ Describe 'Add-JiraFilterPermission' -Tag 'Unit' {
 
                 { Add-JiraFilterPermission -Filter $filters -Type "Global" } | Should -Not -Throw
 
-                Assert-MockCalled -CommandName Invoke-JiraMethod -ModuleName JiraPS -Exactly -Times 5 -Scope It
+                Assert-MockCalled -CommandName Invoke-JiraMethod -ModuleName Tyler.DevOps.JiraPS -Exactly -Times 5 -Scope It
             }
 
             It "can find a filter by it's Id" {
                 { Add-JiraFilterPermission -Id 1 -Type "Global" } | Should -Not -Throw
 
-                Assert-MockCalled -CommandName Get-JiraFilter -ModuleName JiraPS -Exactly -Times 1 -Scope It
+                Assert-MockCalled -CommandName Get-JiraFilter -ModuleName Tyler.DevOps.JiraPS -Exactly -Times 1 -Scope It
             }
 
             It "allows for the filter's Id to be passed over the pipeline" {
                 { 1,2 | Add-JiraFilterPermission -Type "Global" } | Should -Not -Throw
 
-                Assert-MockCalled -CommandName Get-JiraFilter -ModuleName JiraPS -Exactly -Times 2 -Scope It
+                Assert-MockCalled -CommandName Get-JiraFilter -ModuleName Tyler.DevOps.JiraPS -Exactly -Times 2 -Scope It
             }
 
             It "can process mutiple FilterIds" {
                 { Add-JiraFilterPermission -Id 1,2,3,4,5 -Type "Global" } | Should -Not -Throw
 
-                Assert-MockCalled -CommandName Get-JiraFilter -ModuleName JiraPS -Exactly -Times 1 -Scope It
-                Assert-MockCalled -CommandName Invoke-JiraMethod -ModuleName JiraPS -Exactly -Times 5 -Scope It
+                Assert-MockCalled -CommandName Get-JiraFilter -ModuleName Tyler.DevOps.JiraPS -Exactly -Times 1 -Scope It
+                Assert-MockCalled -CommandName Invoke-JiraMethod -ModuleName Tyler.DevOps.JiraPS -Exactly -Times 5 -Scope It
             }
 
             It "accepts the 5 known permission types" {
@@ -264,7 +264,7 @@ Describe 'Add-JiraFilterPermission' -Tag 'Unit' {
             It "constructs a valid request Body for type 'Global'" {
                 { Add-JiraFilterPermission -Id 12844 -Type "Global" } | Should -Not -Throw
 
-                Assert-MockCalled -CommandName Invoke-JiraMethod -ModuleName JiraPS -Exactly -Times 1 -Scope It -ParameterFilter {
+                Assert-MockCalled -CommandName Invoke-JiraMethod -ModuleName Tyler.DevOps.JiraPS -Exactly -Times 1 -Scope It -ParameterFilter {
                     $Method -eq 'Post' -and
                     $URI -like '*/rest/api/*/filter/12844/permission' -and
                     $Body -match '"type":\s*"global"' -and
@@ -275,7 +275,7 @@ Describe 'Add-JiraFilterPermission' -Tag 'Unit' {
             It "constructs a valid request Body for type 'Authenticated'" {
                 { Add-JiraFilterPermission -Id 12844 -Type "Authenticated" } | Should -Not -Throw
 
-                Assert-MockCalled -CommandName Invoke-JiraMethod -ModuleName JiraPS -Exactly -Times 1 -Scope It -ParameterFilter {
+                Assert-MockCalled -CommandName Invoke-JiraMethod -ModuleName Tyler.DevOps.JiraPS -Exactly -Times 1 -Scope It -ParameterFilter {
                     $Method -eq 'Post' -and
                     $URI -like '*/rest/api/*/filter/12844/permission' -and
                     $Body -match '"type":\s*"authenticated"' -and
@@ -286,7 +286,7 @@ Describe 'Add-JiraFilterPermission' -Tag 'Unit' {
             It "constructs a valid request Body for type 'Group'" {
                 { Add-JiraFilterPermission -Id 12844 -Type "Group" -Value "administrators" } | Should -Not -Throw
 
-                Assert-MockCalled -CommandName Invoke-JiraMethod -ModuleName JiraPS -Exactly -Times 1 -Scope It -ParameterFilter {
+                Assert-MockCalled -CommandName Invoke-JiraMethod -ModuleName Tyler.DevOps.JiraPS -Exactly -Times 1 -Scope It -ParameterFilter {
                     $Method -eq 'Post' -and
                     $URI -like '*/rest/api/*/filter/12844/permission' -and
                     $Body -match '"type":\s*"group"' -and
@@ -297,7 +297,7 @@ Describe 'Add-JiraFilterPermission' -Tag 'Unit' {
             It "constructs a valid request Body for type 'Project'" {
                 { Add-JiraFilterPermission -Id 12844 -Type "Project" -Value "11822" } | Should -Not -Throw
 
-                Assert-MockCalled -CommandName Invoke-JiraMethod -ModuleName JiraPS -Exactly -Times 1 -Scope It -ParameterFilter {
+                Assert-MockCalled -CommandName Invoke-JiraMethod -ModuleName Tyler.DevOps.JiraPS -Exactly -Times 1 -Scope It -ParameterFilter {
                     $Method -eq 'Post' -and
                     $URI -like '*/rest/api/*/filter/12844/permission' -and
                     $Body -match '"type":\s*"project"' -and
@@ -308,7 +308,7 @@ Describe 'Add-JiraFilterPermission' -Tag 'Unit' {
             It "constructs a valid request Body for type 'ProjectRole'" {
                 { Add-JiraFilterPermission -Id 12844 -Type "ProjectRole" -Value "11822" } | Should -Not -Throw
 
-                Assert-MockCalled -CommandName Invoke-JiraMethod -ModuleName JiraPS -Exactly -Times 1 -Scope It -ParameterFilter {
+                Assert-MockCalled -CommandName Invoke-JiraMethod -ModuleName Tyler.DevOps.JiraPS -Exactly -Times 1 -Scope It -ParameterFilter {
                     $Method -eq 'Post' -and
                     $URI -like '*/rest/api/*/filter/12844/permission' -and
                     $Body -match '"type":\s*"projectRole"' -and
